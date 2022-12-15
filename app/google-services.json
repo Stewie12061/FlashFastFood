@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "276053111257",
+    "project_id": "flashfastfood-81fee",
+    "storage_bucket": "flashfastfood-81fee.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:276053111257:android:9b2ff25108872be96d29c8",
+        "android_client_info": {
+          "package_name": "com.example.flashfastfood"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "276053111257-9m48bhs63geh7h9qjm3o4o0stamdofse.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.flashfastfood",
+            "certificate_hash": "9e4c3a9ea3d74171d9715a754adfd6a631ad1918"
+          }
+        },
+        {
+          "client_id": "276053111257-cjrbbpdd0489ifdk12aiddkj9i6gils7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBE86H5se29Dc-4XAPu0J7Rm-L06ne6vAs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "276053111257-cjrbbpdd0489ifdk12aiddkj9i6gils7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

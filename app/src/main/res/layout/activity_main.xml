@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity"
+    android:background="@android:color/transparent"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+    <FrameLayout
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="35dp"/>
+    <com.google.android.material.bottomappbar.BottomAppBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/bottom_app_bar"
+        android:layout_gravity="bottom"
+        android:backgroundTint="@color/orange"
+        style="@style/Widget.MaterialComponents.BottomNavigationView.Colored"
+        app:fabCradleMargin="5dp"
+        app:fabCradleRoundedCornerRadius="30dp"
+        app:fabCradleVerticalOffset="15dp"
+        app:fabAlignmentMode="end"/>
+
+    <com.ismaeldivita.chipnavigation.ChipNavigationBar
+        android:id="@+id/chipNavBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:cnb_iconSize="30dp"
+        android:paddingBottom="3dp"
+        app:cnb_unselectedColor="@android:color/darker_gray"
+        app:cnb_radius="28dp"
+        app:cnb_menuResource="@menu/bottom_nav"
+        android:background="@android:color/transparent">
+
+
+    </com.ismaeldivita.chipnavigation.ChipNavigationBar>
+
+    <com.andremion.counterfab.CounterFab
+        android:id="@+id/fabCart"
+        android:transitionName="cart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:badgeBackgroundColor="@color/white"
+        app:badgeTextColor="@color/orange"
+        app:badgePosition="RightTop"
+        android:src="@drawable/ic_cart"
+        app:backgroundTint="@color/orange"
+        app:layout_anchor="@id/bottom_app_bar" />
+
+<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:id="@+id/fabCart"-->
+<!--        android:src="@drawable/ic_cart"-->
+<!--        app:layout_anchor="@id/bottom_app_bar"/>-->
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

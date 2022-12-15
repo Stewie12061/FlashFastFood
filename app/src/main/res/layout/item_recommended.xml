@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingBottom="16dp"
+    android:layout_margin="8dp"
+    android:clipChildren="false"
+    android:clipToPadding="false">
+    <androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardElevation="8dp"
+        app:cardCornerRadius="20dp"
+        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+        android:theme="@android:style/ThemeOverlay.Material.Light"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="300dp"
+            android:orientation="vertical">
+            <ImageView
+                android:id="@+id/itemImg"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ham"
+                android:background="@drawable/fastfoodbg"
+                android:transitionName="img" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:paddingBottom="8dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/itemName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Item name"
+                    android:textSize="18dp"
+                    android:textColor="@color/orange"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/montserrat"
+                    android:drawableStart="@drawable/heart_small"
+                    android:drawablePadding="8dp"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_weight="1"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/txtrating"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="Rating: "
+                        android:gravity="center"
+                        android:textSize="16dp"
+                        android:drawablePadding="5dp"
+                        android:textColor="@color/black"
+                        android:fontFamily="@font/montserrat"/>
+                    <TextView
+                        android:id="@+id/itemRating"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="8"
+                        android:textSize="18dp"
+                        android:drawableStart="@drawable/star"
+                        android:drawablePadding="5dp"
+                        android:textColor="@color/black"
+                        android:fontFamily="@font/montserrat"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:text="."
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:textSize="30dp"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
+                        android:gravity="center" />
+                    <TextView
+                        android:id="@+id/itemPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="50"
+                        android:textSize="18dp"
+                        android:drawableEnd="@drawable/dollar"
+                        android:textColor="@color/black"
+                        android:fontFamily="@font/montserrat"/>
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>

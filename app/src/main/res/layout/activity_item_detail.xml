@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ItemDetailActivity">
+
+    <LinearLayout
+        android:id="@+id/linearTop"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/black"
+        android:clipToPadding="false"
+        android:clipChildren="false"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/backprevious"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="16dp"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
+            android:theme="@android:style/ThemeOverlay.Material.Light"
+            android:drawableStart="@drawable/arrow_white" />
+
+        <TextView
+            android:id="@+id/itemDetailRating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/bg_rounded_white"
+            android:drawableEnd="@drawable/star"
+            android:drawablePadding="5dp"
+            android:fontFamily="@font/airbnb_cereal"
+            android:padding="5dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="Item Rating"
+            android:textColor="@color/black"
+            android:textSize="18dp"
+            android:transitionName="rating" />
+
+        <com.varunest.sparkbutton.SparkButton
+            android:id="@+id/addFav"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="16dp"
+            app:sparkbutton_animationSpeed="1.5"
+            android:layout_gravity="center"
+            app:sparkbutton_activeImage="@drawable/ic_favorite_red"
+            app:sparkbutton_inActiveImage="@drawable/ic_favorite_white"
+            app:sparkbutton_iconSize="40dp"
+            app:sparkbutton_primaryColor="@color/orange"
+            app:sparkbutton_secondaryColor="@color/white" />
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/linearTop"
+        android:scrollbars="none">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginEnd="0dp"
+                android:layout_marginBottom="0dp"
+                android:paddingBottom="100dp">
+
+                <com.denzcoskun.imageslider.ImageSlider
+                    android:id="@+id/imageSlider"
+                    android:layout_width="wrap_content"
+                    android:layout_height="300dp"
+                    android:background="@drawable/fastfoodbg"
+                    android:transitionName="img"
+                    app:iss_auto_cycle="true"
+                    app:iss_delay="0"
+                    app:iss_indicator_align="top"
+                    app:iss_period="3000"
+                    app:iss_selected_dot="@drawable/default_selected_dot"
+                    app:iss_unselected_dot="@drawable/default_unselected_dot"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+                <ImageView
+                    android:id="@+id/itemDetailImg"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/fastfoodbg"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <RelativeLayout
+                    android:id="@+id/relative2"
+                    android:layout_width="350dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="250dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="350dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginBottom="24dp"
+                        android:backgroundTint="@color/white"
+                        android:paddingBottom="10dp"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="8dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_margin="5dp"
+                            android:orientation="vertical"
+                            android:padding="8dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/itemDetailName"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/airbnb_cereal"
+                                    android:text="Item detail name"
+                                    android:textAlignment="center"
+                                    android:textColor="@color/orange"
+                                    android:textSize="30dp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                            <View
+                                android:id="@+id/lnln"
+                                android:layout_width="150dp"
+                                android:layout_height="1dp"
+                                android:layout_gravity="center"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginBottom="8dp"
+                                android:background="@android:color/darker_gray" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/itemDetailPrice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:drawableEnd="@drawable/dollar_24"
+                                    android:drawableTint="@color/orange"
+                                    android:fontFamily="@font/airbnb_cereal"
+                                    android:text="50"
+                                    android:textAlignment="textEnd"
+                                    android:textColor="@color/orange"
+                                    android:textSize="30dp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginTop="16dp"
+                                android:layout_marginBottom="8dp"
+                                android:orientation="horizontal">
+
+                                <ImageButton
+                                    android:id="@+id/btnMinus"
+                                    android:layout_width="64dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    app:tint="@color/orange"
+                                    android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                                    android:theme="@android:style/ThemeOverlay.Material.Light"
+                                    android:background="@drawable/minus" />
+
+                                <androidx.cardview.widget.CardView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    app:cardCornerRadius="8dp">
+
+                                    <TextView
+                                        android:id="@+id/quantity"
+                                        android:layout_width="50dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_marginStart="5dp"
+                                        android:layout_marginEnd="5dp"
+                                        android:fontFamily="@font/airbnb_cereal"
+                                        android:gravity="center"
+                                        android:padding="5dp"
+                                        android:paddingStart="10dp"
+                                        android:paddingEnd="10dp"
+                                        android:text="1"
+                                        android:textAlignment="center"
+                                        android:textColor="@color/orange"
+                                        android:textSize="24dp"
+                                        android:textStyle="bold" />
+                                </androidx.cardview.widget.CardView>
+
+
+                                <ImageButton
+                                    android:id="@+id/btnPlus"
+                                    android:layout_width="64dp"
+                                    android:foreground="?android:attr/selectableItemBackground"
+                                    android:theme="@android:style/ThemeOverlay.Material.Light"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:background="@drawable/plus" />
+                            </LinearLayout>
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+                </RelativeLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/ln2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="bottom"
+                    android:paddingStart="10dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/relative2">
+
+                    <TextView
+                        android:id="@+id/itemDetailReviewQuantity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Item review"
+                        android:drawableStart="@drawable/review"
+                        android:textSize="16dp"
+                        android:textColor="@color/black"
+                        android:fontFamily="@font/montserrat"
+                        android:drawablePadding="8dp"/>
+
+                    <TextView
+                        android:id="@+id/btnShowReview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingEnd="10dp"
+                        android:text="See reviews"
+                        android:gravity="end"
+                        android:textSize="16dp"
+                        android:textColor="@color/orange"
+                        android:fontFamily="@font/montserrat"
+                        android:drawablePadding="8dp"/>
+
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/ln"
+                    android:layout_width="300dp"
+                    android:layout_height="1dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="16dp"
+                    android:background="@android:color/darker_gray"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ln2" />
+
+                <TextView
+                    android:id="@+id/itemDetailDes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:drawableStart="@drawable/star"
+                    android:drawableEnd="@drawable/star"
+                    android:drawablePadding="10dp"
+                    android:drawableTint="@color/orange"
+                    android:fontFamily="@font/antic"
+                    android:padding="10dp"
+                    android:text="Thịt bò chứa nhiều protein và khoáng chất, vitamin kết hợp với rau củ tươi nhiều chất xơ tốt cho sức khỏe, do đó một chiếc Hamburger bò là lựa chọn lý tưởng cho một ăn tối đủ chất mà nhanh gọn, phù hợp với những người bận rộn."
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="18dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ln" />
+
+                <View
+                    android:id="@+id/ln3"
+                    android:layout_width="300dp"
+                    android:layout_height="1dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="16dp"
+                    android:background="@android:color/darker_gray"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/itemDetailDes" />
+
+                <TextView
+                    android:id="@+id/txt2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Recommended Menu"
+                    android:gravity="center"
+                    android:drawableStart="@drawable/recommned"
+                    android:textSize="20dp"
+                    android:layout_marginTop="16dp"
+                    android:textColor="@color/orange"
+                    android:fontFamily="@font/airbnb_cereal"
+                    android:textStyle="bold"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:padding="10dp"
+                    android:drawableEnd="@drawable/recommned"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ln3"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvShowAllItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/txt2" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </RelativeLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/linearBottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/orange"
+        android:clipToPadding="false"
+        android:clipChildren="false"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="16dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="18dp"
+                    android:text="Total price: "/>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginBottom="5dp"
+                    app:cardElevation="3dp"
+                    app:cardCornerRadius="10dp">
+
+                <TextView
+                    android:id="@+id/itemDetailTotalPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="50"
+                    android:drawableEnd="@drawable/dollar"
+                    android:drawableTint="@color/orange"
+                    android:transitionName="price"
+                    android:textColor="@color/orange"
+                    android:padding="10dp"
+                    android:textSize="20dp"
+                    android:fontFamily="@font/airbnb_cereal"
+                    android:textStyle="bold"/>
+                </androidx.cardview.widget.CardView>
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/btnAddToCart"
+                    android:layout_width="150dp"
+                    android:clickable="true"
+                    android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                    android:theme="@android:style/ThemeOverlay.Material.Light"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:backgroundTint="@color/white"
+                    app:cardCornerRadius="15dp"
+                    app:cardElevation="8dp">
+
+                    <TextView
+                        android:id="@+id/addToCart"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textSize="20dp"
+                        android:gravity="center"
+                        android:fontFamily="@font/airbnb_cereal"
+                        android:text="Add to cart"
+                        android:textStyle="bold"
+                        android:textColor="@color/orange" />
+
+                </androidx.cardview.widget.CardView>
+            </RelativeLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <com.andremion.counterfab.CounterFab
+        android:id="@+id/detailFabCart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:transitionName="cart"
+        app:badgeBackgroundColor="@color/white"
+        app:badgeTextColor="@color/orange"
+        app:badgePosition="RightTop"
+        android:src="@drawable/ic_cart"
+        app:backgroundTint="@color/orange"
+        android:layout_marginBottom="80dp"
+        android:layout_marginEnd="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"/>
+
+
+</RelativeLayout>

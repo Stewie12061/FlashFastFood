@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/mnuHome"
+        android:icon="@drawable/ic_foodhome"
+        app:cnb_iconColor="@color/white"
+        android:title="Home"/>
+    <item
+        android:id="@+id/mnuOrder"
+        android:icon="@drawable/ic_order"
+        app:cnb_iconColor="@color/white"
+        android:title="Order"/>
+
+    <item
+        android:id="@+id/mnuFavorite"
+        android:icon="@drawable/ic_favorite"
+        app:cnb_iconColor="@color/white"
+        android:title="Favorite" />
+    <item
+        android:id="@+id/mnuProfile"
+        android:icon="@drawable/ic_account"
+        app:cnb_iconColor="@color/white"
+        android:title="Profile" />
+    <item
+        android:id="@+id/mnuCart"
+        android:title=""
+        android:enabled="false"
+        app:showAsAction="ifRoom"/>
+</menu>
