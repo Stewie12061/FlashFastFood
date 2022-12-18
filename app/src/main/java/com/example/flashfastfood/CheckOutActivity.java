@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -18,6 +19,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +35,7 @@ import com.example.flashfastfood.Adapter.DiscountViewHolder;
 import com.example.flashfastfood.Adapter.SpinnerAdapter;
 import com.example.flashfastfood.Data.Cart;
 import com.example.flashfastfood.Data.Discount;
+import com.example.flashfastfood.Data.Order;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -66,7 +69,7 @@ public class CheckOutActivity extends AppCompatActivity implements AdapterView.O
     FirebaseRecyclerAdapter<Discount, DiscountViewHolder> adapterDiscount;
 
     FirebaseDatabase firebaseDatabase;
-    DatabaseReference cartRef, discountRef, discountUsedRef;
+    DatabaseReference cartRef, discountRef, discountUsedRef, orderRef;
     String currentUserId, address;
     Cart cart;
     Discount discount;
@@ -74,13 +77,18 @@ public class CheckOutActivity extends AppCompatActivity implements AdapterView.O
     RecyclerView rvOrderView, rvDiscount;
 
     ArrayList<String> arrayList = null;
+    ArrayList<String> arrayList2;
     String countItemInCart;
+    Order order;
 
     CardView btnOrder;
     Spinner spinner;
     String[] payMentMethod={"Cash on delivery","Pay with card","Momo","Zalo Pay"};
     int flags[] = {R.drawable.cash, R.drawable.credit_card, R.drawable.momo, R.drawable.zalo};
     int totalPrice2, totalPrice1;
+    String paymentMethodstr;
+
+    String itemIdForCreate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +117,7 @@ public class CheckOutActivity extends AppCompatActivity implements AdapterView.O
 
         cart = new Cart();
         discount = new Discount();
+        order = new Order();
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         currentUserId = user.getUid();
@@ -117,6 +126,7 @@ public class CheckOutActivity extends AppCompatActivity implements AdapterView.O
         cartRef = firebaseDatabase.getReference("Shopping Cart");
         discountRef = firebaseDatabase.getReference("Discount");
         discountUsedRef = firebaseDatabase.getReference("Discount Used");
+        orderRef = firebaseDatabase.getReference("Order");
 
 
         rvOrderView = findViewById(R.id.rvOrderItem);
@@ -176,24 +186,21 @@ public class CheckOutActivity extends AppCompatActivity implements AdapterView.O
         spinnerDrawable.setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
         spinner.setBackground(spinnerDrawable);
 
+
         btnOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (orderAddress.getText().toString().equals("Pick your deliver address")){
-                    Toast.makeText(CheckOutActivity.this, "You have to pick deliver address!", Toast.LENGTH_SHORT).show();
-                    orderAddress.setError("You have to pick deliver address!");
-                    orderAddress.requestFocus();
-                }else {
-
-                }
+                paymentMethodstr = payMentMethod[spinner.getSelectedItemPosition()];
+                getNewItemKeyForCreate();
+                placeOrder();
             }
         });
-
     }
 
     //Performing action onItemSelected and onNothing selected
     @Override
-    public void onItemSelected(AdapterView<?> arg0, View arg1, int position,long id) {
+    public void onItemSelected(AdapterView<?> parent, View arg1, int position,long id) {
+        paymentMethodstr = payMentMethod[position];
     }
 
     @Override
@@ -201,28 +208,71 @@ public class CheckOutActivity extends AppCompatActivity implements AdapterView.O
         // TODO Auto-generated method stub
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        loadCartView();
-        getCartQuantity();
-        getDiscountView();
+    private void placeOrder(){
+        if (orderAddress.getText().toString().equals("Pick your deliver address")){
+            Toast.makeText(CheckOutActivity.this, "You have to pick deliver address!", Toast.LENGTH_SHORT).show();
+            orderAddress.setError("You have to pick deliver address!");
+            orderAddress.requestFocus();
+        }else {
+            order.setOrderDate(saveCurrentDate);
+            order.setOrderTime(saveCurrentTime);
+            order.setOrderLocation(orderAddress.getText().toString());
+            order.setOrderTotalPrice(txtFinalPrice.getText().toString());
+            order.setOrderPayment(paymentMethodstr);
+            order.setOrderItemQuantity(txtOrderItemQuantity.getText().toString());
+            order.setOrderStatus("Processing");
+
+            orderRef.child(currentUserId).child(itemIdForCreate).setValue(order).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void unused) {
+                    Dialog dialog = new Dialog(CheckOutActivity.this,R.style.CustomDialog);
+                    dialog.setContentView(R.layout.dialog_order_loading);
+                    dialog.show();
+                    new Handler().postDelayed(new Runnable() {
+                                                  @Override
+                                                  public void run() {
+                                                      Intent intent = new Intent(CheckOutActivity.this,MainActivity.class);
+                                                      intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                      int idOrder = 2;
+                                                      String IDorder = Integer.toString(idOrder);
+                                                      intent.putExtra("Fragment",IDorder);
+
+//                                                      cartRef.child(currentUserId).removeValue();
+                                                      dialog.dismiss();
+                                                      startActivity(intent);
+                                                  }
+                                              }, 5000
+                    );
+                }
+
+            });
+
+        }
     }
 
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        loadCartView();
-        getCartQuantity();
-        getDiscountView();
-    }
+    private void getNewItemKeyForCreate() {
+        orderRef.child(currentUserId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                arrayList2 = new ArrayList<String>();
+                for (DataSnapshot dataSnapshot:snapshot.getChildren()){
+                    arrayList2.add(dataSnapshot.getKey());
+                }
+                //get last itemId in item and create id for new item
+                if (arrayList2.size()<1){
+                    itemIdForCreate = String.valueOf(1);
+                }else {
+                    String itemidString = arrayList2.get(arrayList2.size()-1);
+                    int itemidInt = Integer.parseInt(itemidString) +1;
+                    itemIdForCreate = Integer.toString(itemidInt);
+                }
+            }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        loadCartView();
-        getCartQuantity();
-        getDiscountView();
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void getDiscountView() {
@@ -520,6 +570,31 @@ public class CheckOutActivity extends AppCompatActivity implements AdapterView.O
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_from_top,R.anim.slide_to_bottom);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        loadCartView();
+        getCartQuantity();
+        getDiscountView();
+        getNewItemKeyForCreate();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        loadCartView();
+        getCartQuantity();
+        getDiscountView();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadCartView();
+        getCartQuantity();
+        getDiscountView();
     }
 
 

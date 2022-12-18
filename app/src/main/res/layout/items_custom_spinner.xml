@@ -21,7 +21,7 @@
         android:layout_gravity="center"
         android:padding="10dp"
         android:text="Demo"
-        android:gravity="center_vertical"
+        android:gravity="center"
         android:textColor="@color/black"
         android:fontFamily="@font/airbnb_cereal"
         android:textStyle="bold"

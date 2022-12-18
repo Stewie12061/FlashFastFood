@@ -152,7 +152,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/airbnb_cereal"
-                            android:text="2"
+                            android:text="0"
                             android:textColor="@color/white"
                             android:textSize="18dp"
                             android:textStyle="bold"
@@ -189,13 +189,13 @@
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:layout_marginEnd="16dp"
-                        android:text="50"
+                        android:drawableEnd="@drawable/dollar"
+                        android:drawableTint="@color/white"
+                        android:fontFamily="@font/airbnb_cereal"
+                        android:text="0"
                         android:textColor="@color/white"
                         android:textSize="20dp"
-                        android:textStyle="bold"
-                        android:fontFamily="@font/airbnb_cereal"
-                        android:drawableEnd="@drawable/dollar"
-                        android:drawableTint="@color/white"/>
+                        android:textStyle="bold" />
 
                 </RelativeLayout>
 

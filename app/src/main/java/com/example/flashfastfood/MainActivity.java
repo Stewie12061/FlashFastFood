@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     DatabaseReference cartRef;
     ArrayList<String> arrayList = null;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,7 +65,22 @@ public class MainActivity extends AppCompatActivity {
         idIntent = getIntent().getStringExtra("Fragment");
 
         chipNavigationBar = findViewById(R.id.chipNavBar);
-        chipNavigationBar.setItemSelected(R.id.mnuHome,true);
+
+        if (idIntent==null){
+            chipNavigationBar.setItemSelected(R.id.mnuHome,true);
+        }else {
+            int ID = Integer.parseInt(idIntent);
+            if (ID==2){
+                chipNavigationBar.setItemSelected(R.id.mnuOrder,true);
+                fragment = new OrderFragment();
+                fragmentManager = getSupportFragmentManager();
+                fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.content, fragment);
+                fragmentTransaction.commit();
+                idIntent = null;
+            }
+
+        }
 
         if (fragment == null){
             fragmentManager = getSupportFragmentManager();
