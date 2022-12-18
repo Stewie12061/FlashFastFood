@@ -4,21 +4,13 @@ package com.example.flashfastfood;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,15 +18,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.example.flashfastfood.Adapter.CartViewHolder;
+import com.example.flashfastfood.Adapter.DiscountViewHolder;
 import com.example.flashfastfood.Data.Cart;
+import com.example.flashfastfood.Data.Discount;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -45,13 +34,11 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
-import java.util.Locale;
+
 
 public class CheckOutActivity extends AppCompatActivity {
     String saveCurrentDate, saveCurrentTime, orderItemQuantity, orderPrice, orderShippingCharges, orderTotalPrice;
@@ -62,10 +49,14 @@ public class CheckOutActivity extends AppCompatActivity {
 
     FirebaseRecyclerOptions<Cart> options;
     FirebaseRecyclerAdapter<Cart, CartViewHolder> adapter;
+    FirebaseRecyclerOptions<Discount> optionsDiscount;
+    FirebaseRecyclerAdapter<Discount, DiscountViewHolder> adapterDiscount;
+
     FirebaseDatabase firebaseDatabase;
-    DatabaseReference cartRef;
+    DatabaseReference cartRef, discountRef, discountUsedRef;
     String currentUserId, address;
     Cart cart;
+    Discount discount;
 
     RecyclerView rvOrderView, rvDiscount;
 
@@ -86,12 +77,16 @@ public class CheckOutActivity extends AppCompatActivity {
         });
 
         cart = new Cart();
+        discount = new Discount();
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         currentUserId = user.getUid();
 
         firebaseDatabase = FirebaseDatabase.getInstance("https://flashfastfood-81fee-default-rtdb.asia-southeast1.firebasedatabase.app");
         cartRef = firebaseDatabase.getReference("Shopping Cart");
+        discountRef = firebaseDatabase.getReference("Discount");
+        discountUsedRef = firebaseDatabase.getReference("Discount Used");
+
 
         rvOrderView = findViewById(R.id.rvOrderItem);
         rvOrderView.setLayoutManager(new LinearLayoutManager(CheckOutActivity.this,LinearLayoutManager.VERTICAL,false));
@@ -101,9 +96,8 @@ public class CheckOutActivity extends AppCompatActivity {
 
         Calendar calendar = Calendar.getInstance();
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd-yyyy");
         saveCurrentDate = simpleDateFormat.format(calendar.getTime());
-
         SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("HH:mm a");
         saveCurrentTime = simpleTimeFormat.format(calendar.getTime());
 
@@ -157,6 +151,70 @@ public class CheckOutActivity extends AppCompatActivity {
         super.onStart();
         loadCartView();
         getCartQuantity();
+        getDiscountView();
+    }
+
+    private void getDiscountView() {
+        Query query = discountRef;
+
+        optionsDiscount =new FirebaseRecyclerOptions.Builder<Discount>().setQuery(query,Discount.class).build();
+
+        adapterDiscount = new FirebaseRecyclerAdapter<Discount, DiscountViewHolder>(optionsDiscount) {
+            @Override
+            protected void onBindViewHolder(@NonNull DiscountViewHolder holder, int position, @NonNull Discount model) {
+                String postKey2 = getRef(position).getKey();
+
+                discountRef.child(postKey2).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        String nameDiscount = snapshot.child("name").getValue().toString();
+                        String desDiscount = snapshot.child("des").getValue().toString();
+                        String expDayDiscount = snapshot.child("expDay").getValue().toString();
+                        String valueDiscount = snapshot.child("value").getValue().toString();
+                        String typeDiscount = snapshot.child("type").getValue().toString();
+
+                        holder.discountName.setText(nameDiscount);
+                        holder.discountExpDay.setText(expDayDiscount);
+                        holder.discountDes.setText(desDiscount);
+
+                        holder.discountUseCheck(postKey2);
+                        holder.btnUseorCancel.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (holder.isInMyDiscountUsed){
+                                    discountUsedRef.child(currentUserId).child(postKey2).removeValue();
+                                }else {
+                                    discount.setDes(desDiscount);
+                                    discount.setExpDay(expDayDiscount);
+                                    discount.setType(typeDiscount);
+                                    discount.setValue(Integer.parseInt(valueDiscount));
+                                    discount.setName(nameDiscount);
+                                    discountUsedRef.child(currentUserId).removeValue();
+                                    discountUsedRef.child(currentUserId).child(postKey2).setValue(discount);
+                                }
+                            }
+                        });
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            }
+
+            @NonNull
+            @Override
+            public DiscountViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_discount, parent,false);
+                DiscountViewHolder viewHolder = new DiscountViewHolder(view);
+                return viewHolder;
+            }
+        };
+
+        rvDiscount.setAdapter(adapterDiscount);
+        adapterDiscount.startListening();
     }
 
     private void loadCartView() {
