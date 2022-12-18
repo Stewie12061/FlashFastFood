@@ -20,6 +20,10 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Layout;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.AlignmentSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +34,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.L;
 import com.example.flashfastfood.Adapter.CartViewHolder;
 import com.example.flashfastfood.Adapter.DiscountViewHolder;
 import com.example.flashfastfood.Adapter.SpinnerAdapter;
@@ -38,6 +43,7 @@ import com.example.flashfastfood.Data.Discount;
 import com.example.flashfastfood.Data.Order;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -213,41 +219,78 @@ public class CheckOutActivity extends AppCompatActivity implements AdapterView.O
             Toast.makeText(CheckOutActivity.this, "You have to pick deliver address!", Toast.LENGTH_SHORT).show();
             orderAddress.setError("You have to pick deliver address!");
             orderAddress.requestFocus();
-        }else {
-            order.setOrderDate(saveCurrentDate);
-            order.setOrderTime(saveCurrentTime);
-            order.setOrderLocation(orderAddress.getText().toString());
-            order.setOrderTotalPrice(txtFinalPrice.getText().toString());
-            order.setOrderPayment(paymentMethodstr);
-            order.setOrderItemQuantity(txtOrderItemQuantity.getText().toString());
-            order.setOrderStatus("Processing");
+        }else if (paymentMethodstr.equals("Pay with card")){
+            payWithCard();
+        }else if (paymentMethodstr.equals("Cash on delivery")){
+            payOnCash();
+        }
+        else {
+            String text = "Your chosen payment method is not available at the moment";
+            Spannable centeredText = new SpannableString(text);
+            centeredText.setSpan(
+                    new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
+                    0, text.length() - 1,
+                    Spannable.SPAN_INCLUSIVE_INCLUSIVE
+            );
 
-            orderRef.child(currentUserId).child(itemIdForCreate).setValue(order).addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void unused) {
-                    Dialog dialog = new Dialog(CheckOutActivity.this,R.style.CustomDialog);
-                    dialog.setContentView(R.layout.dialog_order_loading);
-                    dialog.show();
-                    new Handler().postDelayed(new Runnable() {
-                                                  @Override
-                                                  public void run() {
-                                                      Intent intent = new Intent(CheckOutActivity.this,MainActivity.class);
-                                                      intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                                      int idOrder = 2;
-                                                      String IDorder = Integer.toString(idOrder);
-                                                      intent.putExtra("Fragment",IDorder);
-
-//                                                      cartRef.child(currentUserId).removeValue();
-                                                      dialog.dismiss();
-                                                      startActivity(intent);
-                                                  }
-                                              }, 5000
-                    );
-                }
-
-            });
+            Toast.makeText(CheckOutActivity.this, centeredText, Toast.LENGTH_SHORT).show();
 
         }
+    }
+
+    private void payOnCash(){
+        order.setOrderDate(saveCurrentDate);
+        order.setOrderTime(saveCurrentTime);
+        order.setOrderLocation(orderAddress.getText().toString());
+        order.setOrderTotalPrice(txtFinalPrice.getText().toString());
+        order.setOrderPayment(paymentMethodstr);
+        order.setOrderItemQuantity(txtOrderItemQuantity.getText().toString());
+        order.setOrderStatus("Processing");
+
+        orderRef.child(currentUserId).child(itemIdForCreate).setValue(order).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Dialog dialog = new Dialog(CheckOutActivity.this,R.style.CustomDialog);
+                dialog.setContentView(R.layout.dialog_order_loading);
+                dialog.show();
+                new Handler().postDelayed(new Runnable() {
+                                              @Override
+                                              public void run() {
+                                                  Intent intent = new Intent(CheckOutActivity.this,MainActivity.class);
+                                                  intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                  int idOrder = 2;
+                                                  String IDorder = Integer.toString(idOrder);
+                                                  intent.putExtra("Fragment",IDorder);
+
+                                                  //delete cart when create order
+                                                  cartRef.child(currentUserId).removeValue();
+                                                  dialog.dismiss();
+                                                  startActivity(intent);
+                                              }
+                                          }, 5000
+                );
+            }
+
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(CheckOutActivity.this,"Can't place Order",Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void payWithCard(){
+        Intent intent =new Intent(CheckOutActivity.this, PaymentActivity.class);
+
+        intent.putExtra("orderTime",saveCurrentTime);
+        intent.putExtra("orderDate",saveCurrentDate);
+        intent.putExtra("orderAddress", orderAddress.getText().toString());
+        intent.putExtra("orderPrice",txtFinalPrice.getText().toString());
+        intent.putExtra("orderPayment",paymentMethodstr);
+        intent.putExtra("orderItemQuantity",txtOrderItemQuantity.getText().toString());
+        intent.putExtra("orderStatus","Processing");
+        intent.putExtra("orderItem",itemIdForCreate);
+        startActivity(intent);
     }
 
     private void getNewItemKeyForCreate() {
@@ -293,6 +336,7 @@ public class CheckOutActivity extends AppCompatActivity implements AdapterView.O
                         String expDayDiscount = snapshot.child("expDay").getValue().toString();
                         String valueDiscount = snapshot.child("value").getValue().toString();
                         String typeDiscount = snapshot.child("type").getValue().toString();
+                        String condition = snapshot.child("condition").getValue().toString();
 
                         holder.discountName.setText(nameDiscount);
                         holder.discountExpDay.setText(expDayDiscount);
@@ -302,50 +346,64 @@ public class CheckOutActivity extends AppCompatActivity implements AdapterView.O
                         holder.btnUseorCancel.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                if (holder.isInMyDiscountUsed){
-                                    discountUsedRef.child(currentUserId).child(postKey2).removeValue();
-                                    txtDiscountName.setText("Discount");
-                                    txtOldPrice.setText("Total");
-                                    txtOldPrice.setForeground(null);
-                                    txtFinalPrice.setText(Integer.toString(totalPrice2));
-                                }else {
-                                    discount.setDes(desDiscount);
-                                    discount.setExpDay(expDayDiscount);
-                                    discount.setType(typeDiscount);
-                                    discount.setValue(Integer.parseInt(valueDiscount));
-                                    discount.setName(nameDiscount);
-                                    discountUsedRef.child(currentUserId).removeValue();
-                                    discountUsedRef.child(currentUserId).child(postKey2).setValue(discount).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void unused) {
-                                            discountUsedRef.child(currentUserId).child(postKey2).addListenerForSingleValueEvent(new ValueEventListener() {
-                                                @Override
-                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                    String discountName = snapshot.child("name").getValue().toString();
-                                                    txtDiscountName.setText(discountName);
-                                                    txtOldPrice.setText(Integer.toString(totalPrice2));
-                                                    txtOldPrice.setForeground(getResources().getDrawable(R.drawable.strikethrough_text));
+                                if (Integer.parseInt(condition)<totalPrice2){
+                                    if (holder.isInMyDiscountUsed){
+                                        discountUsedRef.child(currentUserId).child(postKey2).removeValue();
+                                        txtDiscountName.setText("Discount");
+                                        txtOldPrice.setText("Total");
+                                        txtOldPrice.setForeground(null);
+                                        txtFinalPrice.setText(Integer.toString(totalPrice2));
+                                    }else {
+                                        discount.setDes(desDiscount);
+                                        discount.setExpDay(expDayDiscount);
+                                        discount.setType(typeDiscount);
+                                        discount.setValue(Integer.parseInt(valueDiscount));
+                                        discount.setName(nameDiscount);
+                                        discountUsedRef.child(currentUserId).removeValue();
+                                        discountUsedRef.child(currentUserId).child(postKey2).setValue(discount).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void unused) {
+                                                discountUsedRef.child(currentUserId).child(postKey2).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                        String discountName = snapshot.child("name").getValue().toString();
+                                                        txtDiscountName.setText(discountName);
+                                                        txtOldPrice.setText(Integer.toString(totalPrice2));
+                                                        txtOldPrice.setForeground(getResources().getDrawable(R.drawable.strikethrough_text));
 
-                                                    double totalPrice3 = Double.parseDouble(Integer.toString(totalPrice2));
-                                                    String discountType = snapshot.child("type").getValue().toString();
-                                                    if (discountType.equals("amount")){
-                                                        totalPrice3 = totalPrice3 - Double.parseDouble(snapshot.child("value").getValue().toString());
-                                                        String price = Double.toString(totalPrice3);
-                                                        int i = (int) totalPrice3;
-                                                        txtFinalPrice.setText(Integer.toString(i));
-                                                    }else {
-                                                        totalPrice3 = totalPrice3 - (totalPrice3*(Double.parseDouble(snapshot.child("value").getValue().toString()))/100);
-                                                        txtFinalPrice.setText(Double.toString(totalPrice3));
+                                                        double totalPrice3 = Double.parseDouble(Integer.toString(totalPrice2));
+                                                        String discountType = snapshot.child("type").getValue().toString();
+                                                        if (discountType.equals("amount")){
+                                                            totalPrice3 = totalPrice3 - Double.parseDouble(snapshot.child("value").getValue().toString());
+                                                            int i = (int) totalPrice3;
+                                                            txtFinalPrice.setText(Integer.toString(i));
+                                                        }else {
+                                                            totalPrice3 = totalPrice3 - (totalPrice3*(Double.parseDouble(snapshot.child("value").getValue().toString()))/100);
+                                                            txtFinalPrice.setText(Double.toString(totalPrice3));
+                                                        }
                                                     }
-                                                }
 
-                                                @Override
-                                                public void onCancelled(@NonNull DatabaseError error) {
-                                                }
-                                            });
-                                        }
-                                    });
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError error) {
+                                                    }
+                                                });
+                                            }
+                                        });
+
+
+                                    }
+                                }else {
+                                    String text = "Your total price is not enough to use this coupon";
+                                    Spannable centeredText = new SpannableString(text);
+                                    centeredText.setSpan(
+                                            new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
+                                            0, text.length() - 1,
+                                            Spannable.SPAN_INCLUSIVE_INCLUSIVE
+                                    );
+                                    Toast.makeText(CheckOutActivity.this, centeredText, Toast.LENGTH_SHORT).show();
                                 }
+
+
 
                             }
                         });
@@ -507,7 +565,8 @@ public class CheckOutActivity extends AppCompatActivity implements AdapterView.O
                                                 String discountType = dataSnapshot.child("type").getValue().toString();
                                                 if (discountType.equals("amount")){
                                                     totalPrice3 = totalPrice3 - Double.parseDouble(dataSnapshot.child("value").getValue().toString());
-                                                    txtFinalPrice.setText(Double.toString(totalPrice3));
+                                                    int i = (int) totalPrice3;
+                                                    txtFinalPrice.setText(Integer.toString(i));
                                                 }else {
                                                     totalPrice3 = totalPrice3 - (totalPrice3*(Double.parseDouble(dataSnapshot.child("value").getValue().toString()))/100);
                                                     txtFinalPrice.setText(Double.toString(totalPrice3));

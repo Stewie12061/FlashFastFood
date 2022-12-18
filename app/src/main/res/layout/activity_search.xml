@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SearchActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarSearch"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/black"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/backprevious"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
+            android:theme="@android:style/ThemeOverlay.Material.Light"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:drawableStart="@drawable/arrow_white" />
+
+        <LinearLayout
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/appname1"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:text="FLASH"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:fontFamily="@font/bangers"
+                android:textSize="26dp"
+                android:layout_gravity="center"/>
+            <TextView
+                android:id="@+id/appname2"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:text="FAST"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:fontFamily="@font/bangers"
+                android:textSize="26dp"
+                android:layout_gravity="center"/>
+            <TextView
+                android:id="@+id/appname3"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:text="FOOD"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:fontFamily="@font/bangers"
+                android:textSize="26dp"
+                android:layout_gravity="center"/>
+
+
+        </LinearLayout>
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchView"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_marginEnd="16dp"
+            android:layout_gravity="end"
+            android:background="@drawable/bg_rounded_white"/>
+    </androidx.appcompat.widget.Toolbar>
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/searchWaiting"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="60dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbarSearch"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/searchwaiting" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSearch"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="60dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbarSearch" />
+
+    <com.andremion.counterfab.CounterFab
+        android:id="@+id/itemFabCart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:transitionName="cart"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="8dp"
+        android:src="@drawable/ic_cart"
+        app:backgroundTint="@color/orange"
+        app:badgeBackgroundColor="@color/white"
+        app:badgePosition="RightTop"
+        app:badgeTextColor="@color/orange"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

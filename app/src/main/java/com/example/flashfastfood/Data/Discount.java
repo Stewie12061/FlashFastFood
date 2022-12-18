@@ -1,17 +1,26 @@
 package com.example.flashfastfood.Data;
 
 public class Discount {
-    String name, des, type, expDay;
+    String name, des, type, expDay, condition;
     int value;
 
     public Discount(){}
 
-    public Discount(String name, String des, String type, String expDay, int value) {
+    public Discount(String name, String des, String type, String expDay, int value,String condition) {
         this.name = name;
         this.des = des;
         this.type = type;
         this.expDay = expDay;
         this.value = value;
+        this.condition = condition;
+    }
+
+    public String getCondition() {
+        return condition;
+    }
+
+    public void setCondition(String condition) {
+        this.condition = condition;
     }
 
     public String getName() {

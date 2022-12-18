@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +30,7 @@ import com.example.flashfastfood.Data.FoodCategories;
 import com.example.flashfastfood.ItemClickListener;
 import com.example.flashfastfood.ItemsActivity;
 import com.example.flashfastfood.R;
+import com.example.flashfastfood.SearchActivity;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -65,6 +67,8 @@ public class HomeFragment extends Fragment {
 
     private GoogleMap mMap;
     Geocoder geocoder;
+
+    Button btnSearch;
 
     FirebaseRecyclerAdapter<FoodCategories, CategoryTypeViewHolder> adapterCategories;
 
@@ -161,6 +165,15 @@ public class HomeFragment extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), ItemsActivity.class);
                 getActivity().overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+                startActivity(intent);
+            }
+        });
+
+        btnSearch = view.findViewById(R.id.searchBtn);
+        btnSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), SearchActivity.class);
                 startActivity(intent);
             }
         });
