@@ -24,7 +24,7 @@ public class DiscountViewHolder extends RecyclerView.ViewHolder{
     public TextView discountName, discountDes, discountExpDay, discountUseCancelText;
     public DatabaseReference discountUsedRef;
     public FirebaseDatabase firebaseDatabase;
-    public boolean isInMyDiscountUsed = false;
+    public boolean isInMyDiscountUsed = true;
 
     public DiscountViewHolder(@NonNull View itemView) {
         super(itemView);

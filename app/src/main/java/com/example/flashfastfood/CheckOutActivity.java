@@ -3,6 +3,7 @@ package com.example.flashfastfood;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -10,20 +11,31 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.example.flashfastfood.Adapter.CartViewHolder;
 import com.example.flashfastfood.Adapter.DiscountViewHolder;
+import com.example.flashfastfood.Adapter.SpinnerAdapter;
 import com.example.flashfastfood.Data.Cart;
 import com.example.flashfastfood.Data.Discount;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -40,10 +52,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 
-public class CheckOutActivity extends AppCompatActivity {
+public class CheckOutActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     String saveCurrentDate, saveCurrentTime, orderItemQuantity, orderPrice, orderShippingCharges, orderTotalPrice;
 
-    TextView goback, orderAddress, txtOrderItemQuantity, txtOrderPrice, txtOrderTotalPrice, txtOrderShippingCharges, txtItem;
+    TextView goback, orderAddress, txtOrderItemQuantity, txtOrderPrice, txtOrderTotalPrice, txtOrderShippingCharges, txtItem,
+            txtDiscountName, txtOldPrice, txtFinalPrice;
 
     RelativeLayout btnPickAddress;
 
@@ -63,10 +76,28 @@ public class CheckOutActivity extends AppCompatActivity {
     ArrayList<String> arrayList = null;
     String countItemInCart;
 
+    CardView btnOrder;
+    Spinner spinner;
+    String[] payMentMethod={"Cash on delivery","Pay with card","Momo","Zalo Pay"};
+    int flags[] = {R.drawable.cash, R.drawable.credit_card, R.drawable.momo, R.drawable.zalo};
+    int totalPrice2, totalPrice1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_check_out);
+
+        txtOrderItemQuantity = findViewById(R.id.orderItemQuantity);
+        txtOrderPrice = findViewById(R.id.orderPrice);
+        txtOrderTotalPrice = findViewById(R.id.orderTotalPrice);
+        txtOrderShippingCharges = findViewById(R.id.orderShippingCharges);
+        txtItem = findViewById(R.id.txtItem);
+
+        btnOrder = findViewById(R.id.btnOrder);
+        txtDiscountName = findViewById(R.id.txtDiscount);
+        txtOldPrice = findViewById(R.id.txtOldPrice);
+        txtFinalPrice = findViewById(R.id.txtFinalPrice);
+        spinner = findViewById(R.id.spinnerPayMethod);
 
         goback = findViewById(R.id.backprevious);
         goback.setOnClickListener(new View.OnClickListener() {
@@ -111,11 +142,6 @@ public class CheckOutActivity extends AppCompatActivity {
         if (address != null){
             orderAddress.setText(address);
         }
-//        if (orderAddress.getText().toString().equals("Pick you deliver address")){
-//            Toast.makeText(CheckOutActivity.this, "You have to pick deliver address!", Toast.LENGTH_SHORT).show();
-//            orderAddress.setError("You have to pick deliver address!");
-//            orderAddress.requestFocus();
-//        }
         btnPickAddress = findViewById(R.id.relativeAddress);
         btnPickAddress.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,28 +153,73 @@ public class CheckOutActivity extends AppCompatActivity {
             }
         });
 
-
-        txtOrderItemQuantity = findViewById(R.id.orderItemQuantity);
-        txtOrderPrice = findViewById(R.id.orderPrice);
-        txtOrderTotalPrice = findViewById(R.id.orderTotalPrice);
-        txtOrderShippingCharges = findViewById(R.id.orderShippingCharges);
-        txtItem = findViewById(R.id.txtItem);
-
         txtOrderItemQuantity.setText(orderItemQuantity);
         if (Integer.parseInt(orderItemQuantity) == 1){
             txtItem.setText("Item");
         }
 
+        txtItem.setPaintFlags(txtItem.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+
         txtOrderPrice.setText(orderPrice);
+
         orderShippingCharges = txtOrderShippingCharges.getText().toString();
 
-        int totalPrice = Integer.parseInt(orderPrice) + Integer.parseInt(orderShippingCharges);
-        txtOrderTotalPrice.setText(Integer.toString(totalPrice));
+        totalPrice2 = Integer.parseInt(orderPrice) + Integer.parseInt(orderShippingCharges);
+        txtOrderTotalPrice.setText(Integer.toString(totalPrice2));
+        txtFinalPrice.setText(Integer.toString(totalPrice2));
+
+        spinner.setOnItemSelectedListener(this);
+        SpinnerAdapter spinnerAdapter=new SpinnerAdapter(getApplicationContext(),flags,payMentMethod);
+        spinner.setAdapter(spinnerAdapter);
+
+        Drawable spinnerDrawable = spinner.getBackground().getConstantState().newDrawable();
+        spinnerDrawable.setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
+        spinner.setBackground(spinnerDrawable);
+
+        btnOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (orderAddress.getText().toString().equals("Pick your deliver address")){
+                    Toast.makeText(CheckOutActivity.this, "You have to pick deliver address!", Toast.LENGTH_SHORT).show();
+                    orderAddress.setError("You have to pick deliver address!");
+                    orderAddress.requestFocus();
+                }else {
+
+                }
+            }
+        });
+
+    }
+
+    //Performing action onItemSelected and onNothing selected
+    @Override
+    public void onItemSelected(AdapterView<?> arg0, View arg1, int position,long id) {
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> arg0) {
+        // TODO Auto-generated method stub
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        loadCartView();
+        getCartQuantity();
+        getDiscountView();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        loadCartView();
+        getCartQuantity();
+        getDiscountView();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         loadCartView();
         getCartQuantity();
         getDiscountView();
@@ -183,6 +254,10 @@ public class CheckOutActivity extends AppCompatActivity {
                             public void onClick(View v) {
                                 if (holder.isInMyDiscountUsed){
                                     discountUsedRef.child(currentUserId).child(postKey2).removeValue();
+                                    txtDiscountName.setText("Discount");
+                                    txtOldPrice.setText("Total");
+                                    txtOldPrice.setForeground(null);
+                                    txtFinalPrice.setText(Integer.toString(totalPrice2));
                                 }else {
                                     discount.setDes(desDiscount);
                                     discount.setExpDay(expDayDiscount);
@@ -190,10 +265,74 @@ public class CheckOutActivity extends AppCompatActivity {
                                     discount.setValue(Integer.parseInt(valueDiscount));
                                     discount.setName(nameDiscount);
                                     discountUsedRef.child(currentUserId).removeValue();
-                                    discountUsedRef.child(currentUserId).child(postKey2).setValue(discount);
+                                    discountUsedRef.child(currentUserId).child(postKey2).setValue(discount).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void unused) {
+                                            discountUsedRef.child(currentUserId).child(postKey2).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                    String discountName = snapshot.child("name").getValue().toString();
+                                                    txtDiscountName.setText(discountName);
+                                                    txtOldPrice.setText(Integer.toString(totalPrice2));
+                                                    txtOldPrice.setForeground(getResources().getDrawable(R.drawable.strikethrough_text));
+
+                                                    double totalPrice3 = Double.parseDouble(Integer.toString(totalPrice2));
+                                                    String discountType = snapshot.child("type").getValue().toString();
+                                                    if (discountType.equals("amount")){
+                                                        totalPrice3 = totalPrice3 - Double.parseDouble(snapshot.child("value").getValue().toString());
+                                                        String price = Double.toString(totalPrice3);
+                                                        int i = (int) totalPrice3;
+                                                        txtFinalPrice.setText(Integer.toString(i));
+                                                    }else {
+                                                        totalPrice3 = totalPrice3 - (totalPrice3*(Double.parseDouble(snapshot.child("value").getValue().toString()))/100);
+                                                        txtFinalPrice.setText(Double.toString(totalPrice3));
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {
+                                                }
+                                            });
+                                        }
+                                    });
                                 }
+
                             }
                         });
+                        if (holder.isInMyDiscountUsed){
+                            discountUsedRef.child(currentUserId).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    for (DataSnapshot dataSnapshot:snapshot.getChildren()){
+                                        String discountName = dataSnapshot.child("name").getValue().toString();
+                                        txtDiscountName.setText(discountName);
+                                        txtOldPrice.setText(Integer.toString(totalPrice2));
+                                        txtOldPrice.setForeground(getResources().getDrawable(R.drawable.strikethrough_text));
+
+                                        double totalPrice3 = Double.parseDouble(Integer.toString(totalPrice2));
+                                        String discountType = dataSnapshot.child("type").getValue().toString();
+                                        if (discountType.equals("amount")){
+                                            totalPrice3 = totalPrice3 - Double.parseDouble(dataSnapshot.child("value").getValue().toString());
+                                            int i = (int) totalPrice3;
+                                            txtFinalPrice.setText(Integer.toString(i));
+                                        }else {
+                                            totalPrice3 = totalPrice3 - (totalPrice3*(Double.parseDouble(dataSnapshot.child("value").getValue().toString()))/100);
+                                            txtFinalPrice.setText(Double.toString(totalPrice3));
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+                        }else {
+                            txtDiscountName.setText("Discount");
+                            txtOldPrice.setText("Total");
+                            txtOldPrice.setForeground(null);
+                            txtFinalPrice.setText(Integer.toString(totalPrice2));
+                        }
 
                     }
 
@@ -299,8 +438,37 @@ public class CheckOutActivity extends AppCompatActivity {
                                     int updatecartprice = 0;
                                     updatecartprice = Integer.parseInt(txtOrderPrice.getText().toString()) - Integer.parseInt(priceTotal);
                                     txtOrderPrice.setText(Integer.toString(updatecartprice));
-                                    int totalPrice = updatecartprice + Integer.parseInt(orderShippingCharges);
-                                    txtOrderTotalPrice.setText(Integer.toString(totalPrice));
+                                    totalPrice1 = updatecartprice + Integer.parseInt(orderShippingCharges);
+                                    txtOrderTotalPrice.setText(Integer.toString(totalPrice1));
+                                    if (txtDiscountName.getText().toString().equals("Discount")){
+                                        txtOldPrice.setText("Total");
+                                        txtOldPrice.setForeground(null);
+                                    }else {
+                                        txtOldPrice.setText(Integer.toString(totalPrice1));
+                                        txtOldPrice.setForeground(getResources().getDrawable(R.drawable.strikethrough_text));
+                                    }
+
+                                    discountUsedRef.child(currentUserId).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            for (DataSnapshot dataSnapshot:snapshot.getChildren()){
+
+                                                double totalPrice3 = Double.parseDouble(Integer.toString(totalPrice1));
+                                                String discountType = dataSnapshot.child("type").getValue().toString();
+                                                if (discountType.equals("amount")){
+                                                    totalPrice3 = totalPrice3 - Double.parseDouble(dataSnapshot.child("value").getValue().toString());
+                                                    txtFinalPrice.setText(Double.toString(totalPrice3));
+                                                }else {
+                                                    totalPrice3 = totalPrice3 - (totalPrice3*(Double.parseDouble(dataSnapshot.child("value").getValue().toString()))/100);
+                                                    txtFinalPrice.setText(Double.toString(totalPrice3));
+                                                }
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+                                        }
+                                    });
 
                                 }
                             }

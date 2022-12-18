@@ -57,7 +57,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="200dp">
+            android:paddingBottom="180dp">
 
             <RelativeLayout
                 android:id="@+id/relativeAddress"
@@ -334,7 +334,7 @@
         android:id="@+id/relaBottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/orange"
+        android:background="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -347,31 +347,111 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_marginTop="10dp"
                 android:orientation="horizontal">
 
                 <Spinner
                     android:id="@+id/spinnerPayMethod"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="10dp"
+                    android:layout_centerHorizontal="true"
                     android:layout_alignBottom="@+id/txtVw"
-                    android:layout_toRightOf="@+id/txtVw"
-                    android:layout_weight="1" />
+                    android:layout_toRightOf="@+id/txtVw" />
+
+                <View
+                    android:id="@+id/lnln"
+                    android:layout_width="1dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:background="@color/white" />
 
                 <TextView
                     android:id="@+id/txtDiscount"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:fontFamily="@font/airbnb_cereal"
                     android:gravity="center"
                     android:text="Discount"
                     android:textColor="@color/white"
-                    android:textSize="16dp"
+                    android:textSize="20dp"
                     android:textStyle="bold" />
 
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:layout_marginStart="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/txtOldPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/airbnb_cereal"
+                        android:gravity="start"
+                        android:text="Total"
+                        android:layout_margin="3dp"
+                        android:drawableEnd="@drawable/dollar"
+                        android:drawableTint="@color/white"
+                        android:textColor="@color/white"
+                        android:textSize="20dp"
+                        />
+                    <TextView
+                        android:id="@+id/txtFinalPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="3dp"
+                        android:fontFamily="@font/airbnb_cereal"
+                        android:gravity="start"
+                        android:drawableEnd="@drawable/dollar"
+                        android:drawableTint="@color/white"
+                        android:text="100"
+                        android:textColor="@color/white"
+                        android:textSize="20dp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/btnOrder"
+                        android:layout_width="match_parent"
+                        android:clickable="true"
+                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                        android:theme="@android:style/ThemeOverlay.Material.Light"
+                        android:layout_height="65dp"
+                        app:cardUseCompatPadding="true"
+                        android:backgroundTint="@color/white"
+                        app:cardCornerRadius="10dp"
+                        app:cardElevation="5dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textSize="20dp"
+                            android:gravity="center"
+                            android:fontFamily="@font/airbnb_cereal"
+                            android:text="Place Order"
+                            android:textStyle="bold"
+                            android:textColor="@color/black" />
+
+                    </androidx.cardview.widget.CardView>
+                </RelativeLayout>
+
+            </LinearLayout>
         </LinearLayout>
     </RelativeLayout>
 

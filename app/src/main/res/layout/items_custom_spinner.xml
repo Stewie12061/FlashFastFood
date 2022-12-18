@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    android:background="@drawable/rounded_squared_white"
+    android:padding="5dp"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:padding="5dp"
+        android:src="@drawable/fastfoodbg" /><!--Make sure image is present in Drawable folder-->
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="10dp"
+        android:text="Demo"
+        android:gravity="center_vertical"
+        android:textColor="@color/black"
+        android:fontFamily="@font/airbnb_cereal"
+        android:textStyle="bold"
+        android:textSize="16dp"/>
+</LinearLayout>
