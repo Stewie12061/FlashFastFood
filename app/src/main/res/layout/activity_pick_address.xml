@@ -7,4 +7,125 @@
     android:layout_height="match_parent"
     tools:context=".PickAddressActivity">
 
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent">
+    <EditText
+        android:id="@+id/edtAddress"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_margin="10dp"
+        android:layout_weight="1"
+        android:background="@drawable/edt_custom"
+        android:drawableStart="@drawable/location"
+        android:drawableTint="@color/orange"
+        android:drawablePadding="12dp"
+        android:textSize="18dp"
+        android:singleLine="true"
+        android:fontFamily="@font/airbnb_cereal"
+        android:hint="Your address"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp" />
+    <RelativeLayout
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="10dp"
+        android:layout_height="60dp">
+
+      <androidx.cardview.widget.CardView
+          android:id="@+id/submitAddress"
+          android:layout_width="150dp"
+          android:clickable="true"
+          android:foreground="?android:attr/selectableItemBackgroundBorderless"
+          android:theme="@android:style/ThemeOverlay.Material.Light"
+          android:layout_height="50dp"
+          android:layout_marginLeft="10dp"
+          android:layout_marginTop="10dp"
+          android:layout_marginRight="10dp"
+          android:layout_marginBottom="10dp"
+          android:backgroundTint="@color/white"
+          app:cardCornerRadius="15dp"
+          app:cardElevation="8dp">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/checked"
+            app:tint="@color/orange"
+            android:padding="5dp"/>
+
+      </androidx.cardview.widget.CardView>
+    </RelativeLayout>
+
+
+  </LinearLayout>
+
+  <androidx.cardview.widget.CardView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_alignParentBottom="true"
+      android:layout_centerHorizontal="true"
+      android:layout_marginStart="10dp"
+      android:layout_marginEnd="10dp"
+      android:layout_marginBottom="10dp"
+      android:layout_marginTop="70dp"
+      app:cardCornerRadius="20dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent">
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+  </androidx.cardview.widget.CardView>
+
+  <RelativeLayout
+      android:id="@+id/btnCheckOut"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:gravity="bottom"
+      android:translationZ="20dp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintBottom_toBottomOf="parent">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/btnConfirmAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="@color/orange"
+        app:cardElevation="8dp"
+        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+        android:theme="@android:style/ThemeOverlay.Material.Light"
+        app:cardCornerRadius="16dp"
+        android:layout_margin="38dp">
+      <RelativeLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:padding="15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:fontFamily="@font/airbnb_cereal"
+            android:text="Confirm Address"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+      </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+  </RelativeLayout>
+
   </androidx.constraintlayout.widget.ConstraintLayout>

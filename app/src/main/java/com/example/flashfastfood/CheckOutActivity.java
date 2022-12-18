@@ -64,7 +64,7 @@ public class CheckOutActivity extends AppCompatActivity {
     FirebaseRecyclerAdapter<Cart, CartViewHolder> adapter;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference cartRef;
-    String currentUserId;
+    String currentUserId, address;
     Cart cart;
 
     RecyclerView rvOrderView, rvDiscount;
@@ -111,7 +111,12 @@ public class CheckOutActivity extends AppCompatActivity {
         orderItemQuantity = getIntent().getStringExtra("orderItemQuantity");
         orderPrice = getIntent().getStringExtra("orderPrice");
 
+
         orderAddress = findViewById(R.id.orderAddress);
+        address = getIntent().getStringExtra("orderAddress");
+        if (address != null){
+            orderAddress.setText(address);
+        }
 //        if (orderAddress.getText().toString().equals("Pick you deliver address")){
 //            Toast.makeText(CheckOutActivity.this, "You have to pick deliver address!", Toast.LENGTH_SHORT).show();
 //            orderAddress.setError("You have to pick deliver address!");
@@ -121,7 +126,10 @@ public class CheckOutActivity extends AppCompatActivity {
         btnPickAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(CheckOutActivity.this,PickAddressActivity.class);
+                intent.putExtra("orderItemQuantity",orderItemQuantity);
+                intent.putExtra("orderPrice",orderPrice);
+                startActivity(intent);
             }
         });
 

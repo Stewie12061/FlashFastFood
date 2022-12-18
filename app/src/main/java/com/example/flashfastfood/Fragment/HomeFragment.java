@@ -267,14 +267,6 @@ public class HomeFragment extends Fragment {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()){
                     slideModelArrayList.add(new SlideModel(dataSnapshot.child("url").getValue().toString(), ScaleTypes.CENTER_CROP));
                     imageSlider.setImageList(slideModelArrayList, ScaleTypes.CENTER_CROP);
-//                    imageSlider.setItemClickListener(new ItemClickListener() {
-//                        @Override
-//                        public void onItemSelected(int i) {
-//                            Intent intent = new Intent(getContext(),ImageDetailActivity.class);
-//                            startActivity(intent);
-//                            getActivity().overridePendingTransition(R.anim.slide_from_top,R.anim.slide_to_bottom);
-//                        }
-//                    });
                 }
             }
 
