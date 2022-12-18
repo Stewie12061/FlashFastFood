@@ -130,7 +130,7 @@ public class HomeFragment extends Fragment {
                     Log.d(TAG,address.getLatitude()+" "+ address.getLongitude());
 
                     LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
-                    mMap.addMarker(new MarkerOptions().position(latLng).title(ItemAddress).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)));
+                    mMap.addMarker(new MarkerOptions().position(latLng).title("828 Sư Vạn Hạnh, Phường 13, Quận 10").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)));
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,15));
                     mMap.getUiSettings().setZoomControlsEnabled(true);
                 }

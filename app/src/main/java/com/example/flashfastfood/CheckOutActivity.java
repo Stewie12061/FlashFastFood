@@ -24,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,6 +57,8 @@ public class CheckOutActivity extends AppCompatActivity {
     String saveCurrentDate, saveCurrentTime, orderItemQuantity, orderPrice, orderShippingCharges, orderTotalPrice;
 
     TextView goback, orderAddress, txtOrderItemQuantity, txtOrderPrice, txtOrderTotalPrice, txtOrderShippingCharges, txtItem;
+
+    RelativeLayout btnPickAddress;
 
     FirebaseRecyclerOptions<Cart> options;
     FirebaseRecyclerAdapter<Cart, CartViewHolder> adapter;
@@ -114,6 +117,14 @@ public class CheckOutActivity extends AppCompatActivity {
 //            orderAddress.setError("You have to pick deliver address!");
 //            orderAddress.requestFocus();
 //        }
+        btnPickAddress = findViewById(R.id.relativeAddress);
+        btnPickAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
 
         txtOrderItemQuantity = findViewById(R.id.orderItemQuantity);
         txtOrderPrice = findViewById(R.id.orderPrice);

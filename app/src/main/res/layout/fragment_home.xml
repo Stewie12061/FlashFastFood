@@ -16,10 +16,34 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/searchBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                android:theme="@android:style/ThemeOverlay.Material.Light"
+                android:background="@drawable/rounded_squared_white"
+                android:drawableStart="@drawable/search"
+                android:fontFamily="@font/airbnb_cereal"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textStyle="bold"
+                android:textSize="18dp"
+                android:text="Find your favorite food"
+                android:drawableTint="@color/orange"
+                android:textAllCaps="false"
+                android:gravity="center"
+                android:textColor="@color/orange"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <LinearLayout
                 android:id="@+id/linearLayout4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingTop="40dp"
                 android:background="@drawable/rounded_bottom_orange"
                 android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
