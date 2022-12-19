@@ -44,7 +44,7 @@ public class DeliveryFragment extends Fragment {
     RecyclerView rvDelivery;
 
     FirebaseDatabase firebaseDatabase;
-    DatabaseReference cartRef, orderRef;
+    DatabaseReference orderRef;
 
     FirebaseRecyclerOptions<Order> options;
     FirebaseRecyclerAdapter<Order, OrderViewHolder> adapter;
@@ -75,34 +75,33 @@ public class DeliveryFragment extends Fragment {
 
         firebaseDatabase = FirebaseDatabase.getInstance("https://flashfastfood-81fee-default-rtdb.asia-southeast1.firebasedatabase.app");
         orderRef = firebaseDatabase.getReference("Order");
-        cartRef = firebaseDatabase.getReference("Shopping Cart");
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         currentUserId = user.getUid();
 
-        rvDelivery = view.findViewById(R.id.rvPrepared);
+        rvDelivery = view.findViewById(R.id.rvDelivery);
         rvDelivery.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
 
-        deliveryWating = view.findViewById(R.id.preparedWaiting);
+        deliveryWating = view.findViewById(R.id.deliveryWaiting);
         deliveryWating.setVisibility(View.GONE);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        getOrderQuantity();
+//        getOrderQuantity();
         loadAllItems();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        getOrderQuantity();
+//        getOrderQuantity();
         loadAllItems();
     }
 
     public void getOrderQuantity(){
-        orderRef.child(currentUserId).addListenerForSingleValueEvent(new ValueEventListener() {
+        orderRef.child(currentUserId).child("orderStatus").equalTo("Delivering").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 arrayList = new ArrayList<>();
@@ -160,55 +159,6 @@ public class DeliveryFragment extends Fragment {
                         }else {
                             holder.orderPayment.setTextColor(Color.parseColor("#4CAF50"));
                         }
-
-                        holder.btnCancelOrder.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                AlertDialog.Builder builder =
-                                        new AlertDialog.Builder
-                                                (getContext());
-                                View view = LayoutInflater.from(getContext()).inflate(
-                                        R.layout.dialog_alert,
-                                        (ConstraintLayout) getActivity().findViewById(R.id.layoutDialogContainer)
-                                );
-                                builder.setView(view);
-                                ((TextView) view.findViewById(R.id.textTitle))
-                                        .setText("Cancel this order");
-                                ((TextView) view.findViewById(R.id.textMessage))
-                                        .setText("Do you really want to cancel this order?");
-                                ((Button) view.findViewById(R.id.buttonYes))
-                                        .setText("Yes");
-                                ((Button) view.findViewById(R.id.buttonNo))
-                                        .setText("No");
-                                final AlertDialog alertDialog = builder.create();
-                                alertDialog.show();
-                                view.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        alertDialog.dismiss();
-                                        Dialog dialog = new Dialog(getContext(),R.style.CustomDialog);
-                                        dialog.setContentView(R.layout.dialog_order_loading);
-                                        dialog.show();
-                                        new Handler().postDelayed(new Runnable() {
-                                                                      @Override
-                                                                      public void run() {
-                                                                          orderRef.child(currentUserId).child(postKey).removeValue();
-                                                                          dialog.dismiss();
-                                                                      }
-                                                                  }, 5000
-                                        );
-
-                                    }
-                                });
-                                view.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        alertDialog.dismiss();
-                                    }
-                                });
-
-                            }
-                        });
 
                     }
                     @Override
