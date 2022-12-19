@@ -62,7 +62,7 @@ import java.util.Calendar;
 
 
 public class CheckOutActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
-    String saveCurrentDate, saveCurrentTime, orderItemQuantity, orderPrice, orderShippingCharges, orderTotalPrice;
+    String saveCurrentDate, saveCurrentTime, orderItemQuantity, orderPrice, orderShippingCharges;
 
     TextView goback, orderAddress, txtOrderItemQuantity, txtOrderPrice, txtOrderTotalPrice, txtOrderShippingCharges, txtItem,
             txtDiscountName, txtOldPrice, txtFinalPrice;
@@ -91,7 +91,7 @@ public class CheckOutActivity extends AppCompatActivity implements AdapterView.O
     Spinner spinner;
     String[] payMentMethod={"Cash on delivery","Pay with card","Momo","Zalo Pay"};
     int flags[] = {R.drawable.cash, R.drawable.credit_card, R.drawable.momo, R.drawable.zalo};
-    int totalPrice2, totalPrice1;
+    int totalPrice2=0, totalPrice1=0;
     String paymentMethodstr;
 
     String itemIdForCreate;
@@ -346,7 +346,7 @@ public class CheckOutActivity extends AppCompatActivity implements AdapterView.O
                         holder.btnUseorCancel.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                if (Integer.parseInt(condition)<totalPrice2){
+                                if (Integer.parseInt(condition)<Integer.parseInt(txtOrderTotalPrice.getText().toString())){
                                     if (holder.isInMyDiscountUsed){
                                         discountUsedRef.child(currentUserId).child(postKey2).removeValue();
                                         txtDiscountName.setText("Discount");
@@ -359,6 +359,7 @@ public class CheckOutActivity extends AppCompatActivity implements AdapterView.O
                                         discount.setType(typeDiscount);
                                         discount.setValue(Integer.parseInt(valueDiscount));
                                         discount.setName(nameDiscount);
+                                        discount.setCondition(condition);
                                         discountUsedRef.child(currentUserId).removeValue();
                                         discountUsedRef.child(currentUserId).child(postKey2).setValue(discount).addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
@@ -412,21 +413,33 @@ public class CheckOutActivity extends AppCompatActivity implements AdapterView.O
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     for (DataSnapshot dataSnapshot:snapshot.getChildren()){
+                                        String discountCondition = dataSnapshot.child("condition").getValue().toString();
                                         String discountName = dataSnapshot.child("name").getValue().toString();
-                                        txtDiscountName.setText(discountName);
-                                        txtOldPrice.setText(Integer.toString(totalPrice2));
-                                        txtOldPrice.setForeground(getResources().getDrawable(R.drawable.strikethrough_text));
 
-                                        double totalPrice3 = Double.parseDouble(Integer.toString(totalPrice2));
-                                        String discountType = dataSnapshot.child("type").getValue().toString();
-                                        if (discountType.equals("amount")){
-                                            totalPrice3 = totalPrice3 - Double.parseDouble(dataSnapshot.child("value").getValue().toString());
-                                            int i = (int) totalPrice3;
-                                            txtFinalPrice.setText(Integer.toString(i));
+                                        if (Integer.parseInt(txtOrderTotalPrice.getText().toString())<Integer.parseInt(discountCondition)){
+                                            discountUsedRef.child(currentUserId).child(postKey2).removeValue();
+                                            txtDiscountName.setText("Discount");
+                                            txtOldPrice.setText("Total");
+                                            txtOldPrice.setForeground(null);
+                                            txtFinalPrice.setText(Integer.toString(totalPrice2));
                                         }else {
-                                            totalPrice3 = totalPrice3 - (totalPrice3*(Double.parseDouble(dataSnapshot.child("value").getValue().toString()))/100);
-                                            txtFinalPrice.setText(Double.toString(totalPrice3));
+                                            txtDiscountName.setText(discountName);
+                                            txtOldPrice.setText(Integer.toString(totalPrice2));
+                                            txtOldPrice.setForeground(getResources().getDrawable(R.drawable.strikethrough_text));
+
+                                            double totalPrice3 = Double.parseDouble(Integer.toString(totalPrice2));
+                                            String discountType = dataSnapshot.child("type").getValue().toString();
+                                            if (discountType.equals("amount")){
+                                                totalPrice3 = totalPrice3 - Double.parseDouble(dataSnapshot.child("value").getValue().toString());
+                                                int i = (int) totalPrice3;
+                                                txtFinalPrice.setText(Integer.toString(i));
+                                            }else {
+                                                totalPrice3 = totalPrice3 - (totalPrice3*(Double.parseDouble(dataSnapshot.child("value").getValue().toString()))/100);
+                                                txtFinalPrice.setText(Double.toString(totalPrice3));
+                                            }
                                         }
+
+
                                     }
                                 }
 
@@ -545,41 +558,52 @@ public class CheckOutActivity extends AppCompatActivity implements AdapterView.O
 
                                     int updatecartprice = 0;
                                     updatecartprice = Integer.parseInt(txtOrderPrice.getText().toString()) - Integer.parseInt(priceTotal);
+
                                     txtOrderPrice.setText(Integer.toString(updatecartprice));
                                     totalPrice1 = updatecartprice + Integer.parseInt(orderShippingCharges);
                                     txtOrderTotalPrice.setText(Integer.toString(totalPrice1));
-                                    if (txtDiscountName.getText().toString().equals("Discount")){
-                                        txtOldPrice.setText("Total");
-                                        txtOldPrice.setForeground(null);
-                                    }else {
-                                        txtOldPrice.setText(Integer.toString(totalPrice1));
-                                        txtOldPrice.setForeground(getResources().getDrawable(R.drawable.strikethrough_text));
-                                    }
-
+                                    txtFinalPrice.setText(Integer.toString(totalPrice1));
                                     discountUsedRef.child(currentUserId).addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                            for (DataSnapshot dataSnapshot:snapshot.getChildren()){
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                for (DataSnapshot dataSnapshot:snapshot.getChildren()){
+                                                    String discountCondition = dataSnapshot.child("condition").getValue().toString();
+                                                    String discountName = dataSnapshot.child("name").getValue().toString();
 
-                                                double totalPrice3 = Double.parseDouble(Integer.toString(totalPrice1));
-                                                String discountType = dataSnapshot.child("type").getValue().toString();
-                                                if (discountType.equals("amount")){
-                                                    totalPrice3 = totalPrice3 - Double.parseDouble(dataSnapshot.child("value").getValue().toString());
-                                                    int i = (int) totalPrice3;
-                                                    txtFinalPrice.setText(Integer.toString(i));
-                                                }else {
-                                                    totalPrice3 = totalPrice3 - (totalPrice3*(Double.parseDouble(dataSnapshot.child("value").getValue().toString()))/100);
-                                                    txtFinalPrice.setText(Double.toString(totalPrice3));
+                                                    if (Integer.parseInt(txtOrderTotalPrice.getText().toString())<Integer.parseInt(discountCondition)){
+                                                        discountUsedRef.child(currentUserId).removeValue();
+                                                        txtDiscountName.setText("Discount");
+                                                        txtOldPrice.setText("Total");
+                                                        txtOldPrice.setForeground(null);
+                                                        txtFinalPrice.setText(Integer.toString(totalPrice1));
+                                                    }else {
+                                                        txtDiscountName.setText(discountName);
+                                                        txtOldPrice.setText(Integer.toString(totalPrice1));
+                                                        txtOldPrice.setForeground(getResources().getDrawable(R.drawable.strikethrough_text));
+
+                                                        double totalPrice3 = Double.parseDouble(Integer.toString(totalPrice1));
+                                                        String discountType = dataSnapshot.child("type").getValue().toString();
+                                                        if (discountType.equals("amount")){
+                                                            totalPrice3 = totalPrice3 - Double.parseDouble(dataSnapshot.child("value").getValue().toString());
+                                                            int i = (int) totalPrice3;
+                                                            txtFinalPrice.setText(Integer.toString(i));
+                                                        }else {
+                                                            totalPrice3 = totalPrice3 - (totalPrice3*(Double.parseDouble(dataSnapshot.child("value").getValue().toString()))/100);
+                                                            txtFinalPrice.setText(Double.toString(totalPrice3));
+                                                        }
+                                                    }
+
+
                                                 }
                                             }
-                                        }
 
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError error) {
-                                        }
-                                    });
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
 
-                                }
+                                            }
+                                        });
+                                    }
+
                             }
                         });
 

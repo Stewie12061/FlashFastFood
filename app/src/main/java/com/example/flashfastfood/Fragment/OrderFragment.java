@@ -5,22 +5,26 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.Toolbar;
 
+import com.example.flashfastfood.Adapter.ViewPagerAdapter;
+import com.example.flashfastfood.FragmentChildOfOrder.DeliveryFragment;
+import com.example.flashfastfood.FragmentChildOfOrder.HistoryFragment;
+import com.example.flashfastfood.FragmentChildOfOrder.PreparedFragment;
 import com.example.flashfastfood.R;
+import com.google.android.material.tabs.TabLayout;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link OrderFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class OrderFragment extends Fragment {
+public class OrderFragment extends Fragment{
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -28,7 +32,11 @@ public class OrderFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    String currentTime, currentDate;
+    Toolbar toolbar;
+    TextView tab1, tab2, tab3, select;
+
+    TabLayout tabLayout;
+    ViewPager viewPager;
 
     public OrderFragment() {
         // Required empty public constructor
@@ -63,12 +71,14 @@ public class OrderFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Calendar calendar = Calendar.getInstance();
-
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
-        currentDate = simpleDateFormat.format(calendar.getTime());
-
-        SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("HH:mm:ss a");
-        currentTime = simpleTimeFormat.format(calendar.getTime());
+        tabLayout = view.findViewById(R.id.tabLayout);
+        viewPager = view.findViewById(R.id.viewPager);
+        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager());
+        viewPagerAdapter.addFragment(new PreparedFragment(),"Preparing Your Order");
+        viewPagerAdapter.addFragment(new DeliveryFragment(),"Delivering Your Order");
+        viewPagerAdapter.addFragment(new HistoryFragment(),"Your Order History");
+        viewPager.setAdapter(viewPagerAdapter);
+        tabLayout.setupWithViewPager(viewPager);
     }
+
 }

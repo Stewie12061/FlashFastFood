@@ -85,4 +85,9 @@ dependencies {
     //cart counter
     implementation 'com.github.andremion:counterfab:1.2.2'
 
+    //card zigzag
+    implementation 'com.github.beigirad:ZigzagView:1.2.0'
+
+
+
 }

@@ -9,7 +9,7 @@
     <LinearLayout
         android:id="@+id/linearTop"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="70dp"
         android:background="@color/black"
         android:clipToPadding="false"
         android:clipChildren="false"
@@ -21,18 +21,44 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginStart="16dp"
-            android:layout_weight="1"
             android:clickable="true"
             android:foreground="?android:attr/selectableItemBackgroundBorderless"
             android:theme="@android:style/ThemeOverlay.Material.Light"
             android:drawableStart="@drawable/arrow_white" />
+
+
+        <LinearLayout
+            android:id="@+id/btnBackHome"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"
+            android:gravity="center"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
+            android:theme="@android:style/ThemeOverlay.Material.Light"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/logosmallfliped"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Home Page"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:fontFamily="@font/airbnb_cereal"
+                android:textSize="14dp"/>
+        </LinearLayout>
 
         <TextView
             android:id="@+id/itemDetailRating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginEnd="16dp"
             android:background="@drawable/bg_rounded_white"
             android:drawableEnd="@drawable/star"
             android:drawablePadding="5dp"

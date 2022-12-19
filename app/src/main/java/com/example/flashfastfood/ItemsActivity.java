@@ -13,6 +13,7 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -52,6 +53,8 @@ public class ItemsActivity extends AppCompatActivity {
     ArrayList<String> arrayList = null;
 
     CounterFab btnCart;
+
+    LinearLayout btnBackHome;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +98,19 @@ public class ItemsActivity extends AppCompatActivity {
                 BottomSheetCartFragment bottomSheetFragment = new BottomSheetCartFragment();
                 bottomSheetFragment.setArguments(bundle);
                 bottomSheetFragment.show(getSupportFragmentManager(),bottomSheetFragment.getTag());
+            }
+        });
+
+        btnBackHome = findViewById(R.id.btnBackHome);
+        btnBackHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ItemsActivity.this,MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                int idHome = 1;
+                String IDHOME = Integer.toString(idHome);
+                intent.putExtra("Fragment",IDHOME);
+                startActivity(intent);
             }
         });
     }

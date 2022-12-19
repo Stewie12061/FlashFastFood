@@ -78,6 +78,14 @@ public class MainActivity extends AppCompatActivity {
                 fragmentTransaction.replace(R.id.content, fragment);
                 fragmentTransaction.commit();
                 idIntent = null;
+            }else if (ID==1){
+                chipNavigationBar.setItemSelected(R.id.mnuHome,true);
+                fragment = new OrderFragment();
+                fragmentManager = getSupportFragmentManager();
+                fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.content, fragment);
+                fragmentTransaction.commit();
+                idIntent = null;
             }
 
         }
