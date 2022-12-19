@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.View;
@@ -80,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
                 idIntent = null;
             }else if (ID==1){
                 chipNavigationBar.setItemSelected(R.id.mnuHome,true);
-                fragment = new OrderFragment();
+                fragment = new HomeFragment();
                 fragmentManager = getSupportFragmentManager();
                 fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.content, fragment);

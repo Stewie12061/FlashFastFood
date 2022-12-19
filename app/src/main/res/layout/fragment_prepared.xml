@@ -10,6 +10,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvPrepared"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/preparedWaiting"
             android:layout_width="match_parent"
@@ -22,30 +31,6 @@
             app:lottie_autoPlay="true"
             app:lottie_loop="true"
             app:lottie_rawRes="@raw/searchwaiting" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvPrepared"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <com.andremion.counterfab.CounterFab
-            android:id="@+id/itemFabCart"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:transitionName="cart"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="8dp"
-            android:src="@drawable/ic_cart"
-            app:backgroundTint="@color/orange"
-            app:badgeBackgroundColor="@color/white"
-            app:badgePosition="RightTop"
-            app:badgeTextColor="@color/orange"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
