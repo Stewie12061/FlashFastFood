@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MessageActivity">
+    tools:context=".ReviewActivity">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView7"
@@ -51,7 +51,7 @@
                 android:textStyle="bold" />
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/itemFoodImg"
+                android:id="@+id/itemFoodImgReview"
                 android:layout_width="60dp"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="16dp"
@@ -64,7 +64,7 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvMessage"
+        android:id="@+id/rvReview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="60dp"
@@ -95,7 +95,7 @@
             android:orientation="horizontal">
 
             <EditText
-                android:id="@+id/edtMessage"
+                android:id="@+id/edtReview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="8dp"
@@ -108,16 +108,32 @@
                 android:background="@android:color/transparent"
                 android:hint="Type your review..." />
 
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/btnSendMess"
+            <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="12dp"
-                android:layout_gravity="center"
                 android:layout_marginEnd="8dp"
-                android:background="@drawable/rounded_squared"
-                android:tint="@color/white"
-                android:src="@drawable/send" />
+                android:layout_height="wrap_content">
+                <androidx.cardview.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:cardElevation="3dp"
+                    app:cardCornerRadius="10dp"
+                    android:layout_margin="5dp">
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/btnPostReview"
+                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                        android:theme="@android:style/ThemeOverlay.Material.Light"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="12dp"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="20dp"
+                        android:background="@color/orange"
+                        android:layout_gravity="center"
+                        android:tint="@color/white"
+                        android:src="@drawable/send" />
+                </androidx.cardview.widget.CardView>
+            </RelativeLayout>
+
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>

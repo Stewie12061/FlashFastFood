@@ -176,6 +176,7 @@ public class ItemDetailActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(ItemDetailActivity.this,ReviewActivity.class);
                 intent.putExtra("itemId",itemId);
+                intent.putExtra("itemName",detailItemName.getText().toString());
                 startActivity(intent);
             }
         });

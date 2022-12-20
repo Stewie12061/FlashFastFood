@@ -6,11 +6,17 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="wrap_content"
         app:cardBackgroundColor="@color/white"
         app:cardElevation="8dp"
-        android:layout_marginBottom="10dp"
+        app:cardCornerRadius="5dp"
         app:cardUseCompatPadding="true">
+
+        <LinearLayout
+            android:layout_margin="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -18,23 +24,78 @@
             android:orientation="horizontal">
 
             <LinearLayout
+                android:layout_margin="10dp"
+                android:gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:layout_width="60dp"
                     android:layout_height="60dp"
+                    android:layout_gravity="center"
                     android:src="@drawable/logosmall"
                     app:civ_border_color="@color/orange"
                     app:civ_border_width="5dp"
                     app:civ_circle_background_color="@color/orange"/>
 
                 <TextView
+                    android:id="@+id/userNameReview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textSize="16dp"
+                    android:textColor="@color/orange"
+                    android:fontFamily="@font/airbnb_cereal"
                     android:text="User name"/>
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_margin="10dp"
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txtReview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/airbnb_cereal"
+                    android:text=""
+                    android:textColor="@color/black"
+                    android:textSize="18dp" />
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/datePostReview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18dp"
+                android:gravity="end"
+                android:text="12-22-2022"
+                android:layout_weight="1"
+                android:layout_marginEnd="40dp"
+                android:fontFamily="@font/airbnb_cereal"/>
+            <TextView
+                android:id="@+id/timePostReview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18dp"
+                android:layout_weight="2"
+                android:gravity="end"
+                android:text="11:11 AM"
+                android:fontFamily="@font/airbnb_cereal"/>
+
+        </LinearLayout>
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
