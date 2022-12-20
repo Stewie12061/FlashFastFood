@@ -52,11 +52,14 @@ public class ItemAdminActivity extends AppCompatActivity {
     int PICK_IMG_REQUEST = 1705;
     TextView countItem, itemCateName,goback;
     ArrayList<String> arrayList;
+    ArrayList<String> arrayList2;
     RecyclerView rvItemAd;
     FirebaseDatabase firebaseDatabase;
-    DatabaseReference itemRef,sliderRef,itemDetailRef;
+    DatabaseReference itemRef;
     Uri uri;
     Items items;
+
+    String itemIdForCreate;
 
     FloatingActionButton openAddItem;
 
@@ -75,8 +78,6 @@ public class ItemAdminActivity extends AppCompatActivity {
 
         firebaseDatabase = FirebaseDatabase.getInstance("https://flashfastfood-81fee-default-rtdb.asia-southeast1.firebasedatabase.app");
         itemRef = firebaseDatabase.getReference("Items");
-        sliderRef = firebaseDatabase.getReference("Slider");
-        itemDetailRef = firebaseDatabase.getReference("Item Detail");
 
         goback = findViewById(R.id.backprevious);
         goback.setOnClickListener(new View.OnClickListener() {
@@ -89,6 +90,7 @@ public class ItemAdminActivity extends AppCompatActivity {
         rvItemAd = findViewById(R.id.rvItemAdmin);
         rvItemAd.setLayoutManager(new LinearLayoutManager(ItemAdminActivity.this,LinearLayoutManager.VERTICAL,false));
 
+        getNewItemKeyForCreate();
         cateId = getIntent().getStringExtra("categoryId");
 
         openAddItem = findViewById(R.id.openCreateItem);
@@ -280,7 +282,7 @@ public class ItemAdminActivity extends AppCompatActivity {
                             imageFolder.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
-                                    items = new Items(itemDes.getText().toString(),cateId,uri.toString(),itemName.getText().toString(),itemStatus.getText().toString(),itemPrice.getText().toString(),itemRating.getText().toString());
+                                    items = new Items(itemDes.getText().toString(),uri.toString(),cateId,itemName.getText().toString(),itemStatus.getText().toString(),itemPrice.getText().toString(),itemRating.getText().toString());
                                 }
                             });
                         }
@@ -323,7 +325,7 @@ public class ItemAdminActivity extends AppCompatActivity {
                 else {
                     if (uri==null){
                         alertDialog.dismiss();
-                        items = new Items(itemDes.getText().toString(),cateId,Image,itemName.getText().toString(),itemStatus.getText().toString(),itemPrice.getText().toString(),itemRating.getText().toString());
+                        items = new Items(itemDes.getText().toString(),Image,cateId,itemName.getText().toString(),itemStatus.getText().toString(),itemPrice.getText().toString(),itemRating.getText().toString());
                         itemRef.child(itemPositionId).setValue(items).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
@@ -424,7 +426,7 @@ public class ItemAdminActivity extends AppCompatActivity {
                             imageFolder.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
-                                    items = new Items(itemDes.getText().toString(),cateId,uri.toString(),itemName.getText().toString(),itemStatus.getText().toString(),itemPrice.getText().toString(),itemRating.getText().toString());
+                                    items = new Items(itemDes.getText().toString(),uri.toString(),cateId,itemName.getText().toString(),itemStatus.getText().toString(),itemPrice.getText().toString(),itemRating.getText().toString());
                                 }
                             });
                         }
@@ -467,20 +469,20 @@ public class ItemAdminActivity extends AppCompatActivity {
                 else {
                     if (uri==null){
                         alertDialog.dismiss();
-                        items = new Items(itemDes.getText().toString(),cateId,Image,itemName.getText().toString(),itemStatus.getText().toString(),itemPrice.getText().toString(),itemRating.getText().toString());
-                        itemRef.child(itemPositionId).setValue(items).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        items = new Items(itemDes.getText().toString(),Image,cateId,itemName.getText().toString(),itemStatus.getText().toString(),itemPrice.getText().toString(),itemRating.getText().toString());
+                        itemRef.child(itemIdForCreate).setValue(items).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
-                                Toast.makeText(getApplicationContext(),"Update succeed",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(),"Create succeed",Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
                     else{
                         alertDialog.dismiss();
-                        itemRef.child(itemPositionId).setValue(items).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        itemRef.child(itemIdForCreate).setValue(items).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
-                                Toast.makeText(getApplicationContext(),"Update succeed",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(),"Create succeed",Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
@@ -523,8 +525,6 @@ public class ItemAdminActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 itemRef.child(itemPositionId).removeValue();
-                sliderRef.child(itemPositionId).removeValue();
-                itemDetailRef.child(itemPositionId).removeValue();
                 alertDialog.dismiss();
             }
         });
@@ -538,6 +538,27 @@ public class ItemAdminActivity extends AppCompatActivity {
             alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         }
         alertDialog.show();
+    }
+
+    private void getNewItemKeyForCreate() {
+        itemRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                arrayList2 = new ArrayList<String>();
+                for (DataSnapshot dataSnapshot:snapshot.getChildren()){
+                    arrayList2.add(dataSnapshot.getKey());
+                }
+                //get last itemId in item and create id for new item
+                String itemidString = arrayList2.get(arrayList2.size()-1);
+                int itemidInt = Integer.parseInt(itemidString) +1;
+                itemIdForCreate = Integer.toString(itemidInt);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void chooseImg() {
