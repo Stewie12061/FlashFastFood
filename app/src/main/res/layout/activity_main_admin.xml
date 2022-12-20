@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/containMenu"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    tools:context=".Admin.MainAdminActivity">
+
+    <LinearLayout
+        android:background="@color/orange"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <include
+            layout="@layout/chip_nav_header"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"/>
+
+        <com.ismaeldivita.chipnavigation.ChipNavigationBar
+            android:id="@+id/left_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            app:cnb_radius="20dp"
+            app:cnb_iconSize="32dp"
+            app:cnb_unselectedColor="#ACA7A7"
+            app:cnb_menuResource="@menu/admin_nav"
+            app:cnb_orientationMode="vertical"
+            app:cnb_minExpandedWidth="150dp"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:background="@color/white">
+            <ImageView
+                android:id="@+id/expandBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="16dp"
+                app:tint="@color/orange"
+                android:src="@drawable/arrow_expand"/>
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/contentAdmin"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

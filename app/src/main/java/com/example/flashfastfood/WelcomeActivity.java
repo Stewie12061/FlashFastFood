@@ -13,6 +13,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
+import com.example.flashfastfood.Admin.MainAdminActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -42,8 +43,18 @@ public class WelcomeActivity extends AppCompatActivity {
             startActivity(intent);
 
         }else{
-            Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
-            startActivity(intent);
+            //login
+            if (user.getUid().equals("z5YxFgx5nHYe9sQCJU9Tb3h9N7J2")){
+                Intent intent = new Intent(WelcomeActivity.this, MainAdminActivity.class);
+
+                startActivity(intent);
+            }
+            else {
+                Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+
+
         }
     }
 }

@@ -17,6 +17,12 @@
         android:theme="@style/Theme.FlashFastFoodMain"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".Admin.ItemAdminActivity"
+            android:exported="true" />
+        <activity
+            android:name=".Admin.MainAdminActivity"
+            android:exported="true" />
+        <activity
             android:name=".ReviewActivity"
             android:exported="true" />
         <activity

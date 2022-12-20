@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/mnuCategory"
+        android:icon="@drawable/ic_category"
+        android:title="Category"
+        app:cnb_iconColor="@color/white"/>
+    <item
+        android:id="@+id/mnuSearch"
+        android:icon="@drawable/ic_search"
+        android:title="Search"
+        app:cnb_iconColor="@color/white" />
+    <item
+        android:id="@+id/mnuDiscountManagement"
+        android:icon="@drawable/discount"
+        android:title="Discount Management"
+        app:cnb_iconColor="@color/white" />
+    <item
+        android:id="@+id/mnuOrderManagement"
+        android:icon="@drawable/order"
+        android:title="Orders Management"
+        app:cnb_iconColor="@color/white" />
+    <item
+        android:id="@+id/mnuSignoutMenu"
+        android:icon="@drawable/ic_sign_out"
+        android:title="Sign out"
+        app:cnb_iconColor="@color/white" />
+</menu>

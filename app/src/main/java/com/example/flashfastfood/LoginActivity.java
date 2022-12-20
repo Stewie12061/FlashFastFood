@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.flashfastfood.Admin.MainAdminActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
@@ -102,108 +103,64 @@ public class LoginActivity extends AppCompatActivity {
                 } else if (TextUtils.isEmpty(password)) {
                     inputPassword.setError("Password required!");
                     inputPassword.requestFocus();
-                } else {
+                }else {
                     progressDialog = new ProgressDialog(LoginActivity.this);
                     progressDialog.show();
                     progressDialog.setContentView(R.layout.dialog_progress);
                     progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
-                    firebaseAuth.signInWithEmailAndPassword(email, password)
-                            .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    progressDialog.dismiss();
+                    userRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            String adminusername = snapshot.child("admin").child("Username").getValue().toString();
+                            String passwordadmin = snapshot.child("admin").child("Password").getValue().toString();
 
-                                    if (task.isSuccessful()) {
-                                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                        startActivity(intent);
-                                        finishAffinity();
-                                    } else {
-                                        Toast.makeText(LoginActivity.this, "Wrong Email or Password!",
-                                                Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
+                            if (adminusername.equals(email) && passwordadmin.equals(password)){
+                                firebaseAuth.signInWithEmailAndPassword(email, password)
+                                        .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                                progressDialog.dismiss();
+
+                                                if (task.isSuccessful()) {
+                                                    Intent intent = new Intent(LoginActivity.this, MainAdminActivity.class);
+                                                    startActivity(intent);
+                                                    finishAffinity();
+                                                }
+                                                else {
+                                                    Toast.makeText(LoginActivity.this, "Wrong Email or Password!",
+                                                            Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        });
+                            }else {
+                                firebaseAuth.signInWithEmailAndPassword(email, password)
+                                        .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                                progressDialog.dismiss();
+
+                                                if (task.isSuccessful()) {
+                                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                                    startActivity(intent);
+                                                    finishAffinity();
+                                                }
+                                                else {
+                                                    Toast.makeText(LoginActivity.this, "Wrong Email or Password!",
+                                                            Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        });
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+
                 }
-//                else {
-//                    progressDialog = new ProgressDialog(LoginActivity.this);
-//                    progressDialog.show();
-//                    progressDialog.setContentView(R.layout.dialog_progress);
-//                    progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-//
-//                    userRef.addValueEventListener(new ValueEventListener() {
-//                        @Override
-//                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                            String adminusername = snapshot.child("Admin").child("Username").getValue().toString();
-//                            String passwordadmin = snapshot.child("Admin").child("Password").getValue().toString();
-//
-//                            String adminusername2 = snapshot.child("Admin2").child("Username").getValue().toString();
-//                            String passwordadmin2 = snapshot.child("Admin2").child("Password").getValue().toString();
-//                            if (adminusername.equals(email) && passwordadmin.equals(password)){
-//                                firebaseAuth.signInWithEmailAndPassword(email, password)
-//                                        .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
-//                                            @Override
-//                                            public void onComplete(@NonNull Task<AuthResult> task) {
-//                                                progressDialog.dismiss();
-//
-//                                                if (task.isSuccessful()) {
-//                                                    Intent intent = new Intent(LoginActivity.this, MainAdminActivity.class);
-//                                                    startActivity(intent);
-//                                                    finishAffinity();
-//                                                }
-//                                                else {
-//                                                    Toast.makeText(LoginActivity.this, "Wrong Email or Password!",
-//                                                            Toast.LENGTH_SHORT).show();
-//                                                }
-//                                            }
-//                                        });
-//                            }else if (adminusername2.equals(email) && passwordadmin2.equals(password)){
-//                                firebaseAuth.signInWithEmailAndPassword(email, password)
-//                                        .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
-//                                            @Override
-//                                            public void onComplete(@NonNull Task<AuthResult> task) {
-//                                                progressDialog.dismiss();
-//
-//                                                if (task.isSuccessful()) {
-//                                                    Intent intent = new Intent(LoginActivity.this, MainAdminActivity.class);
-//                                                    startActivity(intent);
-//                                                    finishAffinity();
-//                                                }
-//                                                else {
-//                                                    Toast.makeText(LoginActivity.this, "Wrong Email or Password!",
-//                                                            Toast.LENGTH_SHORT).show();
-//                                                }
-//                                            }
-//                                        });
-//                            }
-//                            else {
-//                                firebaseAuth.signInWithEmailAndPassword(email, password)
-//                                        .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
-//                                            @Override
-//                                            public void onComplete(@NonNull Task<AuthResult> task) {
-//                                                progressDialog.dismiss();
-//
-//                                                if (task.isSuccessful()) {
-//                                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-//                                                    startActivity(intent);
-//                                                    finishAffinity();
-//                                                }
-//                                                else {
-//                                                    Toast.makeText(LoginActivity.this, "Wrong Email or Password!",
-//                                                            Toast.LENGTH_SHORT).show();
-//                                                }
-//                                            }
-//                                        });
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onCancelled(@NonNull DatabaseError error) {
-//
-//                        }
-//                    });
-//
-//                }
             }
 
         });
