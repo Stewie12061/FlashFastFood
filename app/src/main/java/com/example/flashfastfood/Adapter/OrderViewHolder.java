@@ -11,7 +11,7 @@ import com.example.flashfastfood.R;
 
 public class OrderViewHolder extends RecyclerView.ViewHolder {
     public TextView orderPrice, orderPayment, orderDate, orderTime, orderLocation, orderStatus, orderItemQuantity;
-    public CardView btnCancelOrder;
+    public CardView btnCancelOrder, btnConfirmOrder;
 
     public OrderViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -24,6 +24,9 @@ public class OrderViewHolder extends RecyclerView.ViewHolder {
         orderStatus = itemView.findViewById(R.id.orderStatus);
         orderItemQuantity = itemView.findViewById(R.id.orderQuantity);
         btnCancelOrder = itemView.findViewById(R.id.btnCancelOrder);
+
+        btnConfirmOrder = itemView.findViewById(R.id.btnConfirmOrder);
+
 
     }
 

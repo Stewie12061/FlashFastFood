@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="320dp"
+    android:layout_height="wrap_content"
+    android:clipChildren="false"
+    android:clipToPadding="false">
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="15dp"
+        app:cardElevation="8dp"
+        android:layout_margin="16dp">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="12dp"
+                android:layout_height="match_parent"
+                android:background="@color/orange"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginStart="5dp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/discountName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Discount name"
+                        android:layout_margin="5dp"
+                        android:textColor="@color/orange"
+                        android:fontFamily="@font/airbnb_cereal"
+                        android:textStyle="bold"
+                        android:textSize="16dp"/>
+                    <TextView
+                        android:id="@+id/discountDes"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="discount des"
+                        android:layout_gravity="center"
+                        android:textColor="@color/black"
+                        android:fontFamily="@font/airbnb_cereal"
+                        android:textStyle="bold"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:textSize="18dp"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="EXP:"
+                            android:layout_weight="1"
+                            android:textColor="@color/black"
+                            android:fontFamily="@font/airbnb_cereal"
+                            android:layout_margin="5dp"
+                            android:textSize="16dp"/>
+                        <TextView
+                            android:layout_weight="1"
+                            android:id="@+id/discountExpDay"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="1/22/2022"
+                            android:textAlignment="textEnd"
+                            android:textColor="@color/black"
+                            android:fontFamily="@font/airbnb_cereal"
+                            android:layout_margin="5dp"
+                            android:textSize="16dp"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/lnln"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="@color/orange" />
+
+            <LinearLayout
+                android:id="@+id/btnDeleteDiscount"
+                android:layout_width="wrap_content"
+                android:layout_height="120dp"
+                android:background="@color/red"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                android:theme="@android:style/ThemeOverlay.Material.Light"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/discountUseCancelText"
+                    android:layout_width="65dp"
+                    android:layout_height="match_parent"
+                    android:text="Delete"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/airbnb_cereal"
+                    android:textStyle="bold"
+                    android:textSize="16dp"/>
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+
+
+</RelativeLayout>

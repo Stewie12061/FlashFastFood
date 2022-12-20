@@ -195,6 +195,11 @@ public class ItemsActivity extends AppCompatActivity {
             protected void onBindViewHolder(@NonNull ItemsViewHolder holder, int position, @NonNull Items model) {
                 String postKey = getRef(position).getKey();
 
+                if (arrayList2.contains(postKey)){
+                    holder.itemView.setVisibility(View.GONE);
+                    holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
+                }
+
                 itemsRef.child(postKey).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -212,7 +217,7 @@ public class ItemsActivity extends AppCompatActivity {
                         cateRef.child(cateId).addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                holder.itemcatename.setText(snapshot.child("FoodCateName").getValue().toString());
+                                holder.itemcatename.setText(snapshot.child("foodCateName").getValue().toString());
                             }
 
                             @Override
@@ -283,7 +288,7 @@ public class ItemsActivity extends AppCompatActivity {
                         cateRef.child(cateId).addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                holder.itemcatename.setText(snapshot.child("FoodCateName").getValue().toString());
+                                holder.itemcatename.setText(snapshot.child("foodCateName").getValue().toString());
                             }
 
                             @Override

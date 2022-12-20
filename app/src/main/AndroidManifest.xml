@@ -17,6 +17,9 @@
         android:theme="@style/Theme.FlashFastFoodMain"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".Admin.ConfirmOrderActivity"
+            android:exported="true" />
+        <activity
             android:name=".Admin.ItemAdminActivity"
             android:exported="true" />
         <activity

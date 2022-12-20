@@ -40,7 +40,7 @@
         app:layout_constraintTop_toBottomOf="@+id/toolbarSearchAd"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
-        app:lottie_rawRes="@raw/bgyellow" />
+        app:lottie_rawRes="@raw/bg" />
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvSearchAdmin"
         android:layout_width="match_parent"

@@ -26,15 +26,6 @@ import java.util.Calendar;
 
 public class OrderFragment extends Fragment{
 
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    private String mParam1;
-    private String mParam2;
-
-    Toolbar toolbar;
-    TextView tab1, tab2, tab3, select;
-
     TabLayout tabLayout;
     ViewPager viewPager;
 
@@ -42,22 +33,9 @@ public class OrderFragment extends Fragment{
         // Required empty public constructor
     }
 
-    public static OrderFragment newInstance(String param1, String param2) {
-        OrderFragment fragment = new OrderFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override

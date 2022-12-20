@@ -2,7 +2,9 @@ package com.example.flashfastfood.AdminFragment;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -20,12 +22,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.flashfastfood.AdapterAdmin.CateAdminViewHolder;
-import com.example.flashfastfood.AdapterAdmin.DiscountViewHolder;
+import com.example.flashfastfood.AdapterAdmin.DiscountAdminViewHolder;
 import com.example.flashfastfood.Admin.ItemAdminActivity;
 import com.example.flashfastfood.Data.Discount;
 import com.example.flashfastfood.Data.FoodCategories;
@@ -36,6 +40,7 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -44,10 +49,11 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.makeramen.roundedimageview.RoundedImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.TimeZone;
 import java.util.UUID;
 
 
@@ -59,17 +65,17 @@ public class DiscountManagementFragment extends Fragment {
     DatabaseReference discountRef;
     FloatingActionButton openCreateDiscount;
 
-    private final int PICK_IMG_REQUEST = 1705;
-    Uri uri = null;
+    int mDayIn,mMonthIn,mYearIn;
+
 
     String discountId, discountName, discountPositionId;
     Discount discount;
     ArrayList<String> arrayList = null;
-    FirebaseRecyclerAdapter<Discount, DiscountViewHolder> adapter;
+    FirebaseRecyclerAdapter<Discount, DiscountAdminViewHolder> adapter;
+
+
 
     private TextView countDiscount;
-
-    boolean isUpLoad=false;
 
     public DiscountManagementFragment() {
         // Required empty public constructor
@@ -141,47 +147,28 @@ public class DiscountManagementFragment extends Fragment {
     private void getDiscountAd() {
         FirebaseRecyclerOptions<Discount> options = new FirebaseRecyclerOptions.Builder<Discount>().setQuery(discountRef,Discount.class).build();
 
-        adapter = new FirebaseRecyclerAdapter<Discount, DiscountViewHolder>(options) {
+        adapter = new FirebaseRecyclerAdapter<Discount, DiscountAdminViewHolder>(options) {
             @Override
-            protected void onBindViewHolder(@NonNull DiscountViewHolder holder, int position, @NonNull Discount model) {
+            protected void onBindViewHolder(@NonNull DiscountAdminViewHolder holder, int position, @NonNull Discount model) {
                 String id = getRef(position).getKey();
 
-                cateRef.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
+                discountRef.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        String cateImg = snapshot.child("foodCateImg").getValue().toString();
-                        String catename = snapshot.child("foodCateName").getValue().toString();
+                        String discountname = snapshot.child("name").getValue().toString();
+                        String discountDes = snapshot.child("des").getValue().toString();
+                        String discountExpDay = snapshot.child("expDay").getValue().toString();
 
-                        holder.cateadName.setText(catename);
-                        Picasso.get().load(cateImg).into(holder.cateadImg);
+                        holder.discountDes.setText(discountDes);
+                        holder.discountExpDay.setText(discountExpDay);
+                        holder.discountName.setText(discountname);
 
-                        //edit category
-                        holder.btnmodify.setOnClickListener(new View.OnClickListener() {
+                        holder.btnDeleteDiscount.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                //get cate id onclick
-                                catePositionId = adapter.getRef(holder.getBindingAdapterPosition()).getKey();
-                                modifyCate();
-                            }
-                        });
-
-                        //delete category
-                        holder.btndelete.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                catePositionId = adapter.getRef(holder.getBindingAdapterPosition()).getKey();
-                                cateName = catename;
-                                deleteCate();
-                            }
-                        });
-
-                        holder.setItemClickListener(new ItemClickListener() {
-                            @Override
-                            public void onClick(View view, int position, boolean isLongClick) {
-                                Intent intent = new Intent(getContext(), ItemAdminActivity.class);
-                                intent.putExtra("categoryId",adapter.getRef(position).getKey());
-                                intent.putExtra("cateName",catename);
-                                startActivity(intent);
+                                discountPositionId = adapter.getRef(holder.getBindingAdapterPosition()).getKey();
+                                discountName = discountname;
+                                deleteDiscount();
                             }
                         });
                     }
@@ -195,17 +182,17 @@ public class DiscountManagementFragment extends Fragment {
 
             @NonNull
             @Override
-            public CateAdminViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_categories_admin,parent,false);
-                CateAdminViewHolder viewHolder = new CateAdminViewHolder(view);
+            public DiscountAdminViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_discount_admin,parent,false);
+                DiscountAdminViewHolder viewHolder = new DiscountAdminViewHolder(view);
                 return viewHolder;
             }
         };
-        rvAdCate.setAdapter(adapter);
+        rvAdDiscount.setAdapter(adapter);
         adapter.startListening();
     }
 
-    private void deleteCate() {
+    private void deleteDiscount() {
         AlertDialog.Builder builder =
                 new AlertDialog.Builder
                         (getContext());
@@ -215,9 +202,9 @@ public class DiscountManagementFragment extends Fragment {
         );
         builder.setView(view);
         ((TextView) view.findViewById(R.id.textTitle))
-                .setText("Delete category");
+                .setText("Delete voucher");
         ((TextView) view.findViewById(R.id.textMessage))
-                .setText("Are you sure you want delete"+ " "+cateName+" "+"category?");
+                .setText("Are you sure you want delete"+ " "+discountName+" "+"Voucher?");
         ((Button) view.findViewById(R.id.buttonYes))
                 .setText("Yes");
         ((Button) view.findViewById(R.id.buttonNo))
@@ -226,7 +213,7 @@ public class DiscountManagementFragment extends Fragment {
         view.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                cateRef.child(catePositionId).removeValue();
+                discountRef.child(discountPositionId).removeValue();
                 alertDialog.dismiss();
             }
         });
@@ -242,13 +229,13 @@ public class DiscountManagementFragment extends Fragment {
         alertDialog.show();
     }
 
-    private void addCate(){
+    private void addDiscount(){
 
         AlertDialog.Builder builder =
                 new AlertDialog.Builder
                         (getContext());
         View view = LayoutInflater.from(getContext()).inflate(
-                R.layout.dialog_create_category,
+                R.layout.dialog_create_discount,
                 (ConstraintLayout) getView().findViewById(R.id.layoutDialogContainer)
         );
         builder.setView(view);
@@ -262,65 +249,41 @@ public class DiscountManagementFragment extends Fragment {
         ((Button) view.findViewById(R.id.buttonNo))
                 .setText("Cancel");
 
-        Button select = (Button) view.findViewById(R.id.btnSelect);
-        Button upload = (Button) view.findViewById(R.id.btnUpload);
-        EditText cateName = (EditText) view.findViewById(R.id.edtCateName);
-        imgCate = view.findViewById(R.id.imgCate);
+        EditText edtDiscountName = (EditText) view.findViewById(R.id.edtDiscountName);
+        EditText edtDiscountValue = (EditText) view.findViewById(R.id.edtDiscountValue);
+        EditText edtDiscountCondition = (EditText) view.findViewById(R.id.edtDiscountCondition);
+        EditText edtDiscountType = (EditText) view.findViewById(R.id.edtDiscountType);
+        EditText edtDiscountExpDay = (EditText) view.findViewById(R.id.edtDiscountExpDay);
+        EditText edtDiscountDes = (EditText) view.findViewById(R.id.edtDiscountDes);
 
-
-        select.setOnClickListener(new View.OnClickListener() {
+        edtDiscountExpDay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chooseImg();
-            }
+                final Calendar calendar = Calendar.getInstance();
+                //set time zone
+                calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-        });
+                int selectedYear = calendar.get(Calendar.YEAR);
+                int selectedMonth = calendar.get(Calendar.MONTH);
+                int selectedDay = calendar.get(Calendar.DAY_OF_MONTH);
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+                        new DatePickerDialog.OnDateSetListener() {
+                            public void onDateSet(DatePicker view, int selectedYear,
+                                                  int selectedMonth, int selectedDay) {
+                                mDayIn = selectedDay;
+                                mMonthIn = selectedMonth;
+                                mYearIn = selectedYear;
 
-        upload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (uri!=null){
-                    ProgressDialog progressDialog;
-                    progressDialog = new ProgressDialog(getContext());
-                    progressDialog.show();
-                    progressDialog.setContentView(R.layout.dialog_progress);
-                    progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                                edtDiscountExpDay.setText((mMonthIn+1) + "-" + mDayIn + "-" + mYearIn);
+                            }
+                        }, mDayIn, mMonthIn, mYearIn);
+                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
 
-                    FirebaseStorage firebaseStorage;
-                    StorageReference storageReference;
-
-                    // get the Firebase  storage reference
-                    firebaseStorage = FirebaseStorage.getInstance();
-                    storageReference = firebaseStorage.getReference();
-
-                    String imageName = UUID.randomUUID().toString();
-                    StorageReference imageFolder = storageReference.child("Images/categories/"+imageName);
-
-                    //put img to storage
-                    imageFolder.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            isUpLoad=true;
-                            progressDialog.dismiss();
-                            Toast.makeText(getContext(),"Upload sussessed",Toast.LENGTH_SHORT).show();
-
-                            //get uri img from storage
-                            imageFolder.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
-                                    foodCategories = new FoodCategories(uri.toString(),cateName.getText().toString());
-                                }
-                            });
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            isUpLoad=false;
-                            progressDialog.dismiss();
-                            Toast.makeText(getContext(),"Upload failed",Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
+                final Calendar calendar2 = Calendar.getInstance();
+                calendar2.set(2023, 1, 1);
+                datePickerDialog.getDatePicker().setMaxDate(calendar2.getTimeInMillis());
+                datePickerDialog.setTitle("Select Date Expire");
+                datePickerDialog.show();
             }
         });
 
@@ -329,26 +292,35 @@ public class DiscountManagementFragment extends Fragment {
         view.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (TextUtils.isEmpty(cateName.getText().toString().trim())){
-                    cateName.setError("You have to fill this information!");
-                    cateName.requestFocus();
-                }
-                else if(uri==null){
-                    Toast.makeText(getContext(),"You have to fill full information to create category",Toast.LENGTH_SHORT).show();
-                }
-                else if (isUpLoad==false){
-                    Toast.makeText(getContext(),"You have to upload image",Toast.LENGTH_SHORT).show();
+                if (TextUtils.isEmpty(edtDiscountName.getText().toString().trim())){
+                    edtDiscountName.setError("You have to fill this information!");
+                    edtDiscountName.requestFocus();
+                }else if (TextUtils.isEmpty(edtDiscountValue.getText().toString().trim())){
+                    edtDiscountValue.setError("You have to fill this information!");
+                    edtDiscountValue.requestFocus();
+                }else if (TextUtils.isEmpty(edtDiscountCondition.getText().toString().trim())){
+                    edtDiscountCondition.setError("You have to fill this information!");
+                    edtDiscountCondition.requestFocus();
+                }else if (TextUtils.isEmpty(edtDiscountType.getText().toString().trim())){
+                    edtDiscountType.setError("You have to fill this information!");
+                    edtDiscountType.requestFocus();
+                }else if (TextUtils.isEmpty(edtDiscountExpDay.getText().toString().trim())){
+                    edtDiscountExpDay.setError("You have to fill this information!");
+                    edtDiscountExpDay.requestFocus();
+                }else if (TextUtils.isEmpty(edtDiscountDes.getText().toString().trim())){
+                    edtDiscountDes.setError("You have to fill this information!");
+                    edtDiscountDes.requestFocus();
                 }
                 else {
-                    if (foodCategories != null){
-                        alertDialog.dismiss();
-                        cateRef.child(cateId).setValue(foodCategories).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
-                                Toast.makeText(getContext(),"Success create category",Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
+                    alertDialog.dismiss();
+                    discount = new Discount(edtDiscountName.getText().toString(),edtDiscountDes.getText().toString(), edtDiscountType.getText().toString(), edtDiscountExpDay.getText().toString()
+                    ,Integer.parseInt(edtDiscountValue.getText().toString()),edtDiscountCondition.getText().toString());
+                    discountRef.child(discountId).setValue(discount).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            Toast.makeText(getContext(),"Success create category",Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             }
         });
@@ -364,165 +336,4 @@ public class DiscountManagementFragment extends Fragment {
         alertDialog.show();
     }
 
-    private void modifyCate(){
-
-        AlertDialog.Builder builder =
-                new AlertDialog.Builder
-                        (getContext());
-        View view = LayoutInflater.from(getContext()).inflate(
-                R.layout.dialog_create_category,
-                (ConstraintLayout) getView().findViewById(R.id.layoutDialogContainer)
-        );
-        builder.setView(view);
-
-        ((TextView) view.findViewById(R.id.textTitle))
-                .setText("Modify Category");
-        ((TextView) view.findViewById(R.id.textMessage))
-                .setText("Fill category name and upload image");
-        ((Button) view.findViewById(R.id.buttonYes))
-                .setText("Update");
-        ((Button) view.findViewById(R.id.buttonNo))
-                .setText("Cancel");
-
-        Button select = (Button) view.findViewById(R.id.btnSelect);
-        Button upload = (Button) view.findViewById(R.id.btnUpload);
-        EditText cateName = (EditText) view.findViewById(R.id.edtCateName);
-        imgCate = view.findViewById(R.id.imgCate);
-
-        cateRef.child(catePositionId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                img = snapshot.child("foodCateImg").getValue().toString();
-                cateName.setText(snapshot.child("foodCateName").getValue().toString());
-                Picasso.get().load(img).into(imgCate);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-        select.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                chooseImg();
-            }
-
-        });
-
-        upload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (uri!=null){
-                    ProgressDialog progressDialog;
-                    progressDialog = new ProgressDialog(getContext());
-                    progressDialog.show();
-                    progressDialog.setContentView(R.layout.dialog_progress);
-                    progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-
-                    FirebaseStorage firebaseStorage;
-                    StorageReference storageReference;
-
-                    // get the Firebase  storage reference
-                    firebaseStorage = FirebaseStorage.getInstance();
-                    storageReference = firebaseStorage.getReference();
-
-                    String imageName = UUID.randomUUID().toString();
-                    StorageReference imageFolder = storageReference.child("Images/categories/"+imageName);
-
-                    //put img to storage
-                    imageFolder.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            progressDialog.dismiss();
-                            Toast.makeText(getContext(),"Upload succeed",Toast.LENGTH_SHORT).show();
-
-                            //get uri img from storage
-                            imageFolder.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
-                                    foodCategories = new FoodCategories(uri.toString(),cateName.getText().toString());
-                                }
-                            });
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            isUpLoad=false;
-                            progressDialog.dismiss();
-                            Toast.makeText(getContext(),"Upload failed",Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-            }
-        });
-
-        final AlertDialog alertDialog = builder.create();
-
-        view.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (TextUtils.isEmpty(cateName.getText().toString().trim())){
-                    cateName.setError("You have to fill this information!");
-                    cateName.requestFocus();
-                }
-                else {
-                    if (uri==null){
-                        alertDialog.dismiss();
-                        foodCategories = new FoodCategories(img,cateName.getText().toString());
-                        cateRef.child(catePositionId).setValue(foodCategories).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
-                                Toast.makeText(getContext(),"Update succeed",Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                    else{
-                        if (isUpLoad==false){
-                            Toast.makeText(getContext(),"You have to upload image",Toast.LENGTH_SHORT).show();
-                        }
-                        alertDialog.dismiss();
-                        cateRef.child(catePositionId).setValue(foodCategories).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
-                                Toast.makeText(getContext(),"Update succeed",Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                }
-
-
-            }
-        });
-        view.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                alertDialog.dismiss();
-            }
-        });
-        if (alertDialog.getWindow() != null){
-            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-        }
-        alertDialog.show();
-    }
-
-    private void chooseImg() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent,"Select Picture"),PICK_IMG_REQUEST);
-    }
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_IMG_REQUEST && resultCode == Activity.RESULT_OK
-                && data!=null && data.getData() != null){
-            uri = data.getData();
-            if (null != uri) {
-                // update the preview image in the layout
-                imgCate.setImageURI(uri);
-            }
-        }
-    }
 }
