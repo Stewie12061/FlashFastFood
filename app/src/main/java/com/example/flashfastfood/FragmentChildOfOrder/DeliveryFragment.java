@@ -1,24 +1,16 @@
 package com.example.flashfastfood.FragmentChildOfOrder;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
-
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.flashfastfood.Adapter.OrderViewHolder;
 import com.example.flashfastfood.Data.Order;
@@ -33,24 +25,23 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
 
 
 public class DeliveryFragment extends Fragment {
 
-    String currentUserId;
+    private String currentUserId;
 
-    RecyclerView rvDelivery;
+    private RecyclerView rvDelivery;
 
-    FirebaseDatabase firebaseDatabase;
-    DatabaseReference orderRef;
+    private FirebaseDatabase firebaseDatabase;
+    private DatabaseReference orderRef;
 
-    FirebaseRecyclerOptions<Order> options;
-    FirebaseRecyclerAdapter<Order, OrderViewHolder> adapter;
-    ArrayList<String> arrayList = null;
+    private FirebaseRecyclerOptions<Order> options;
+    private FirebaseRecyclerAdapter<Order, OrderViewHolder> adapter;
+    private ArrayList<String> arrayList2 = null;
 
-    LottieAnimationView deliveryWating;
+    private LottieAnimationView deliveryWaiting;
 
 
     public DeliveryFragment() {
@@ -82,50 +73,41 @@ public class DeliveryFragment extends Fragment {
         rvDelivery = view.findViewById(R.id.rvDelivery);
         rvDelivery.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
 
-        deliveryWating = view.findViewById(R.id.deliveryWaiting);
-        deliveryWating.setVisibility(View.GONE);
+        deliveryWaiting = view.findViewById(R.id.deliveryWaiting);
+        deliveryWaiting.setVisibility(View.GONE);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-//        getOrderQuantity();
-        loadAllItems();
+        arrayList2 = new ArrayList<>();
+        loadDeliveringItems();
+//        String countItemInCart= Integer.toString(arrayList2.size());
+//        int itemInOrderDe = Integer.parseInt(countItemInCart);
+//        if (itemInOrderDe==0){
+//            deliveryWaiting.setVisibility(View.VISIBLE);
+//        }
+//        else {
+//            deliveryWaiting.setVisibility(View.GONE);
+//        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-//        getOrderQuantity();
-        loadAllItems();
+        arrayList2 = new ArrayList<>();
+        loadDeliveringItems();
+//        String countItemInCart= Integer.toString(arrayList2.size());
+//        int itemInOrder = Integer.parseInt(countItemInCart);
+//        if (itemInOrder==0){
+//            deliveryWaiting.setVisibility(View.VISIBLE);
+//        }
+//        else {
+//            deliveryWaiting.setVisibility(View.GONE);
+//        }
     }
 
-    public void getOrderQuantity(){
-        orderRef.child(currentUserId).child("orderStatus").equalTo("Delivering").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                arrayList = new ArrayList<>();
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                    arrayList.add(dataSnapshot.getKey());
-                }
-                String countItemInCart= Integer.toString(arrayList.size());
-                int itemInOrder = Integer.parseInt(countItemInCart);
-                if (itemInOrder==0){
-                    deliveryWating.setVisibility(View.VISIBLE);
-                }
-                else {
-                    deliveryWating.setVisibility(View.GONE);
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-    private void loadAllItems(){
+    private void loadDeliveringItems(){
         Query query = orderRef.child(currentUserId).orderByChild("orderStatus").equalTo("Delivering");
 
         options =new FirebaseRecyclerOptions.Builder<Order>().setQuery(query,Order.class).build();
@@ -138,6 +120,10 @@ public class DeliveryFragment extends Fragment {
                 orderRef.child(currentUserId).child(postKey).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                            arrayList2.add(dataSnapshot.getKey());
+                        }
+
                         String orderDate = snapshot.child("orderDate").getValue().toString();
                         String orderTime = snapshot.child("orderTime").getValue().toString();
                         String orderPrice = snapshot.child("orderTotalPrice").getValue().toString();

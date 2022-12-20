@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.flashfastfood.Adapter.OrderViewHolder;
@@ -33,18 +34,18 @@ import java.util.ArrayList;
 
 public class HistoryFragment extends Fragment {
 
-    String currentUserId;
+    private String currentUserId;
 
-    RecyclerView rvHistory, rvHistoryCancel;
+    private RecyclerView rvHistory, rvHistoryCancel;
 
-    FirebaseDatabase firebaseDatabase;
-    DatabaseReference orderRef;
+    private FirebaseDatabase firebaseDatabase;
+    private DatabaseReference orderRef;
 
-    FirebaseRecyclerOptions<Order> options;
-    FirebaseRecyclerAdapter<Order, OrderViewHolder> adapter;
-    ArrayList<String> arrayList = null;
+    private FirebaseRecyclerOptions<Order> options;
+    private FirebaseRecyclerAdapter<Order, OrderViewHolder> adapter;
+    private ArrayList<String> arrayList3 = null;
 
-    LottieAnimationView historyWating;
+    private LottieAnimationView historyWating;
 
     public HistoryFragment() {
         // Required empty public constructor
@@ -86,12 +87,12 @@ public class HistoryFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        arrayList = new ArrayList<>();
-        getOrderQuantity();
+        arrayList3 = new ArrayList<>();
+
         loadHistoryCompleted();
         loadHistoryCanceled();
 
-        String countItemInCart= Integer.toString(arrayList.size());
+        String countItemInCart= Integer.toString(arrayList3.size());
         int itemInOrder = Integer.parseInt(countItemInCart);
         if (itemInOrder==0){
             historyWating.setVisibility(View.VISIBLE);
@@ -104,12 +105,12 @@ public class HistoryFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        arrayList = new ArrayList<>();
-        getOrderQuantity();
+        arrayList3 = new ArrayList<>();
+
         loadHistoryCompleted();
         loadHistoryCanceled();
 
-        String countItemInCart= Integer.toString(arrayList.size());
+        String countItemInCart= Integer.toString(arrayList3.size());
         int itemInOrder = Integer.parseInt(countItemInCart);
         if (itemInOrder==0){
             historyWating.setVisibility(View.VISIBLE);
@@ -119,22 +120,7 @@ public class HistoryFragment extends Fragment {
         }
     }
 
-    public void getOrderQuantity(){
-        orderRef.child(currentUserId).child("orderStatus").equalTo("Delivering").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                arrayList = new ArrayList<>();
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                    arrayList.add(dataSnapshot.getKey());
-                }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
     private void loadHistoryCanceled(){
         Query query = orderRef.child(currentUserId).orderByChild("orderStatus").equalTo("Canceled");
 
@@ -150,9 +136,9 @@ public class HistoryFragment extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
 
                         for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                            arrayList.add(dataSnapshot.getKey());
+                            arrayList3.add(dataSnapshot.getKey());
                         }
-                        String countItemInCart= Integer.toString(arrayList.size());
+                        String countItemInCart= Integer.toString(arrayList3.size());
                         int itemInOrder = Integer.parseInt(countItemInCart);
                         if (itemInOrder==0){
                             historyWating.setVisibility(View.VISIBLE);
@@ -192,7 +178,7 @@ public class HistoryFragment extends Fragment {
             @NonNull
             @Override
             public OrderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_order_delivery, parent,false);
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_order_history, parent,false);
                 OrderViewHolder viewHolder = new OrderViewHolder(view);
                 return viewHolder;
             }
@@ -203,7 +189,7 @@ public class HistoryFragment extends Fragment {
     }
 
     private void loadHistoryCompleted(){
-        Query query = orderRef.child(currentUserId).orderByChild("orderStatus").equalTo("Completed");
+        Query query = orderRef.child(currentUserId).orderByChild("orderStatus").equalTo("Successful");
 
         options =new FirebaseRecyclerOptions.Builder<Order>().setQuery(query,Order.class).build();
 
@@ -217,7 +203,7 @@ public class HistoryFragment extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
 
                         for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                            arrayList.add(dataSnapshot.getKey());
+                            arrayList3.add(dataSnapshot.getKey());
                         }
 
                         String orderDate = snapshot.child("orderDate").getValue().toString();
@@ -242,6 +228,10 @@ public class HistoryFragment extends Fragment {
                             holder.orderPayment.setTextColor(Color.parseColor("#4CAF50"));
                         }
 
+                        if (orderStatus.equals("Successful")){
+                            holder.orderStatus.setTextColor(Color.parseColor("#4CAF50"));
+                        }
+
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
@@ -251,7 +241,7 @@ public class HistoryFragment extends Fragment {
             @NonNull
             @Override
             public OrderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_order_delivery, parent,false);
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_order_history, parent,false);
                 OrderViewHolder viewHolder = new OrderViewHolder(view);
                 return viewHolder;
             }

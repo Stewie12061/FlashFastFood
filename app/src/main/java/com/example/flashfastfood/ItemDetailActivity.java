@@ -107,14 +107,6 @@ public class ItemDetailActivity extends AppCompatActivity {
 
         sparkButton = findViewById(R.id.addFav);
 
-        btnShowReview = findViewById(R.id.btnShowReview);
-        btnShowReview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
         goback = findViewById(R.id.backprevious);
         goback.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -174,6 +166,16 @@ public class ItemDetailActivity extends AppCompatActivity {
                 int idHome = 1;
                 String IDHOME = Integer.toString(idHome);
                 intent.putExtra("Fragment",IDHOME);
+                startActivity(intent);
+            }
+        });
+
+        btnShowReview = findViewById(R.id.btnShowReview);
+        btnShowReview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ItemDetailActivity.this,ReviewActivity.class);
+                intent.putExtra("itemId",itemId);
                 startActivity(intent);
             }
         });

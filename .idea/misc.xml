@@ -38,10 +38,12 @@
         <entry key="..\:/Users/min/AndroidStudioProjects/FlashFastFood/app/src/main/res/layout/activity_main.xml" value="0.264" />
         <entry key="..\:/Users/min/AndroidStudioProjects/FlashFastFood/app/src/main/res/layout/activity_payment.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/min/AndroidStudioProjects/FlashFastFood/app/src/main/res/layout/activity_pick_address.xml" value="0.24010416666666667" />
+        <entry key="..\:/Users/min/AndroidStudioProjects/FlashFastFood/app/src/main/res/layout/activity_review.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/min/AndroidStudioProjects/FlashFastFood/app/src/main/res/layout/activity_search.xml" value="0.21403508771929824" />
         <entry key="..\:/Users/min/AndroidStudioProjects/FlashFastFood/app/src/main/res/layout/activity_sign_up.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/min/AndroidStudioProjects/FlashFastFood/app/src/main/res/layout/activity_update_profile.xml" value="0.13020833333333334" />
         <entry key="..\:/Users/min/AndroidStudioProjects/FlashFastFood/app/src/main/res/layout/activity_welcome.xml" value="0.21403508771929824" />
+        <entry key="..\:/Users/min/AndroidStudioProjects/FlashFastFood/app/src/main/res/layout/content_review.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/min/AndroidStudioProjects/FlashFastFood/app/src/main/res/layout/dialog_alert.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/min/AndroidStudioProjects/FlashFastFood/app/src/main/res/layout/dialog_order_loading.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/min/AndroidStudioProjects/FlashFastFood/app/src/main/res/layout/dialog_progress.xml" value="0.25416666666666665" />
@@ -49,8 +51,10 @@
         <entry key="..\:/Users/min/AndroidStudioProjects/FlashFastFood/app/src/main/res/layout/fragment_delivery.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/min/AndroidStudioProjects/FlashFastFood/app/src/main/res/layout/fragment_explore.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/min/AndroidStudioProjects/FlashFastFood/app/src/main/res/layout/fragment_favorite.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/min/AndroidStudioProjects/FlashFastFood/app/src/main/res/layout/fragment_first.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/min/AndroidStudioProjects/FlashFastFood/app/src/main/res/layout/fragment_history.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/min/AndroidStudioProjects/FlashFastFood/app/src/main/res/layout/fragment_home.xml" value="0.21403508771929824" />
+        <entry key="..\:/Users/min/AndroidStudioProjects/FlashFastFood/app/src/main/res/layout/fragment_notification.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/min/AndroidStudioProjects/FlashFastFood/app/src/main/res/layout/fragment_order.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/min/AndroidStudioProjects/FlashFastFood/app/src/main/res/layout/fragment_prepared.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/min/AndroidStudioProjects/FlashFastFood/app/src/main/res/layout/fragment_profile.xml" value="0.25416666666666665" />
@@ -61,8 +65,10 @@
         <entry key="..\:/Users/min/AndroidStudioProjects/FlashFastFood/app/src/main/res/layout/item_items.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/min/AndroidStudioProjects/FlashFastFood/app/src/main/res/layout/item_order.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/min/AndroidStudioProjects/FlashFastFood/app/src/main/res/layout/item_order_delivery.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/min/AndroidStudioProjects/FlashFastFood/app/src/main/res/layout/item_order_history.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/min/AndroidStudioProjects/FlashFastFood/app/src/main/res/layout/item_order_view.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/min/AndroidStudioProjects/FlashFastFood/app/src/main/res/layout/item_recommended.xml" value="0.264" />
+        <entry key="..\:/Users/min/AndroidStudioProjects/FlashFastFood/app/src/main/res/layout/item_reviews.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/min/AndroidStudioProjects/FlashFastFood/app/src/main/res/layout/items_custom_spinner.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/min/AndroidStudioProjects/FlashFastFood/app/src/main/res/layout/tab_layout.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/min/AndroidStudioProjects/FlashFastFood/app/src/main/res/menu/bottom_nav.xml" value="0.25416666666666665" />

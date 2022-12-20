@@ -17,6 +17,9 @@
         android:theme="@style/Theme.FlashFastFoodMain"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".ReviewActivity"
+            android:exported="true" />
+        <activity
             android:name=".SearchActivity"
             android:exported="true" />
         <activity

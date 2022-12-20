@@ -53,18 +53,20 @@ import java.util.ArrayList;
 
 public class PreparedFragment extends Fragment {
 
-    String currentUserId;
+    private String currentUserId;
 
-    RecyclerView rvPrepared;
+    private RecyclerView rvPrepared;
 
-    FirebaseDatabase firebaseDatabase;
-    DatabaseReference cartRef, orderRef;
+    private FirebaseDatabase firebaseDatabase;
+    private DatabaseReference cartRef, orderRef;
 
-    FirebaseRecyclerOptions<Order> options;
-    FirebaseRecyclerAdapter<Order, OrderViewHolder> adapter;
-    ArrayList<String> arrayList = null;
+    private FirebaseRecyclerOptions<Order> options;
+    private FirebaseRecyclerAdapter<Order, OrderViewHolder> adapter;
+    private ArrayList<String> arrayList1 = null;
 
-    LottieAnimationView prepareWating;
+    private Order order;
+
+    private LottieAnimationView prepareWating;
     public PreparedFragment() {
         // Required empty public constructor
     }
@@ -118,11 +120,11 @@ public class PreparedFragment extends Fragment {
         orderRef.child(currentUserId).orderByChild("orderStatus").equalTo("Processing").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                arrayList = new ArrayList<>();
+                arrayList1 = new ArrayList<>();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                    arrayList.add(dataSnapshot.getKey());
+                    arrayList1.add(dataSnapshot.getKey());
                 }
-                String countItemInCart= Integer.toString(arrayList.size());
+                String countItemInCart= Integer.toString(arrayList1.size());
                 int itemInOrder = Integer.parseInt(countItemInCart);
                 if (itemInOrder==0){
                     prepareWating.setVisibility(View.VISIBLE);
@@ -198,6 +200,14 @@ public class PreparedFragment extends Fragment {
                                 view.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
+                                        order = new Order();
+                                        order.setOrderTotalPrice(orderPrice);
+                                        order.setOrderStatus("Canceled");
+                                        order.setOrderPayment(orderPayment);
+                                        order.setOrderTime(orderTime);
+                                        order.setOrderLocation(orderLocation);
+                                        order.setOrderItemQuantity(orderItemQuantity);
+                                        order.setOrderDate(orderDate);
                                         alertDialog.dismiss();
                                         Dialog dialog = new Dialog(getContext(),R.style.CustomDialog);
                                         dialog.setContentView(R.layout.dialog_order_loading);
@@ -205,7 +215,7 @@ public class PreparedFragment extends Fragment {
                                         new Handler().postDelayed(new Runnable() {
                                                                       @Override
                                                                       public void run() {
-                                                                          orderRef.child(currentUserId).child(postKey).removeValue();
+                                                                          orderRef.child(currentUserId).child(postKey).setValue(order);
                                                                           dialog.dismiss();
                                                                       }
                                                                   }, 5000

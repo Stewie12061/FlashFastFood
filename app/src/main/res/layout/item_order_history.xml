@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clipChildren="false"
+    android:paddingBottom="20dp"
+    android:background="@color/orange"
+    android:clipToPadding="false">
+
+    <ir.beigirad.zigzagview.ZigzagView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:zigzagBackgroundColor="@color/white"
+        app:zigzagElevation="8dp"
+        app:zigzagHeight="8dp"
+        app:zigzagPaddingContent="10dp"
+        app:zigzagShadowAlpha="0.6"
+        app:zigzagSides="bottom">
+
+        <!--Linear layout created-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/txtorderStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/prepare"
+                    android:drawablePadding="5dp"
+                    android:drawableTint="@color/black"
+                    android:fontFamily="@font/airbnb_cereal"
+                    android:gravity="center_vertical"
+                    android:text="Order Status:"
+                    android:textColor="@color/black"
+                    android:textSize="22dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/orderStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:fontFamily="@font/airbnb_cereal"
+                    android:gravity="center_vertical"
+                    android:text="Processing"
+                    android:textColor="@color/red"
+                    android:textSize="22dp"
+                    android:textStyle="bold" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/orderDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/airbnb_cereal"
+                    android:gravity="center_vertical"
+                    android:text="12/19/2022"
+                    android:textColor="@color/orange"
+                    android:textSize="20dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/orderTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/dot"
+                    android:drawableTint="@color/black"
+                    android:fontFamily="@font/airbnb_cereal"
+                    android:gravity="center_vertical"
+                    android:text="00:47 AM"
+                    android:textColor="@color/orange"
+                    android:textSize="20dp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/orderQuantity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableTint="@color/orange"
+                    android:fontFamily="@font/airbnb_cereal"
+                    android:gravity="center_vertical"
+                    android:text="5"
+                    android:textColor="@color/orange"
+                    android:textSize="20dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txtorderQuantity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:drawableEnd="@drawable/dot"
+                    android:drawableTint="@color/black"
+                    android:fontFamily="@font/airbnb_cereal"
+                    android:gravity="center_vertical"
+                    android:text="Item"
+                    android:textColor="@color/orange"
+                    android:textSize="20dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/orderPriceorder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableEnd="@drawable/dollar"
+                    android:drawableTint="@color/orange"
+                    android:fontFamily="@font/airbnb_cereal"
+                    android:gravity="center_vertical"
+                    android:text="50"
+                    android:textColor="@color/orange"
+                    android:textSize="20dp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/orderPayment"
+                    android:layout_width="match_parent"
+                    android:textAlignment="textEnd"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/airbnb_cereal"
+                    android:text="Cash on delivery"
+                    android:textColor="@color/red"
+                    android:textSize="20dp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/airbnb_cereal"
+                    android:gravity="center_vertical"
+                    android:text="Address:"
+                    android:textColor="@color/black"
+                    android:textSize="20dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/orderLocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:drawableTint="@color/orange"
+                    android:fontFamily="@font/airbnb_cereal"
+                    android:gravity="center_vertical"
+                    android:text="113/29 Ngo Quyen, phuong 12, quan 5"
+                    android:textColor="@color/orange"
+                    android:textSize="20dp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ir.beigirad.zigzagview.ZigzagView>
+
+</RelativeLayout>
