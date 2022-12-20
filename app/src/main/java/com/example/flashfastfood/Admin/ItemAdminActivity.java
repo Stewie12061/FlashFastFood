@@ -370,7 +370,7 @@ public class ItemAdminActivity extends AppCompatActivity {
         builder.setView(view);
 
         ((TextView) view.findViewById(R.id.textTitle))
-                .setText("Update Item");
+                .setText("Create Item");
         ((TextView) view.findViewById(R.id.textMessage))
                 .setText("Fill all information to update");
         ((Button) view.findViewById(R.id.buttonYes))

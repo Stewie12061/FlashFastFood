@@ -18,8 +18,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.andremion.counterfab.CounterFab;
 import com.example.flashfastfood.ChangePasswordActivity;
 import com.example.flashfastfood.LoginActivity;
+import com.example.flashfastfood.MessageActivity;
 import com.example.flashfastfood.R;
 import com.example.flashfastfood.ReadWriteUserDetails;
 import com.example.flashfastfood.UpdateProfileActivity;
@@ -31,11 +33,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ProfileFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class ProfileFragment extends Fragment {
 
     private TextView txtemail, txtgender, txtfullname, txtphone, changePassbtn, txtL1, txtL2, txtL3, txtL4, txtL5;
@@ -48,44 +45,15 @@ public class ProfileFragment extends Fragment {
 
     private FirebaseAuth firebaseAuth;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    CounterFab itemFabMessageUser;
 
     public ProfileFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ProfileFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ProfileFragment newInstance(String param1, String param2) {
-        ProfileFragment fragment = new ProfileFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -116,6 +84,15 @@ public class ProfileFragment extends Fragment {
 
         appName1 = view.findViewById(R.id.appName1);
         appName2 = view.findViewById(R.id.appName2);
+
+        itemFabMessageUser = view.findViewById(R.id.itemFabMessageUser);
+        itemFabMessageUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), MessageActivity.class);
+                startActivity(intent);
+            }
+        });
 
         //animation
         topAnim = AnimationUtils.loadAnimation(getContext(), R.anim.top_animation);
@@ -173,13 +150,6 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        notification = view.findViewById(R.id.notification);
-        notification.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getContext(),"Developing",Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     private void showUserProfile(FirebaseUser firebaseUser) {

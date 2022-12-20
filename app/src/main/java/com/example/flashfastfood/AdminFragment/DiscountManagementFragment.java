@@ -241,7 +241,7 @@ public class DiscountManagementFragment extends Fragment {
         builder.setView(view);
 
         ((TextView) view.findViewById(R.id.textTitle))
-                .setText("Add new Category");
+                .setText("Create Voucher");
         ((TextView) view.findViewById(R.id.textMessage))
                 .setText("Fill category name and upload image");
         ((Button) view.findViewById(R.id.buttonYes))

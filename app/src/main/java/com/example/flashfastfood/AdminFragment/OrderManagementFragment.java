@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.andremion.counterfab.CounterFab;
 import com.example.flashfastfood.AdapterAdmin.UserListViewHolder;
 import com.example.flashfastfood.Admin.ConfirmOrderActivity;
+import com.example.flashfastfood.Admin.MessageAdminActivity;
 import com.example.flashfastfood.Data.UserProfile;
 import com.example.flashfastfood.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -126,6 +127,15 @@ public class OrderManagementFragment extends Fragment {
                             @Override
                             public void onClick(View v) {
                                 Intent intent = new Intent(getContext(), ConfirmOrderActivity.class);
+                                intent.putExtra("userId",id);
+                                startActivity(intent);
+                            }
+                        });
+
+                        holder.btnItemFabMessage.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent = new Intent(getContext(), MessageAdminActivity.class);
                                 intent.putExtra("userId",id);
                                 startActivity(intent);
                             }
