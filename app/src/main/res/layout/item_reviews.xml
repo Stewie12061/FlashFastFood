@@ -30,8 +30,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <de.hdodenhof.circleimageview.CircleImageView
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_gravity="center"
                     android:src="@drawable/logosmall"
                     app:civ_border_color="@color/orange"
@@ -40,9 +40,10 @@
 
                 <TextView
                     android:id="@+id/userNameReview"
-                    android:layout_width="wrap_content"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:textSize="16dp"
+                    android:gravity="center"
                     android:textColor="@color/orange"
                     android:fontFamily="@font/airbnb_cereal"
                     android:text="User name"/>
@@ -83,7 +84,6 @@
                 android:gravity="end"
                 android:text="12-22-2022"
                 android:layout_weight="1"
-                android:layout_marginEnd="40dp"
                 android:fontFamily="@font/airbnb_cereal"/>
             <TextView
                 android:id="@+id/timePostReview"
