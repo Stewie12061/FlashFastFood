@@ -1,27 +1,19 @@
 package com.example.flashfastfood.Data;
 
 public class Items {
-    String cateId, itemDes, itemImg, itemName, itemPrice, itemPromo, itemRating, itemStatus;
+    String itemDes, itemImg, cateId,  itemName, itemStatus, itemPrice, itemRating;
+
 
     public Items(){}
 
-    public Items(String cateId, String itemDes, String itemImg, String itemName, String itemPrice, String itemPromo, String itemRating, String itemStatus) {
-        this.cateId = cateId;
+    public Items(String itemDes, String itemImg, String cateId, String itemName, String itemStatus, String itemPrice, String itemRating) {
         this.itemDes = itemDes;
         this.itemImg = itemImg;
-        this.itemName = itemName;
-        this.itemPrice = itemPrice;
-        this.itemPromo = itemPromo;
-        this.itemRating = itemRating;
-        this.itemStatus = itemStatus;
-    }
-
-    public String getCateId() {
-        return cateId;
-    }
-
-    public void setCateId(String cateId) {
         this.cateId = cateId;
+        this.itemName = itemName;
+        this.itemStatus = itemStatus;
+        this.itemPrice = itemPrice;
+        this.itemRating = itemRating;
     }
 
     public String getItemDes() {
@@ -40,12 +32,28 @@ public class Items {
         this.itemImg = itemImg;
     }
 
+    public String getCateId() {
+        return cateId;
+    }
+
+    public void setCateId(String cateId) {
+        this.cateId = cateId;
+    }
+
     public String getItemName() {
         return itemName;
     }
 
     public void setItemName(String itemName) {
         this.itemName = itemName;
+    }
+
+    public String getItemStatus() {
+        return itemStatus;
+    }
+
+    public void setItemStatus(String itemStatus) {
+        this.itemStatus = itemStatus;
     }
 
     public String getItemPrice() {
@@ -56,27 +64,11 @@ public class Items {
         this.itemPrice = itemPrice;
     }
 
-    public String getItemPromo() {
-        return itemPromo;
-    }
-
-    public void setItemPromo(String itemPromo) {
-        this.itemPromo = itemPromo;
-    }
-
     public String getItemRating() {
         return itemRating;
     }
 
     public void setItemRating(String itemRating) {
         this.itemRating = itemRating;
-    }
-
-    public String getItemStatus() {
-        return itemStatus;
-    }
-
-    public void setItemStatus(String itemStatus) {
-        this.itemStatus = itemStatus;
     }
 }

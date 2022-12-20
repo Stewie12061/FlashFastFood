@@ -202,8 +202,8 @@ public class HomeFragment extends Fragment {
                 categoriesRef.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        String catename = dataSnapshot.child("FoodCateName").getValue().toString();
-                        String cateimg = dataSnapshot.child("FoodCateImg").getValue().toString();
+                        String catename = dataSnapshot.child("foodCateName").getValue().toString();
+                        String cateimg = dataSnapshot.child("foodCateImg").getValue().toString();
 
                         categoryTypeViewHolder.cateName.setText(catename);
                         Picasso.get().load(cateimg).into(categoryTypeViewHolder.cateImg);

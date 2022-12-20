@@ -147,11 +147,11 @@ public class CategoryAdminFragment extends Fragment {
                 cateRef.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        String propertyname = snapshot.child("FoodCateImg").getValue().toString();
-                        String propertyImg = snapshot.child("FoodCateName").getValue().toString();
+                        String cateImg = snapshot.child("foodCateImg").getValue().toString();
+                        String catename = snapshot.child("foodCateName").getValue().toString();
 
-                        holder.cateadName.setText(propertyname);
-                        Picasso.get().load(propertyImg).into(holder.cateadImg);
+                        holder.cateadName.setText(catename);
+                        Picasso.get().load(cateImg).into(holder.cateadImg);
 
                         //edit category
                         holder.btnmodify.setOnClickListener(new View.OnClickListener() {
@@ -168,7 +168,7 @@ public class CategoryAdminFragment extends Fragment {
                             @Override
                             public void onClick(View v) {
                                 catePositionId = adapter.getRef(holder.getBindingAdapterPosition()).getKey();
-                                cateName = propertyname;
+                                cateName = catename;
                                 deleteCate();
                             }
                         });
@@ -178,7 +178,7 @@ public class CategoryAdminFragment extends Fragment {
                             public void onClick(View view, int position, boolean isLongClick) {
                                 Intent intent = new Intent(getContext(), ItemAdminActivity.class);
                                 intent.putExtra("categoryId",adapter.getRef(position).getKey());
-                                intent.putExtra("cateName",propertyname);
+                                intent.putExtra("cateName",catename);
                                 startActivity(intent);
                             }
                         });
@@ -390,8 +390,8 @@ public class CategoryAdminFragment extends Fragment {
         cateRef.child(catePositionId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                img = snapshot.child("propertyImg").getValue().toString();
-                cateName.setText(snapshot.child("propertyName").getValue().toString());
+                img = snapshot.child("foodCateImg").getValue().toString();
+                cateName.setText(snapshot.child("foodCateName").getValue().toString());
                 Picasso.get().load(img).into(imgCate);
             }
 

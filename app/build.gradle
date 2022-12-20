@@ -93,6 +93,9 @@ dependencies {
     //card zigzag
     implementation 'com.github.beigirad:ZigzagView:1.2.0'
 
+    implementation 'com.makeramen:roundedimageview:2.3.0'
+
+
 
 
 }

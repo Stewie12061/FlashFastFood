@@ -51,6 +51,7 @@ public class ItemsActivity extends AppCompatActivity {
 
     String idCategory,currentUserId;
     ArrayList<String> arrayList = null;
+    ArrayList<String> arrayList2 = null;
 
     CounterFab btnCart;
 
@@ -104,6 +105,7 @@ public class ItemsActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        getItemStatus();
         getCartQuantity();
         if (idCategory != null) {
             loadCateItems();
@@ -115,13 +117,25 @@ public class ItemsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        getItemStatus();
         getCartQuantity();
+        if (idCategory != null) {
+            loadCateItems();
+        }else {
+            loadAllItems();
+        }
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
+        getItemStatus();
         getCartQuantity();
+        if (idCategory != null) {
+            loadCateItems();
+        }else {
+            loadAllItems();
+        }
     }
 
 
@@ -143,6 +157,25 @@ public class ItemsActivity extends AppCompatActivity {
                     btnCart.setCount(itemInCart);
                 }
 
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    public void getItemStatus(){
+        itemsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                arrayList2 = new ArrayList<>();
+                for (DataSnapshot dataSnapshot:snapshot.getChildren()){
+                    if (dataSnapshot.child("itemStatus").equals("Unavailable")){
+                        arrayList2.add(dataSnapshot.getKey());
+                    }
+                }
             }
 
             @Override
@@ -227,6 +260,11 @@ public class ItemsActivity extends AppCompatActivity {
             @Override
             protected void onBindViewHolder(@NonNull ItemsViewHolder holder, int position, @NonNull Items model) {
                 String postKey = getRef(position).getKey();
+
+                if (arrayList2.contains(postKey)){
+                    holder.itemView.setVisibility(View.GONE);
+                    holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
+                }
 
                 itemsRef.child(postKey).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override

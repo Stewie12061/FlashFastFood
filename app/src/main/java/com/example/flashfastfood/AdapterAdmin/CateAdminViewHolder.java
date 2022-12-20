@@ -1,6 +1,7 @@
 package com.example.flashfastfood.AdapterAdmin;
 
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -13,7 +14,7 @@ import com.makeramen.roundedimageview.RoundedImageView;
 
 public class CateAdminViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     public TextView cateadName;
-    public RoundedImageView cateadImg;
+    public ImageView cateadImg;
     private ItemClickListener itemClickListener;
     public LinearLayout btnmodify, btndelete;
     public CateAdminViewHolder(@NonNull View itemView) {

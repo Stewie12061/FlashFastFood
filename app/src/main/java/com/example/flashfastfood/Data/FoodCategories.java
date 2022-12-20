@@ -1,28 +1,28 @@
 package com.example.flashfastfood.Data;
 
 public class FoodCategories {
-    private String FoodCateImg, FoodCateName;
+    private String foodCateImg, foodCateName;
 
     public FoodCategories(){}
 
     public FoodCategories(String foodCateImg, String foodCateName) {
-        FoodCateImg = foodCateImg;
-        FoodCateName = foodCateName;
+        this.foodCateImg = foodCateImg;
+        this.foodCateName = foodCateName;
     }
 
     public String getFoodCateImg() {
-        return FoodCateImg;
+        return foodCateImg;
     }
 
     public void setFoodCateImg(String foodCateImg) {
-        FoodCateImg = foodCateImg;
+        this.foodCateImg = foodCateImg;
     }
 
     public String getFoodCateName() {
-        return FoodCateName;
+        return foodCateName;
     }
 
     public void setFoodCateName(String foodCateName) {
-        FoodCateName = foodCateName;
+        this.foodCateName = foodCateName;
     }
 }
