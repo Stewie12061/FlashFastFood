@@ -55,6 +55,7 @@ public class SearchActivity extends AppCompatActivity {
     FirebaseRecyclerOptions<Items> options;
     FirebaseRecyclerAdapter<Items, ItemsViewHolder> adapter;
     ArrayList<String> arrayList = null;
+    ArrayList<String> arrayList2 = null;
 
     LottieAnimationView searchWaiting;
     CounterFab btnCart;
@@ -173,6 +174,7 @@ public class SearchActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        getItemStatus();
         getCartQuantity();
         arrayList = new ArrayList<String>();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -193,6 +195,7 @@ public class SearchActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        getItemStatus();
         getCartQuantity();
         arrayList = new ArrayList<String>();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -210,6 +213,25 @@ public class SearchActivity extends AppCompatActivity {
         });
     }
 
+    public void getItemStatus(){
+        itemsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                arrayList2 = new ArrayList<>();
+                for (DataSnapshot dataSnapshot:snapshot.getChildren()){
+                    if (dataSnapshot.child("itemStatus").getValue().toString().equals("Unavailable")){
+                        arrayList2.add(dataSnapshot.getKey());
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
     private void loadDataSearch(String searchText) {
         Query query;
         if(searchText==""){
@@ -218,7 +240,6 @@ public class SearchActivity extends AppCompatActivity {
         else {
             query = itemsRef.orderByChild("itemName").startAt(searchText).endAt(searchText+"\uf8ff");
         }
-
 
         options = new FirebaseRecyclerOptions.Builder<Items>().setQuery(query,Items.class).build();
         adapter = new FirebaseRecyclerAdapter<Items, ItemsViewHolder>(options) {
@@ -229,10 +250,16 @@ public class SearchActivity extends AppCompatActivity {
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 String currentUserId = user.getUid();
 
-                if (arrayList.contains(postKey)){
+                getItemStatus();
+                if (arrayList2.contains(postKey)){
                     holder.itemView.setVisibility(View.GONE);
                     holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
                 }
+
+//                if (arrayList.contains(postKey)){
+//                    holder.itemView.setVisibility(View.GONE);
+//                    holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
+//                }
 
                 itemsRef.child(postKey).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -251,7 +278,7 @@ public class SearchActivity extends AppCompatActivity {
                         cateRef.child(cateId).addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                holder.itemcatename.setText(snapshot.child("FoodCateName").getValue().toString());
+                                holder.itemcatename.setText(snapshot.child("foodCateName").getValue().toString());
                             }
 
                             @Override

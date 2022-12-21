@@ -55,7 +55,6 @@ public class ItemsActivity extends AppCompatActivity {
 
     CounterFab btnCart;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -195,15 +194,14 @@ public class ItemsActivity extends AppCompatActivity {
             protected void onBindViewHolder(@NonNull ItemsViewHolder holder, int position, @NonNull Items model) {
                 String postKey = getRef(position).getKey();
 
-                getItemStatus();
                 if (arrayList2.contains(postKey)){
                     holder.itemView.setVisibility(View.GONE);
                     holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
                 }
-
                 itemsRef.child(postKey).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        getItemStatus();
                         String name = snapshot.child("itemName").getValue().toString();
                         String rating = snapshot.child("itemRating").getValue().toString();
                         String price = snapshot.child("itemPrice").getValue().toString();
@@ -266,7 +264,6 @@ public class ItemsActivity extends AppCompatActivity {
             protected void onBindViewHolder(@NonNull ItemsViewHolder holder, int position, @NonNull Items model) {
                 String postKey = getRef(position).getKey();
 
-                getItemStatus();
                 if (arrayList2.contains(postKey)){
                     holder.itemView.setVisibility(View.GONE);
                     holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
@@ -275,6 +272,7 @@ public class ItemsActivity extends AppCompatActivity {
                 itemsRef.child(postKey).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        getItemStatus();
                         String name = snapshot.child("itemName").getValue().toString();
                         String rating = snapshot.child("itemRating").getValue().toString();
                         String price = snapshot.child("itemPrice").getValue().toString();
