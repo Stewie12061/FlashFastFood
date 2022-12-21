@@ -80,32 +80,41 @@ public class DeliveryFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        arrayList2 = new ArrayList<>();
+        getOrderQuantity();
         loadDeliveringItems();
-//        String countItemInCart= Integer.toString(arrayList2.size());
-//        int itemInOrderDe = Integer.parseInt(countItemInCart);
-//        if (itemInOrderDe==0){
-//            deliveryWaiting.setVisibility(View.VISIBLE);
-//        }
-//        else {
-//            deliveryWaiting.setVisibility(View.GONE);
-//        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        arrayList2 = new ArrayList<>();
+        getOrderQuantity();
         loadDeliveringItems();
-//        String countItemInCart= Integer.toString(arrayList2.size());
-//        int itemInOrder = Integer.parseInt(countItemInCart);
-//        if (itemInOrder==0){
-//            deliveryWaiting.setVisibility(View.VISIBLE);
-//        }
-//        else {
-//            deliveryWaiting.setVisibility(View.GONE);
-//        }
     }
+
+    public void getOrderQuantity(){
+        orderRef.child(currentUserId).orderByChild("orderStatus").equalTo("Delivering").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                arrayList2 = new ArrayList<>();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                    arrayList2.add(dataSnapshot.getKey());
+                }
+                String countItemInCart= Integer.toString(arrayList2.size());
+                int itemInOrder = Integer.parseInt(countItemInCart);
+                if (itemInOrder==0){
+                    deliveryWaiting.setVisibility(View.VISIBLE);
+                }
+                else {
+                    deliveryWaiting.setVisibility(View.GONE);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
 
     private void loadDeliveringItems(){
         Query query = orderRef.child(currentUserId).orderByChild("orderStatus").equalTo("Delivering");

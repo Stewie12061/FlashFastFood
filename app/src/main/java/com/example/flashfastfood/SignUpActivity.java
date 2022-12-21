@@ -93,7 +93,7 @@ public class SignUpActivity extends AppCompatActivity {
                 String phonenumber = edtphonenumber.getText().toString().trim();
                 String passwordconfirm = edtpasswordconfirm.getText().toString().trim();
                 String gender;
-                String role = "User".toString().trim();
+                String role = "User";
 
                 //Validate Mobile Number using Matcher and Patter
                 String mobileRegex = "(0[3|5|7|8|9])+([0-9]{8})";

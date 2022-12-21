@@ -45,7 +45,7 @@ public class HistoryFragment extends Fragment {
     private FirebaseRecyclerAdapter<Order, OrderViewHolder> adapter;
     private ArrayList<String> arrayList3 = null;
 
-    private LottieAnimationView historyWating;
+    private LottieAnimationView historyWating, historyWating2;
 
     public HistoryFragment() {
         // Required empty public constructor
@@ -92,14 +92,6 @@ public class HistoryFragment extends Fragment {
         loadHistoryCompleted();
         loadHistoryCanceled();
 
-        String countItemInCart= Integer.toString(arrayList3.size());
-        int itemInOrder = Integer.parseInt(countItemInCart);
-        if (itemInOrder==0){
-            historyWating.setVisibility(View.VISIBLE);
-        }
-        else {
-            historyWating.setVisibility(View.GONE);
-        }
     }
 
     @Override
@@ -110,14 +102,6 @@ public class HistoryFragment extends Fragment {
         loadHistoryCompleted();
         loadHistoryCanceled();
 
-        String countItemInCart= Integer.toString(arrayList3.size());
-        int itemInOrder = Integer.parseInt(countItemInCart);
-        if (itemInOrder==0){
-            historyWating.setVisibility(View.VISIBLE);
-        }
-        else {
-            historyWating.setVisibility(View.GONE);
-        }
     }
 
 
@@ -204,6 +188,14 @@ public class HistoryFragment extends Fragment {
 
                         for (DataSnapshot dataSnapshot : snapshot.getChildren()){
                             arrayList3.add(dataSnapshot.getKey());
+                        }
+                        String countItemInCart= Integer.toString(arrayList3.size());
+                        int itemInOrder = Integer.parseInt(countItemInCart);
+                        if (itemInOrder==0){
+                            historyWating.setVisibility(View.VISIBLE);
+                        }
+                        else {
+                            historyWating.setVisibility(View.GONE);
                         }
 
                         String orderDate = snapshot.child("orderDate").getValue().toString();
