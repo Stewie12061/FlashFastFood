@@ -472,7 +472,7 @@ public class CategoryAdminFragment extends Fragment {
                         cateRef.child(catePositionId).setValue(foodCategories).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
-                                Toast.makeText(getContext(),"Update succeed",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(),"Create succeed",Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
@@ -484,7 +484,7 @@ public class CategoryAdminFragment extends Fragment {
                         cateRef.child(catePositionId).setValue(foodCategories).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
-                                Toast.makeText(getContext(),"Update succeed",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(),"Create succeed",Toast.LENGTH_SHORT).show();
                             }
                         });
                     }

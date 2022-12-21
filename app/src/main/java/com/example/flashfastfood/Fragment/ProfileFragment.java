@@ -33,6 +33,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
 public class ProfileFragment extends Fragment {
 
     private TextView txtemail, txtgender, txtfullname, txtphone, changePassbtn, txtL1, txtL2, txtL3, txtL4, txtL5;
@@ -41,9 +43,16 @@ public class ProfileFragment extends Fragment {
     private LinearLayout editUser, notification;
     private Animation topAnim, bottomAnim, rightAnim, leftAnim;
 
+    String currentUserId;
+    ArrayList<String> arrayList = null;
+    String countItemChat;
+
     private TextView appName1, appName2;
 
     private FirebaseAuth firebaseAuth;
+
+    FirebaseDatabase firebaseDatabase;
+    DatabaseReference chatNotifiRef;
 
     CounterFab itemFabMessageUser;
 
@@ -89,6 +98,7 @@ public class ProfileFragment extends Fragment {
         itemFabMessageUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                chatNotifiRef.child("z5YxFgx5nHYe9sQCJU9Tb3h9N7J2").child(currentUserId).removeValue();
                 Intent intent = new Intent(getContext(), MessageActivity.class);
                 startActivity(intent);
             }
@@ -150,6 +160,56 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        firebaseDatabase = FirebaseDatabase.getInstance("https://flashfastfood-81fee-default-rtdb.asia-southeast1.firebasedatabase.app");
+        chatNotifiRef = firebaseDatabase.getReference("Chats Notification");
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        currentUserId = user.getUid();
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        chatNotifiRef.child("z5YxFgx5nHYe9sQCJU9Tb3h9N7J2").child(currentUserId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                arrayList = new ArrayList<>();
+                for (DataSnapshot dataSnapshot:snapshot.getChildren()){
+                    arrayList.add(dataSnapshot.getKey());
+                }
+                countItemChat= Integer.toString(arrayList.size());
+                int itemInChat = Integer.parseInt(countItemChat);
+                itemFabMessageUser.setCount(itemInChat);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        chatNotifiRef.child("z5YxFgx5nHYe9sQCJU9Tb3h9N7J2").child(currentUserId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                arrayList = new ArrayList<>();
+                for (DataSnapshot dataSnapshot:snapshot.getChildren()){
+                    arrayList.add(dataSnapshot.getKey());
+                }
+                countItemChat= Integer.toString(arrayList.size());
+                int itemInChat = Integer.parseInt(countItemChat);
+                itemFabMessageUser.setCount(itemInChat);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void showUserProfile(FirebaseUser firebaseUser) {

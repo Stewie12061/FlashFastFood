@@ -25,14 +25,13 @@
                 android:paddingBottom="10dp"
                 android:orientation="vertical">
 
-                <ImageView
+                <com.makeramen.roundedimageview.RoundedImageView
                     android:id="@+id/categoryImg"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/hamburger"
                     android:layout_weight="20"
-                    android:padding="30dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -40,9 +39,9 @@
 
                 <TextView
                     android:id="@+id/categoryName"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
+                    android:textAlignment="center"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
                     android:text="Stewieg"
                     android:textColor="@color/black"
                     android:textSize="16dp"

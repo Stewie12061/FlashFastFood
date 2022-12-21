@@ -172,7 +172,7 @@ public class ItemsActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 arrayList2 = new ArrayList<>();
                 for (DataSnapshot dataSnapshot:snapshot.getChildren()){
-                    if (dataSnapshot.child("itemStatus").equals("Unavailable")){
+                    if (dataSnapshot.child("itemStatus").getValue().toString().equals("Unavailable")){
                         arrayList2.add(dataSnapshot.getKey());
                     }
                 }
@@ -195,6 +195,7 @@ public class ItemsActivity extends AppCompatActivity {
             protected void onBindViewHolder(@NonNull ItemsViewHolder holder, int position, @NonNull Items model) {
                 String postKey = getRef(position).getKey();
 
+                getItemStatus();
                 if (arrayList2.contains(postKey)){
                     holder.itemView.setVisibility(View.GONE);
                     holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
@@ -225,7 +226,6 @@ public class ItemsActivity extends AppCompatActivity {
 
                             }
                         });
-
                         holder.setItemClickListener(new ItemClickListener() {
                             @Override
                             public void onClick(View view, int position, boolean isLongClick) {
@@ -266,6 +266,7 @@ public class ItemsActivity extends AppCompatActivity {
             protected void onBindViewHolder(@NonNull ItemsViewHolder holder, int position, @NonNull Items model) {
                 String postKey = getRef(position).getKey();
 
+                getItemStatus();
                 if (arrayList2.contains(postKey)){
                     holder.itemView.setVisibility(View.GONE);
                     holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));

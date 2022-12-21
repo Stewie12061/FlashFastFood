@@ -28,6 +28,8 @@ import com.example.flashfastfood.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -40,14 +42,15 @@ import java.util.ArrayList;
 
 public class OrderManagementFragment extends Fragment {
 
-    String countItemInCart;
-    int itemInCart;
+    String countItemInCart, countItemChat;
+    int itemInCart, itemInChat;
 
     FirebaseDatabase firebaseDatabase;
-    DatabaseReference userRef, orderRef;
+    DatabaseReference userRef, orderRef, chatRef, chatNotifiRef;
     FirebaseRecyclerAdapter<UserProfile, UserListViewHolder> adapter;
-    String userId;
+    String userId, adminId;
     ArrayList<String> arrayList = null;
+    ArrayList<String> arrayListUser = null;
 
     RecyclerView rvCustomerList;
 
@@ -75,6 +78,11 @@ public class OrderManagementFragment extends Fragment {
         firebaseDatabase = FirebaseDatabase.getInstance("https://flashfastfood-81fee-default-rtdb.asia-southeast1.firebasedatabase.app");
         userRef = firebaseDatabase.getReference("Registered Users");
         orderRef = firebaseDatabase.getReference("Order");
+        chatRef = firebaseDatabase.getReference("Chats");
+        chatNotifiRef = firebaseDatabase.getReference("Chats Notification");
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        adminId = user.getUid();
 
         rvCustomerList = view.findViewById(R.id.rvUserList);
         rvCustomerList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
@@ -111,12 +119,34 @@ public class OrderManagementFragment extends Fragment {
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 arrayList = new ArrayList<>();
                                 for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                                    arrayList.add(dataSnapshot.getKey());
+                                    if (dataSnapshot.child("orderStatus").getValue().toString().contentEquals("Canceled")|dataSnapshot.child("orderStatus").getValue().toString().contentEquals("Successful")){
+                                        arrayList.remove(dataSnapshot.getKey());
+                                    }else {
+                                        arrayList.add(dataSnapshot.getKey());
+                                    }
                                 }
                                 countItemInCart= Integer.toString(arrayList.size());
                                 itemInCart = Integer.parseInt(countItemInCart);
                                 holder.btnItemFabCartUser.setCount(itemInCart);
                             }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+
+                        chatNotifiRef.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                arrayListUser = new ArrayList<>();
+                                for (DataSnapshot dataSnapshot:snapshot.getChildren()){
+                                    arrayListUser.add(dataSnapshot.getKey());
+                                }
+                                countItemChat= Integer.toString(arrayListUser.size());
+                                itemInChat = Integer.parseInt(countItemChat);
+                                holder.btnItemFabMessage.setCount(itemInChat);
+                            }
+
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
 
@@ -135,6 +165,8 @@ public class OrderManagementFragment extends Fragment {
                         holder.btnItemFabMessage.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                chatNotifiRef.child(id).removeValue();
+
                                 Intent intent = new Intent(getContext(), MessageAdminActivity.class);
                                 intent.putExtra("userId",id);
                                 startActivity(intent);

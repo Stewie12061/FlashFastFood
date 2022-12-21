@@ -33,7 +33,7 @@ public class MessageActivity extends AppCompatActivity {
     String adId;
 
     FirebaseDatabase firebaseDatabase;
-    DatabaseReference userRef, chatRef;
+    DatabaseReference userRef, chatRef, chatNotifiRef;
     String currentUserId;
 
     TextView adminNameMessage;
@@ -63,6 +63,7 @@ public class MessageActivity extends AppCompatActivity {
         firebaseDatabase = FirebaseDatabase.getInstance("https://flashfastfood-81fee-default-rtdb.asia-southeast1.firebasedatabase.app");
         userRef = firebaseDatabase.getReference("Registered Users");
         chatRef = firebaseDatabase.getReference("Chats");
+        chatNotifiRef = firebaseDatabase.getReference("Chats Notification");
 
         adminNameMessage = findViewById(R.id.adminNameMessage);
 
@@ -137,7 +138,7 @@ public class MessageActivity extends AppCompatActivity {
         hashMap.put("receiver",receiver);
         hashMap.put("message",message);
 
-
+        chatNotifiRef.child(currentUserId).push().setValue(hashMap);
         chatRef.push().setValue(hashMap);
     }
 
