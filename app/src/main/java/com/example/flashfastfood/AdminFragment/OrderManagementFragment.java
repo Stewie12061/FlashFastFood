@@ -54,6 +54,8 @@ public class OrderManagementFragment extends Fragment {
 
     RecyclerView rvCustomerList;
 
+    int countMess;
+
     public OrderManagementFragment() {
         // Required empty public constructor
     }
@@ -114,7 +116,7 @@ public class OrderManagementFragment extends Fragment {
                         holder.userName.setText(userName);
                         holder.userPhone.setText(userPhone);
 
-                        orderRef.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
+                        orderRef.child(id).addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 arrayList = new ArrayList<>();
@@ -135,16 +137,11 @@ public class OrderManagementFragment extends Fragment {
                             }
                         });
 
-                        chatNotifiRef.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
+                        chatNotifiRef.child(id).addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                arrayListUser = new ArrayList<>();
-                                for (DataSnapshot dataSnapshot:snapshot.getChildren()){
-                                    arrayListUser.add(dataSnapshot.getKey());
-                                }
-                                countItemChat= Integer.toString(arrayListUser.size());
-                                itemInChat = Integer.parseInt(countItemChat);
-                                holder.btnItemFabMessage.setCount(itemInChat);
+                                countMess = (int) snapshot.getChildrenCount();
+                                holder.btnItemFabMessage.setCount(countMess);
                             }
 
                             @Override

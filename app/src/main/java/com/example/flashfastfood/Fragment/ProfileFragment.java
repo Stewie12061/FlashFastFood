@@ -44,8 +44,6 @@ public class ProfileFragment extends Fragment {
     private Animation topAnim, bottomAnim, rightAnim, leftAnim;
 
     String currentUserId;
-    ArrayList<String> arrayList = null;
-    String countItemChat;
 
     private TextView appName1, appName2;
 
@@ -55,6 +53,8 @@ public class ProfileFragment extends Fragment {
     DatabaseReference chatNotifiRef;
 
     CounterFab itemFabMessageUser;
+
+    int mCount;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -75,6 +75,12 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        firebaseDatabase = FirebaseDatabase.getInstance("https://flashfastfood-81fee-default-rtdb.asia-southeast1.firebasedatabase.app");
+        chatNotifiRef = firebaseDatabase.getReference("Chats Notification");
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        currentUserId = user.getUid();
 
         profileAvatar = view.findViewById(R.id.profile_avatar);
         txtemail = view.findViewById(R.id.settextEmail);
@@ -103,6 +109,7 @@ public class ProfileFragment extends Fragment {
                 startActivity(intent);
             }
         });
+
 
         //animation
         topAnim = AnimationUtils.loadAnimation(getContext(), R.anim.top_animation);
@@ -160,49 +167,28 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        firebaseDatabase = FirebaseDatabase.getInstance("https://flashfastfood-81fee-default-rtdb.asia-southeast1.firebasedatabase.app");
-        chatNotifiRef = firebaseDatabase.getReference("Chats Notification");
-
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        currentUserId = user.getUid();
-
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        chatNotifiRef.child("z5YxFgx5nHYe9sQCJU9Tb3h9N7J2").child(currentUserId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                arrayList = new ArrayList<>();
-                for (DataSnapshot dataSnapshot:snapshot.getChildren()){
-                    arrayList.add(dataSnapshot.getKey());
-                }
-                countItemChat= Integer.toString(arrayList.size());
-                int itemInChat = Integer.parseInt(countItemChat);
-                itemFabMessageUser.setCount(itemInChat);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+        notifiInUser(currentUserId);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        chatNotifiRef.child("z5YxFgx5nHYe9sQCJU9Tb3h9N7J2").child(currentUserId).addListenerForSingleValueEvent(new ValueEventListener() {
+        notifiInUser(currentUserId);
+    }
+
+    public void notifiInUser(String currentUserId){
+
+        //use addValueEventListener to get all message count notifi when more message
+        chatNotifiRef.child("z5YxFgx5nHYe9sQCJU9Tb3h9N7J2").child(currentUserId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                arrayList = new ArrayList<>();
-                for (DataSnapshot dataSnapshot:snapshot.getChildren()){
-                    arrayList.add(dataSnapshot.getKey());
-                }
-                countItemChat= Integer.toString(arrayList.size());
-                int itemInChat = Integer.parseInt(countItemChat);
-                itemFabMessageUser.setCount(itemInChat);
+                mCount = (int) snapshot.getChildrenCount();
+                itemFabMessageUser.setCount(mCount);
             }
 
             @Override

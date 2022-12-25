@@ -178,20 +178,6 @@ public class BottomSheetCartFragment extends BottomSheetDialogFragment {
     }
 
     @Override
-    public void onDismiss(@NonNull DialogInterface dialog) {
-        super.onDismiss(dialog);
-        if (callbackkey=="1"){
-            ((ItemsActivity) getActivity()).getCartQuantity();
-        }
-        else if (callbackkey=="2"){
-            ((ItemDetailActivity) getActivity()).getCartQuantity();
-        }
-        else if(callbackkey=="0"){
-            ((MainActivity) getActivity()).getCartQuantity();
-        }
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         loadCartView();
@@ -208,7 +194,7 @@ public class BottomSheetCartFragment extends BottomSheetDialogFragment {
     }
 
     private void getCartQuantity() {
-        cartRef.child(currentUserId).addListenerForSingleValueEvent(new ValueEventListener() {
+        cartRef.child(currentUserId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 arrayList = new ArrayList<>();
@@ -247,7 +233,7 @@ public class BottomSheetCartFragment extends BottomSheetDialogFragment {
     }
 
     private void getCartTotalPrice(){
-        cartRef.child(currentUserId).addListenerForSingleValueEvent(new ValueEventListener() {
+        cartRef.child(currentUserId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String priceTotal2 = null;
@@ -306,8 +292,9 @@ public class BottomSheetCartFragment extends BottomSheetDialogFragment {
                                     fullprice = (int) (Integer.parseInt(price)*(totalQuantity[0]));
                                     holder.ItemCartPriceTotal.setText(String.valueOf(fullprice));
 
-                                    cart = new Cart(img,name,price,holder.ItemCartQuantity.getText().toString(),holder.ItemCartPriceTotal.getText().toString());
-                                    cartRef.child(currentUserId).child(postKey).setValue(cart);
+//                                    cart = new Cart(img,name,price,holder.ItemCartQuantity.getText().toString(),holder.ItemCartPriceTotal.getText().toString());
+                                    cartRef.child(currentUserId).child(postKey).child("itemCartQuantity").setValue(holder.ItemCartQuantity.getText().toString());
+                                    cartRef.child(currentUserId).child(postKey).child("itemCartTotalPrice").setValue(holder.ItemCartPriceTotal.getText().toString());
 
                                     getCartTotalPrice();
                                 }
@@ -325,8 +312,10 @@ public class BottomSheetCartFragment extends BottomSheetDialogFragment {
                                     fullprice = (int) (Integer.parseInt(price)*(totalQuantity[0]));
                                     holder.ItemCartPriceTotal.setText(String.valueOf(fullprice));
 
-                                    cart = new Cart(img,name,price,holder.ItemCartQuantity.getText().toString(),holder.ItemCartPriceTotal.getText().toString());
-                                    cartRef.child(currentUserId).child(postKey).setValue(cart);
+//                                    cart = new Cart(img,name,price,holder.ItemCartQuantity.getText().toString(),holder.ItemCartPriceTotal.getText().toString());
+//                                    cartRef.child(currentUserId).child(postKey).setValue(cart);
+                                    cartRef.child(currentUserId).child(postKey).child("itemCartQuantity").setValue(holder.ItemCartQuantity.getText().toString());
+                                    cartRef.child(currentUserId).child(postKey).child("itemCartTotalPrice").setValue(holder.ItemCartPriceTotal.getText().toString());
 
                                     getCartTotalPrice();
                                 }

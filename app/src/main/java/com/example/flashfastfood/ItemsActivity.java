@@ -93,7 +93,6 @@ public class ItemsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
-                bundle.putString("callbackkey", "1");
                 BottomSheetCartFragment bottomSheetFragment = new BottomSheetCartFragment();
                 bottomSheetFragment.setArguments(bundle);
                 bottomSheetFragment.show(getSupportFragmentManager(),bottomSheetFragment.getTag());
@@ -139,7 +138,7 @@ public class ItemsActivity extends AppCompatActivity {
 
 
     public void getCartQuantity(){
-        cartRef.child(currentUserId).addListenerForSingleValueEvent(new ValueEventListener() {
+        cartRef.child(currentUserId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 arrayList = new ArrayList<>();

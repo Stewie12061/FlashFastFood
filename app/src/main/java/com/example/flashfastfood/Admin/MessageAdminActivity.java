@@ -2,9 +2,12 @@ package com.example.flashfastfood.Admin;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Fragment;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -14,7 +17,10 @@ import android.widget.Toast;
 
 import com.example.flashfastfood.Adapter.MessageAdapter;
 import com.example.flashfastfood.Data.Chat;
+import com.example.flashfastfood.Fragment.HomeFragment;
+import com.example.flashfastfood.Fragment.ProfileFragment;
 import com.example.flashfastfood.R;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -27,7 +33,6 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MessageAdminActivity extends AppCompatActivity {
 
@@ -120,9 +125,7 @@ public class MessageAdminActivity extends AppCompatActivity {
         hashMap.put("receiver",receiver);
         hashMap.put("message",message);
 
-
         chatRef.push().setValue(hashMap);
-
         chatNotifiRef.child(adminId).child(userId).push().setValue(hashMap);
     }
 
