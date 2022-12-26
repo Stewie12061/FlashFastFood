@@ -30,7 +30,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 
@@ -120,13 +122,19 @@ public class MessageAdminActivity extends AppCompatActivity {
 
 
     private void sendMessage(String sender, String receiver, String message){
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd-yyyy");
+        String saveCurrentDate = simpleDateFormat.format(calendar.getTime());
+        SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("HH:mm:ss");
+        String saveCurrentTime = simpleTimeFormat.format(calendar.getTime());
+
         HashMap<String,Object> hashMap = new HashMap<>();
         hashMap.put("sender",sender);
         hashMap.put("receiver",receiver);
         hashMap.put("message",message);
 
-        chatRef.push().setValue(hashMap);
-        chatNotifiRef.child(adminId).child(userId).push().setValue(hashMap);
+        chatRef.child(saveCurrentDate+" "+saveCurrentTime).setValue(hashMap);
+        chatNotifiRef.child(adminId).child(userId).child(saveCurrentDate+" "+saveCurrentTime).setValue(hashMap);
     }
 
     private void getMessage(String adminId, String userId){
@@ -144,6 +152,7 @@ public class MessageAdminActivity extends AppCompatActivity {
                     messageAdapter = new MessageAdapter(MessageAdminActivity.this,chatArrayList);
                     rvMessageAdmin.setAdapter(messageAdapter);
                 }
+                messageAdapter.notifyDataSetChanged();
             }
 
             @Override

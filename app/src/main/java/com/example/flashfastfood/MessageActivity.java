@@ -27,7 +27,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -120,8 +122,6 @@ public class MessageActivity extends AppCompatActivity {
         linearLayoutManager.setStackFromEnd(true);
         rvMessage.setLayoutManager(linearLayoutManager);
 
-
-
     }
 
     @Override
@@ -137,29 +137,43 @@ public class MessageActivity extends AppCompatActivity {
 
 
     private void sendMessage(String sender, String receiver, String message){
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd-yyyy");
+        String saveCurrentDate = simpleDateFormat.format(calendar.getTime());
+        SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("HH:mm:ss");
+        String saveCurrentTime = simpleTimeFormat.format(calendar.getTime());
+
         HashMap<String,Object> hashMap = new HashMap<>();
         hashMap.put("sender",sender);
         hashMap.put("receiver",receiver);
         hashMap.put("message",message);
+        hashMap.put("dateTimeSend",saveCurrentDate+" "+saveCurrentTime);
+        hashMap.put("isDelete",false);
 
-        chatNotifiRef.child(currentUserId).push().setValue(hashMap);
-        chatRef.push().setValue(hashMap);
+        chatNotifiRef.child(currentUserId).child(saveCurrentDate+" "+saveCurrentTime).setValue(hashMap);
+        chatRef.child(saveCurrentDate+" "+saveCurrentTime).setValue(hashMap);
     }
 
     private void getMessage(String currentUserId, String adId){
         chatArrayList = new ArrayList<>();
+        ArrayList<String> arrayListCount = new ArrayList<>();
         chatRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 chatArrayList.clear();
+
                 for (DataSnapshot dataSnapshot:snapshot.getChildren()){
                     Chat chat = dataSnapshot.getValue(Chat.class);
                     if (chat.getReceiver().equals(currentUserId) && chat.getSender().equals(adId) ||
                             chat.getReceiver().equals(adId) && chat.getSender().equals(currentUserId)){
                         chatArrayList.add(chat);
+                        arrayListCount.add(dataSnapshot.getKey());
                     }
                     messageAdapter = new MessageAdapter(MessageActivity.this,chatArrayList);
                     rvMessage.setAdapter(messageAdapter);
+                }
+                if (arrayListCount.size()>0){
+                    messageAdapter.notifyDataSetChanged();
                 }
             }
 
