@@ -103,7 +103,7 @@ public class ConfirmOrderFragment extends Fragment {
     }
 
     public void getOrderQuantity(){
-        orderRef.child(userId).orderByChild("orderStatus").equalTo("Processing").addListenerForSingleValueEvent(new ValueEventListener() {
+        orderRef.child(userId).orderByChild("orderStatus").equalTo("Processing").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 arrayList1 = new ArrayList<>();

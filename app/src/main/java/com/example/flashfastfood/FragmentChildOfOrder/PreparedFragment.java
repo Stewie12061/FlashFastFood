@@ -117,7 +117,7 @@ public class PreparedFragment extends Fragment {
     }
 
     public void getOrderQuantity(){
-        orderRef.child(currentUserId).orderByChild("orderStatus").equalTo("Processing").addListenerForSingleValueEvent(new ValueEventListener() {
+        orderRef.child(currentUserId).orderByChild("orderStatus").equalTo("Processing").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 arrayList1 = new ArrayList<>();

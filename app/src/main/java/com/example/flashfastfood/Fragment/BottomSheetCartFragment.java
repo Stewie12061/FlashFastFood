@@ -177,12 +177,17 @@ public class BottomSheetCartFragment extends BottomSheetDialogFragment {
         });
     }
 
+
     @Override
     public void onResume() {
         super.onResume();
-        loadCartView();
         getCartQuantity();
-        getCartTotalPrice();
+        if (txtNoCart.getText().toString().equals("Your cart is empty")){
+            dismiss();
+        }else {
+            getCartTotalPrice();
+            loadCartView();
+        }
     }
 
     @Override

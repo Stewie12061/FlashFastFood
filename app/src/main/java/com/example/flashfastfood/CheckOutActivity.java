@@ -41,6 +41,7 @@ import com.example.flashfastfood.Adapter.SpinnerAdapter;
 import com.example.flashfastfood.Data.Cart;
 import com.example.flashfastfood.Data.Discount;
 import com.example.flashfastfood.Data.Order;
+import com.example.flashfastfood.Fragment.BottomSheetCartFragment;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -346,6 +347,12 @@ public class CheckOutActivity extends AppCompatActivity implements AdapterView.O
                         holder.btnUseorCancel.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                Dialog dialog = new Dialog(CheckOutActivity.this,R.style.CustomDialog);
+                                dialog.setContentView(R.layout.dialog_progress);
+                                dialog.show();
+                                new Handler().postDelayed(new Runnable() {
+                                                              @Override
+                                                              public void run() {
                                 if (Integer.parseInt(condition)<Integer.parseInt(txtOrderTotalPrice.getText().toString())){
                                     if (holder.isInMyDiscountUsed){
                                         discountUsedRef.child(currentUserId).child(postKey2).removeValue();
@@ -403,8 +410,10 @@ public class CheckOutActivity extends AppCompatActivity implements AdapterView.O
                                     );
                                     Toast.makeText(CheckOutActivity.this, centeredText, Toast.LENGTH_SHORT).show();
                                 }
-
-
+                                dialog.dismiss();
+                                                              }
+                                                          }, 2000
+                                );
 
                             }
                         });

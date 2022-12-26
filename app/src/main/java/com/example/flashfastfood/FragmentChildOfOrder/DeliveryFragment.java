@@ -92,7 +92,7 @@ public class DeliveryFragment extends Fragment {
     }
 
     public void getOrderQuantity(){
-        orderRef.child(currentUserId).orderByChild("orderStatus").equalTo("Delivering").addListenerForSingleValueEvent(new ValueEventListener() {
+        orderRef.child(currentUserId).orderByChild("orderStatus").equalTo("Delivering").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 arrayList2 = new ArrayList<>();

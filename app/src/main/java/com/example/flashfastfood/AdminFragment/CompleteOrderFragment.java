@@ -89,13 +89,41 @@ public class CompleteOrderFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        getOrderQuantity();
         loadDeliveringItems();
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        getOrderQuantity();
         loadDeliveringItems();
+    }
+
+    public void getOrderQuantity(){
+        orderRef.child(userId).orderByChild("orderStatus").equalTo("Processing").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                arrayList2 = new ArrayList<>();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                    arrayList2.add(dataSnapshot.getKey());
+                }
+                String countItemInCart= Integer.toString(arrayList2.size());
+                int itemInOrder = Integer.parseInt(countItemInCart);
+                if (itemInOrder==0){
+                    deliveryWaiting.setVisibility(View.VISIBLE);
+                }
+                else {
+                    deliveryWaiting.setVisibility(View.GONE);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void loadDeliveringItems(){

@@ -87,8 +87,7 @@ public class HistoryFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        arrayList3 = new ArrayList<>();
-
+        getOrderQuantity();
         loadHistoryCompleted();
         loadHistoryCanceled();
 
@@ -97,11 +96,35 @@ public class HistoryFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        arrayList3 = new ArrayList<>();
-
+        getOrderQuantity();
         loadHistoryCompleted();
         loadHistoryCanceled();
 
+    }
+    public void getOrderQuantity(){
+        orderRef.child(currentUserId).orderByChild("orderStatus").equalTo("Processing").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                arrayList3 = new ArrayList<>();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                    arrayList3.add(dataSnapshot.getKey());
+                }
+                String countItemInCart= Integer.toString(arrayList3.size());
+                int itemInOrder = Integer.parseInt(countItemInCart);
+                if (itemInOrder==0){
+                    historyWating.setVisibility(View.VISIBLE);
+                }
+                else {
+                    historyWating.setVisibility(View.GONE);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
 
