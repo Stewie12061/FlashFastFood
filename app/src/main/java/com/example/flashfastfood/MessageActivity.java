@@ -58,24 +58,25 @@ public class MessageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
 
-        goback = findViewById(R.id.backprevious);
-        goback.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-
         firebaseDatabase = FirebaseDatabase.getInstance("https://flashfastfood-81fee-default-rtdb.asia-southeast1.firebasedatabase.app");
         userRef = firebaseDatabase.getReference("Registered Users");
         chatRef = firebaseDatabase.getReference("Chats");
         chatNotifiRef = firebaseDatabase.getReference("Chats Notification");
 
-        adminNameMessage = findViewById(R.id.adminNameMessage);
-
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         currentUserId = user.getUid();
 
+        goback = findViewById(R.id.backprevious);
+        goback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chatNotifiRef.child("z5YxFgx5nHYe9sQCJU9Tb3h9N7J2").child(currentUserId).removeValue();
+                onBackPressed();
+            }
+        });
+
+
+        adminNameMessage = findViewById(R.id.adminNameMessage);
         edtMessage = findViewById(R.id.edtMessage);
         btnSendMess = findViewById(R.id.btnSendMess);
         btnSendMess.setOnClickListener(new View.OnClickListener() {

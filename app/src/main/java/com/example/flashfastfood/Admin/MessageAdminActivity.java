@@ -59,14 +59,6 @@ public class MessageAdminActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message_admin);
 
-        goback = findViewById(R.id.backprevious);
-        goback.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-
         firebaseDatabase = FirebaseDatabase.getInstance("https://flashfastfood-81fee-default-rtdb.asia-southeast1.firebasedatabase.app");
         userRef = firebaseDatabase.getReference("Registered Users");
         chatRef = firebaseDatabase.getReference("Chats");
@@ -78,6 +70,15 @@ public class MessageAdminActivity extends AppCompatActivity {
         userId = getIntent().getStringExtra("userId");
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         adminId = user.getUid();
+
+        goback = findViewById(R.id.backprevious);
+        goback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+                chatNotifiRef.child(userId).removeValue();
+            }
+        });
 
         edtMessage = findViewById(R.id.edtMessage);
         btnSendMess = findViewById(R.id.btnSendMess);
@@ -132,6 +133,8 @@ public class MessageAdminActivity extends AppCompatActivity {
         hashMap.put("sender",sender);
         hashMap.put("receiver",receiver);
         hashMap.put("message",message);
+        hashMap.put("dateTimeSend",saveCurrentDate+" "+saveCurrentTime);
+        hashMap.put("isDelete",false);
 
         chatRef.child(saveCurrentDate+" "+saveCurrentTime).setValue(hashMap);
         chatNotifiRef.child(adminId).child(userId).child(saveCurrentDate+" "+saveCurrentTime).setValue(hashMap);
@@ -139,6 +142,7 @@ public class MessageAdminActivity extends AppCompatActivity {
 
     private void getMessage(String adminId, String userId){
         chatArrayList = new ArrayList<>();
+        ArrayList<String> arrayListCount = new ArrayList<>();
         chatRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -148,11 +152,14 @@ public class MessageAdminActivity extends AppCompatActivity {
                     if (chat.getReceiver().equals(adminId) && chat.getSender().equals(userId) ||
                             chat.getReceiver().equals(userId) && chat.getSender().equals(adminId)){
                         chatArrayList.add(chat);
+                        arrayListCount.add(dataSnapshot.getKey());
                     }
                     messageAdapter = new MessageAdapter(MessageAdminActivity.this,chatArrayList);
                     rvMessageAdmin.setAdapter(messageAdapter);
                 }
-                messageAdapter.notifyDataSetChanged();
+                if (arrayListCount.size()>0){
+                    messageAdapter.notifyDataSetChanged();
+                }
             }
 
             @Override

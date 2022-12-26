@@ -69,7 +69,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         currentUserId = user.getUid();
         firebaseDatabase = FirebaseDatabase.getInstance("https://flashfastfood-81fee-default-rtdb.asia-southeast1.firebasedatabase.app");
         chatRef = firebaseDatabase.getReference("Chats");
-        chatRef.addValueEventListener(new ValueEventListener() {
+        String dateTimeSend = chatArrayList.get(position).getDateTimeSend();
+
+        Query query = chatRef.orderByChild("dateTimeSend").equalTo(dateTimeSend);
+        query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot dataSnapshot:snapshot.getChildren()){
@@ -123,7 +126,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    if (dataSnapshot.child("message").getValue().equals("This Message Was Deleted")){
+                    if (dataSnapshot.child("isDelete").getValue().equals(true)){
                         if (dataSnapshot.child("sender").getValue().equals(currentUserId)) {
                             dataSnapshot.getRef().removeValue();
                             chatNotifiRef.child(currentUserId).child(dateTimeSend).removeValue();
@@ -137,7 +140,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                             hashMap.put("isDelete", true);
                             dataSnapshot.getRef().updateChildren(hashMap);
                         } else {
-                            Toast.makeText(context, "You can only delete you message!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(context, "You can only delete your message!", Toast.LENGTH_LONG).show();
                         }
                     }
                 }
