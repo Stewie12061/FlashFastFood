@@ -2,6 +2,7 @@ package com.example.flashfastfood.FragmentChildOfOrder;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -176,9 +177,9 @@ public class PreparedFragment extends Fragment {
                             holder.orderPayment.setTextColor(Color.parseColor("#4CAF50"));
                         }
 
-                        holder.btnCancelOrder.setOnClickListener(new View.OnClickListener() {
+                        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                             @Override
-                            public void onClick(View v) {
+                            public boolean onLongClick(View v) {
                                 AlertDialog.Builder builder =
                                         new AlertDialog.Builder
                                                 (getContext());
@@ -229,9 +230,17 @@ public class PreparedFragment extends Fragment {
                                         alertDialog.dismiss();
                                     }
                                 });
-
+                                return false;
                             }
                         });
+
+//                        holder.btnCancelOrder.setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View v) {
+//
+//
+//                            }
+//                        });
 
                     }
                     @Override

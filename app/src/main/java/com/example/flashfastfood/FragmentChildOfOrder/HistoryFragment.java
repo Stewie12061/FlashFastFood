@@ -1,17 +1,24 @@
 package com.example.flashfastfood.FragmentChildOfOrder;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -102,10 +109,10 @@ public class HistoryFragment extends Fragment {
 
     }
     public void getOrderQuantity(){
-        orderRef.child(currentUserId).orderByChild("orderStatus").equalTo("Processing").addValueEventListener(new ValueEventListener() {
+        arrayList3 = new ArrayList<>();
+        orderRef.child(currentUserId).orderByChild("orderStatus").equalTo("Canceled").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                arrayList3 = new ArrayList<>();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()){
                     arrayList3.add(dataSnapshot.getKey());
                 }
@@ -117,9 +124,27 @@ public class HistoryFragment extends Fragment {
                 else {
                     historyWating.setVisibility(View.GONE);
                 }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
             }
-
+        });
+        orderRef.child(currentUserId).orderByChild("orderStatus").equalTo("Successful").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                    arrayList3.add(dataSnapshot.getKey());
+                }
+                String countItemInCart= Integer.toString(arrayList3.size());
+                int itemInOrder = Integer.parseInt(countItemInCart);
+                if (itemInOrder==0){
+                    historyWating.setVisibility(View.VISIBLE);
+                }
+                else {
+                    historyWating.setVisibility(View.GONE);
+                }
+            }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
@@ -142,18 +167,6 @@ public class HistoryFragment extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                        for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                            arrayList3.add(dataSnapshot.getKey());
-                        }
-                        String countItemInCart= Integer.toString(arrayList3.size());
-                        int itemInOrder = Integer.parseInt(countItemInCart);
-                        if (itemInOrder==0){
-                            historyWating.setVisibility(View.VISIBLE);
-                        }
-                        else {
-                            historyWating.setVisibility(View.GONE);
-                        }
-
                         String orderDate = snapshot.child("orderDate").getValue().toString();
                         String orderTime = snapshot.child("orderTime").getValue().toString();
                         String orderPrice = snapshot.child("orderTotalPrice").getValue().toString();
@@ -169,6 +182,54 @@ public class HistoryFragment extends Fragment {
                         holder.orderDate.setText(orderDate);
                         holder.orderTime.setText(orderTime);
                         holder.orderPayment.setText(orderPayment);
+
+                        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                            @Override
+                            public boolean onLongClick(View v) {
+                                AlertDialog.Builder builder =
+                                        new AlertDialog.Builder
+                                                (getContext());
+                                View view = LayoutInflater.from(getContext()).inflate(
+                                        R.layout.dialog_alert,
+                                        (ConstraintLayout) getActivity().findViewById(R.id.layoutDialogContainer)
+                                );
+                                builder.setView(view);
+                                ((TextView) view.findViewById(R.id.textTitle))
+                                        .setText("Delete Order History");
+                                ((TextView) view.findViewById(R.id.textMessage))
+                                        .setText("Do you really want to delete this order?");
+                                ((Button) view.findViewById(R.id.buttonYes))
+                                        .setText("Yes");
+                                ((Button) view.findViewById(R.id.buttonNo))
+                                        .setText("No");
+                                final AlertDialog alertDialog = builder.create();
+                                alertDialog.show();
+                                view.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        alertDialog.dismiss();
+                                        Dialog dialog = new Dialog(getContext(),R.style.CustomDialog);
+                                        dialog.setContentView(R.layout.dialog_order_loading);
+                                        dialog.show();
+                                        new Handler().postDelayed(new Runnable() {
+                                                                      @Override
+                                                                      public void run() {
+                                                                          orderRef.child(currentUserId).child(postKey).removeValue();
+                                                                          dialog.dismiss();
+                                                                      }
+                                                                  }, 5000
+                                        );
+                                    }
+                                });
+                                view.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        alertDialog.dismiss();
+                                    }
+                                });
+                                return false;
+                            }
+                        });
 
                         if (orderPayment.equals("Cash on delivery")){
                             holder.orderPayment.setTextColor(Color.parseColor("#CB1B11"));
@@ -209,18 +270,6 @@ public class HistoryFragment extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                        for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                            arrayList3.add(dataSnapshot.getKey());
-                        }
-                        String countItemInCart= Integer.toString(arrayList3.size());
-                        int itemInOrder = Integer.parseInt(countItemInCart);
-                        if (itemInOrder==0){
-                            historyWating.setVisibility(View.VISIBLE);
-                        }
-                        else {
-                            historyWating.setVisibility(View.GONE);
-                        }
-
                         String orderDate = snapshot.child("orderDate").getValue().toString();
                         String orderTime = snapshot.child("orderTime").getValue().toString();
                         String orderPrice = snapshot.child("orderTotalPrice").getValue().toString();
@@ -236,6 +285,54 @@ public class HistoryFragment extends Fragment {
                         holder.orderDate.setText(orderDate);
                         holder.orderTime.setText(orderTime);
                         holder.orderPayment.setText(orderPayment);
+
+                        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                            @Override
+                            public boolean onLongClick(View v) {
+                                AlertDialog.Builder builder =
+                                        new AlertDialog.Builder
+                                                (getContext());
+                                View view = LayoutInflater.from(getContext()).inflate(
+                                        R.layout.dialog_alert,
+                                        (ConstraintLayout) getActivity().findViewById(R.id.layoutDialogContainer)
+                                );
+                                builder.setView(view);
+                                ((TextView) view.findViewById(R.id.textTitle))
+                                        .setText("Delete Order History");
+                                ((TextView) view.findViewById(R.id.textMessage))
+                                        .setText("Do you really want to delete this order?");
+                                ((Button) view.findViewById(R.id.buttonYes))
+                                        .setText("Yes");
+                                ((Button) view.findViewById(R.id.buttonNo))
+                                        .setText("No");
+                                final AlertDialog alertDialog = builder.create();
+                                alertDialog.show();
+                                view.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        alertDialog.dismiss();
+                                        Dialog dialog = new Dialog(getContext(),R.style.CustomDialog);
+                                        dialog.setContentView(R.layout.dialog_order_loading);
+                                        dialog.show();
+                                        new Handler().postDelayed(new Runnable() {
+                                                                      @Override
+                                                                      public void run() {
+                                                                          orderRef.child(currentUserId).child(postKey).removeValue();
+                                                                          dialog.dismiss();
+                                                                      }
+                                                                  }, 5000
+                                        );
+                                    }
+                                });
+                                view.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        alertDialog.dismiss();
+                                    }
+                                });
+                                return false;
+                            }
+                        });
 
                         if (orderPayment.equals("Cash on delivery")){
                             holder.orderPayment.setTextColor(Color.parseColor("#CB1B11"));
