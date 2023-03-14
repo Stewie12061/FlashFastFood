@@ -175,6 +175,17 @@
                 android:textAllCaps="false"
                 android:textColor="@android:color/darker_gray" />
 
+            <Button
+                android:id="@+id/btnGuest"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:backgroundTint="@color/orange"
+                android:drawableTint="@color/white"
+                android:drawableLeft="@drawable/user_img"
+                android:text="Continute as Guest"
+                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:textColor="@color/white" />
 
             <Button
                 android:id="@+id/btnFB"

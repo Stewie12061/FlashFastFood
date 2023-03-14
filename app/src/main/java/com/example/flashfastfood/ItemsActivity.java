@@ -1,5 +1,7 @@
 package com.example.flashfastfood;
 
+import static a.a.a.a.b.c.i;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -9,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.andremion.counterfab.CounterFab;
 import com.example.flashfastfood.Adapter.ItemsViewHolder;
@@ -165,7 +169,7 @@ public class ItemsActivity extends AppCompatActivity {
     }
 
     public void getItemStatus(){
-        itemsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        itemsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 arrayList2 = new ArrayList<>();
@@ -192,9 +196,11 @@ public class ItemsActivity extends AppCompatActivity {
             @Override
             protected void onBindViewHolder(@NonNull ItemsViewHolder holder, int position, @NonNull Items model) {
                 String postKey = getRef(position).getKey();
-
+                getItemStatus();
+                Toast.makeText(ItemsActivity.this, arrayList2.toString(), Toast.LENGTH_SHORT).show();
+                Log.v("TAG", arrayList2.toString());
                 if (arrayList2.contains(postKey)){
-                    holder.itemView.setVisibility(View.GONE);
+                    holder.itemView.setVisibility(View.INVISIBLE);
                     holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
                 }
                 itemsRef.child(postKey).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -262,7 +268,7 @@ public class ItemsActivity extends AppCompatActivity {
             @Override
             protected void onBindViewHolder(@NonNull ItemsViewHolder holder, int position, @NonNull Items model) {
                 String postKey = getRef(position).getKey();
-
+                getItemStatus();
                 if (arrayList2.contains(postKey)){
                     holder.itemView.setVisibility(View.GONE);
                     holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));

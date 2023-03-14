@@ -38,7 +38,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    String idIntent = null, currentUserId,countItemInCart;
+    String idIntent = null, currentUserId,countItemInCart, guestFlag;
 
     ChipNavigationBar chipNavigationBar;
     Fragment fragment = null;
@@ -64,8 +64,13 @@ public class MainActivity extends AppCompatActivity {
         currentUserId = user.getUid();
 
         idIntent = getIntent().getStringExtra("Fragment");
+        guestFlag = getIntent().getStringExtra("guestFlag");
 
         chipNavigationBar = findViewById(R.id.chipNavBar);
+
+        if (guestFlag=="guest"){
+            chipNavigationBar.setItemEnabled(R.id.mnuProfile,false);
+        }
 
         if (idIntent==null){
             chipNavigationBar.setItemSelected(R.id.mnuHome,true);
