@@ -176,7 +176,31 @@
                 android:textColor="@android:color/darker_gray" />
 
 
+            <Button
+                android:id="@+id/btnFB"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:backgroundTint="#4267B2"
+                android:drawableLeft="@drawable/facebook"
+                android:text="Continute with Facebook"
+                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/btnGoogle"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:backgroundTint="@color/white"
+                android:drawableLeft="@drawable/google"
+                android:text="Continute with Google"
+                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:textColor="@color/black" />
+
         </LinearLayout>
+
+
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/travelImg"

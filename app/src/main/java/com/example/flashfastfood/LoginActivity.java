@@ -31,7 +31,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private Button signupBtn2, loginBtn, forgetPass;
+    private Button signupBtn2, loginBtn, forgetPass, btnGoogle;
     private ImageView logo;
     private TextView slogan, text;
     private TextInputLayout edtmail, edtpassword;
@@ -66,6 +66,14 @@ public class LoginActivity extends AppCompatActivity {
 
         inputEmail = findViewById(R.id.edtEmailLogIn);
         inputPassword = findViewById(R.id.edtPasswordLogIn);
+
+        btnGoogle = findViewById(R.id.btnGoogle);
+        btnGoogle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
         signupBtn2.setOnClickListener(new View.OnClickListener() {
             @Override

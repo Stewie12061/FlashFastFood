@@ -82,7 +82,7 @@ public class CompleteOrderFragment extends Fragment {
         rvDelivery.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
 
         deliveryWaiting = view.findViewById(R.id.deliveryWaiting);
-        deliveryWaiting.setVisibility(View.GONE);
+//        deliveryWaiting.setVisibility(View.GONE);
 
     }
 
@@ -101,7 +101,7 @@ public class CompleteOrderFragment extends Fragment {
     }
 
     public void getOrderQuantity(){
-        orderRef.child(userId).orderByChild("orderStatus").equalTo("Processing").addValueEventListener(new ValueEventListener() {
+        orderRef.child(userId).orderByChild("orderStatus").equalTo("Delivering").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 arrayList2 = new ArrayList<>();
