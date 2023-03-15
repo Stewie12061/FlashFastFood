@@ -303,6 +303,7 @@ public class SearchActivity extends AppCompatActivity {
                             public void onClick(View view, int position, boolean isLongClick) {
                                 Intent intent = new Intent(SearchActivity.this, ItemDetailActivity.class);
                                 intent.putExtra("itemId", adapter.getRef(position).getKey());
+                                intent.putExtra("guestFlag","guest");
                                 startActivity(intent);
 
                                 overridePendingTransition(R.anim.slide_from_right,R.anim.slide_to_left);
