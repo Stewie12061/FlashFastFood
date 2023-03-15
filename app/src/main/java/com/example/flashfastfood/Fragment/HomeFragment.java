@@ -239,7 +239,9 @@ public class HomeFragment extends Fragment {
                             public void onClick(View view, int position, boolean isLongClick) {
                                 Intent intent = new Intent(getContext(), ItemsActivity.class);
                                 intent.putExtra("IdCategory",adapterCategories.getRef(position).getKey());
-                                intent.putExtra("guestFlag","guest");
+                                if (guestFlag.equals("guest")){
+                                    intent.putExtra("guestFlag","guest");
+                                }
                                 startActivity(intent);
                                 getActivity().overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
                             }

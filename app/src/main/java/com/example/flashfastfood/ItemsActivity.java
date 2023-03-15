@@ -97,8 +97,10 @@ public class ItemsActivity extends AppCompatActivity {
         idCategory = getIntent().getStringExtra("IdCategory");
 
         btnCart = findViewById(R.id.itemFabCart);
-        btnCart.setVisibility(View.GONE);
+
         if (!guestFlag.equals("guest")){
+            btnCart.setVisibility(View.GONE);
+            btnCart.setImageResource(R.drawable.ic_cart);
             getCartQuantity();
             btnCart.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -259,7 +261,9 @@ public class ItemsActivity extends AppCompatActivity {
                             public void onClick(View view, int position, boolean isLongClick) {
                                 Intent intent = new Intent(ItemsActivity.this, ItemDetailActivity.class);
                                 intent.putExtra("itemId", adapter.getRef(position).getKey());
-                                intent.putExtra("guestFlag","guest");
+                                if (guestFlag.equals("guest")){
+                                    intent.putExtra("guestFlag","guest");
+                                }
                                 startActivity(intent);
                                 overridePendingTransition(R.anim.slide_from_right,R.anim.slide_to_left);
                             }
@@ -331,7 +335,9 @@ public class ItemsActivity extends AppCompatActivity {
                             public void onClick(View view, int position, boolean isLongClick) {
                                 Intent intent = new Intent(ItemsActivity.this, ItemDetailActivity.class);
                                 intent.putExtra("itemId", adapter.getRef(position).getKey());
-                                intent.putExtra("guestFlag","guest");
+                                if (guestFlag.equals("guest")){
+                                    intent.putExtra("guestFlag","guest");
+                                }
                                 startActivity(intent);
                                 overridePendingTransition(R.anim.slide_from_right,R.anim.slide_to_left);
                             }

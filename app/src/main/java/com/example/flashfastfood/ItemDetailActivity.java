@@ -155,9 +155,10 @@ public class ItemDetailActivity extends AppCompatActivity {
 
 
         btnCart = findViewById(R.id.detailFabCart);
-        btnCart.setVisibility(View.GONE);
         if (!guestFlag.equals("guest")){
             getCartQuantity();
+            btnCart.setVisibility(View.GONE);
+            btnCart.setImageResource(R.drawable.ic_cart);
             btnCart.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
