@@ -60,6 +60,7 @@ public class SearchActivity extends AppCompatActivity {
     LottieAnimationView searchWaiting;
     CounterFab btnCart;
 
+    String guestFlag;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,8 +75,14 @@ public class SearchActivity extends AppCompatActivity {
         cateRef = firebaseDatabase.getReference("Categories");
         cartRef = firebaseDatabase.getReference("Shopping Cart");
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        currentUserId = user.getUid();
+        guestFlag = getIntent().getStringExtra("guestFlag");
+        if (guestFlag==null){
+            guestFlag="user";
+        }
+        if (!guestFlag.equals("guest")){
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            currentUserId = user.getUid();
+        }
 
         toolbar = findViewById(R.id.toolbarSearch);
         goback = toolbar.findViewById(R.id.backprevious);
@@ -119,7 +126,10 @@ public class SearchActivity extends AppCompatActivity {
 
         btnCart = findViewById(R.id.itemFabCart);
         btnCart.setVisibility(View.GONE);
-        getCartQuantity();
+
+        if (!guestFlag.equals("guest")){
+            getCartQuantity();
+        }
 
         btnCart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -175,7 +185,9 @@ public class SearchActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         getItemStatus();
-        getCartQuantity();
+        if (!guestFlag.equals("guest")){
+            getCartQuantity();
+        }
         arrayList = new ArrayList<String>();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -196,7 +208,9 @@ public class SearchActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         getItemStatus();
-        getCartQuantity();
+        if (!guestFlag.equals("guest")){
+            getCartQuantity();
+        }
         arrayList = new ArrayList<String>();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -246,9 +260,6 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             protected void onBindViewHolder(@NonNull ItemsViewHolder holder, int position, @NonNull Items model) {
                 String postKey = adapter.getRef(position).getKey();
-
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                String currentUserId = user.getUid();
 
                 getItemStatus();
                 if (arrayList2.contains(postKey)){

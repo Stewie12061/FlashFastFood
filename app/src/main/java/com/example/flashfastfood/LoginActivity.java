@@ -79,18 +79,8 @@ public class LoginActivity extends AppCompatActivity {
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 intent.putExtra("guestFlag","guest");
                 startActivity(intent);
-                finishAffinity();
             }
         });
-
-        btnGoogle = findViewById(R.id.btnGoogle);
-        btnGoogle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
         signupBtn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

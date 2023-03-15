@@ -67,25 +67,17 @@ public class ItemDetailActivity extends AppCompatActivity {
     Cart cart;
     CardView btnAddToCart;
     SparkButton sparkButton;
-
     ImageView detailItemImg;
-
     RecyclerView rvRecommendedItems;
-
     String itemId;
     Boolean isInMyFavorite = false;
-
     int totalQuantity = 1;
     int priceint, fullprice;
-
     String currentUserId, Image;
-
     ArrayList<String> arrayList = null;
     CounterFab btnCart;
-
     LinearLayout btnBackHome;
-
-
+    String guestFlag;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,8 +116,14 @@ public class ItemDetailActivity extends AppCompatActivity {
         favoriteRef = firebaseDatabase.getReference("Favorite");
         cartRef = firebaseDatabase.getReference("Shopping Cart");
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        currentUserId = user.getUid();
+        guestFlag = getIntent().getStringExtra("guestFlag");
+        if (guestFlag==null){
+            guestFlag="user";
+        }
+        if (!guestFlag.equals("guest")){
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            currentUserId = user.getUid();
+        }
 
         rvRecommendedItems = findViewById(R.id.rvShowAllItem);
         rvRecommendedItems.setLayoutManager(new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.HORIZONTAL,false));
@@ -136,25 +134,51 @@ public class ItemDetailActivity extends AppCompatActivity {
         getDetailItem(itemId);
         getItemQuantity();
 
-        btnAddToCart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addToCart();
-            }
-        });
+        if (!guestFlag.equals("guest")){
+            btnAddToCart.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    addToCart();
+                }
+            });
+        }
+        else {
+            btnAddToCart.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(ItemDetailActivity.this, LoginActivity.class);
+                    intent.putExtra("guestLogin","guestLogin");
+                    startActivity(intent);
+                }
+            });
+        }
+
 
         btnCart = findViewById(R.id.detailFabCart);
         btnCart.setVisibility(View.GONE);
-        getCartQuantity();
-        btnCart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                BottomSheetCartFragment bottomSheetFragment = new BottomSheetCartFragment();
-                bottomSheetFragment.setArguments(bundle);
-                bottomSheetFragment.show(getSupportFragmentManager(),bottomSheetFragment.getTag());
-            }
-        });
+        if (!guestFlag.equals("guest")){
+            getCartQuantity();
+            btnCart.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Bundle bundle = new Bundle();
+                    BottomSheetCartFragment bottomSheetFragment = new BottomSheetCartFragment();
+                    bottomSheetFragment.setArguments(bundle);
+                    bottomSheetFragment.show(getSupportFragmentManager(),bottomSheetFragment.getTag());
+                }
+            });
+        }else {
+            btnCart.setVisibility(View.VISIBLE);
+            btnCart.setImageResource(R.drawable.avatar);
+            btnCart.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(ItemDetailActivity.this, LoginActivity.class);
+                    intent.putExtra("guestLogin","guestLogin");
+                    startActivity(intent);
+                }
+            });
+        }
 
         btnBackHome = findViewById(R.id.btnBackHome);
         btnBackHome.setOnClickListener(new View.OnClickListener() {
@@ -170,20 +194,35 @@ public class ItemDetailActivity extends AppCompatActivity {
         });
 
         btnShowReview = findViewById(R.id.btnShowReview);
-        btnShowReview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ItemDetailActivity.this,ReviewActivity.class);
-                intent.putExtra("itemId",itemId);
-                startActivity(intent);
-            }
-        });
+        if (!guestFlag.equals("guest")){
+            btnShowReview.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(ItemDetailActivity.this,ReviewActivity.class);
+                    intent.putExtra("itemId",itemId);
+                    startActivity(intent);
+                }
+            });
+        }else {
+            btnShowReview.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(ItemDetailActivity.this, LoginActivity.class);
+                    intent.putExtra("guestLogin","guestLogin");
+                    startActivity(intent);
+                }
+            });
+        }
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        getCartQuantity();
+        if (!guestFlag.equals("guest")){
+            getCartQuantity();
+        }
+
     }
 
     public void getCartQuantity() {
@@ -287,58 +326,67 @@ public class ItemDetailActivity extends AppCompatActivity {
                 totalPrice.setText(Price);
                 priceint = Integer.parseInt(Price);
 
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                String currentUserId = user.getUid();
+                if (!guestFlag.equals("guest")){
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    String currentUserId = user.getUid();
 
-                favoriteCheck();
+                    favoriteCheck();
+                    favorite.setfavoriteName(Name);
+                    favorite.setfavoritePrice(Price);
+                    favorite.setfavoriteRating(Rating);
+                    favorite.setfavoriteImage(Image);
 
-                favorite.setfavoriteName(Name);
-                favorite.setfavoritePrice(Price);
-                favorite.setfavoriteRating(Rating);
-                favorite.setfavoriteImage(Image);
+                    sparkButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            sparkButton.playAnimation();
+                            if (isInMyFavorite){
+                                favoriteRef.child(currentUserId).child(itemId).removeValue()
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void unused) {
+                                                String text = "Remove"+" "+Name+" "+"from favorite list";
+                                                Spannable centeredText = new SpannableString(text);
+                                                centeredText.setSpan(
+                                                        new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
+                                                        0, text.length() - 1,
+                                                        Spannable.SPAN_INCLUSIVE_INCLUSIVE
+                                                );
 
-                sparkButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        sparkButton.playAnimation();
-                        if (isInMyFavorite){
-                            favoriteRef.child(currentUserId).child(itemId).removeValue()
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void unused) {
-                                            String text = "Remove"+" "+Name+" "+"from favorite list";
-                                            Spannable centeredText = new SpannableString(text);
-                                            centeredText.setSpan(
-                                                    new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
-                                                    0, text.length() - 1,
-                                                    Spannable.SPAN_INCLUSIVE_INCLUSIVE
-                                            );
-
-                                            Toast.makeText(ItemDetailActivity.this, centeredText, Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(ItemDetailActivity.this, centeredText, Toast.LENGTH_SHORT).show();
 //                                            Toast.makeText(ItemDetailActivity.this, "Removed from favorite list", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                        }else {
-                            favoriteRef.child(currentUserId).child(itemId).setValue(favorite)
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void unused) {
-                                            String text = "Add"+" "+Name+" "+"to favorite list";
-                                            Spannable centeredText = new SpannableString(text);
-                                            centeredText.setSpan(
-                                                    new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
-                                                    0, text.length() - 1,
-                                                    Spannable.SPAN_INCLUSIVE_INCLUSIVE
-                                            );
+                                            }
+                                        });
+                            }else {
+                                favoriteRef.child(currentUserId).child(itemId).setValue(favorite)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void unused) {
+                                                String text = "Add"+" "+Name+" "+"to favorite list";
+                                                Spannable centeredText = new SpannableString(text);
+                                                centeredText.setSpan(
+                                                        new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
+                                                        0, text.length() - 1,
+                                                        Spannable.SPAN_INCLUSIVE_INCLUSIVE
+                                                );
 
-                                            Toast.makeText(ItemDetailActivity.this, centeredText, Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(ItemDetailActivity.this, centeredText, Toast.LENGTH_SHORT).show();
 //                                            Toast.makeText(ItemDetailActivity.this, "Added to favorite list", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
+                                            }
+                                        });
+                            }
                         }
-                    }
-                });
-
+                    });
+                }else {
+                    sparkButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(ItemDetailActivity.this, LoginActivity.class);
+                            intent.putExtra("guestLogin","guestLogin");
+                            startActivity(intent);
+                        }
+                    });
+                }
             }
 
             @Override

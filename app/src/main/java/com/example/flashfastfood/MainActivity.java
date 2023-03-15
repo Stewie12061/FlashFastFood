@@ -108,17 +108,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (guestFlag.equals("guest")){
             chipNavigationBar.setVisibility(View.GONE);
-            chipNavigationBarGuest.setOnItemSelectedListener(new ChipNavigationBar.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(int i) {
-                    fragment = new HomeFragment();
-                    fragmentManager = getSupportFragmentManager();
-                    fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.replace(R.id.content, fragment);
-                    fragmentTransaction.commit();
-                }
-
-            });
+            chipNavigationBarGuest.setItemSelected(R.id.mnuHomeGuest,true);
         }
         else {
             chipNavigationBarGuest.setVisibility(View.GONE);
@@ -162,6 +152,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }else {
+            btnCart.setImageResource(R.drawable.avatar);
             btnCart.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -171,9 +162,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
-
-
-
     }
 
     @Override

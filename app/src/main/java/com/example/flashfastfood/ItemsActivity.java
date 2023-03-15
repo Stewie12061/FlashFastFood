@@ -57,6 +57,7 @@ public class ItemsActivity extends AppCompatActivity {
     ArrayList<String> arrayList = null;
     ArrayList<String> arrayList2 = null;
 
+    String guestFlag;
     CounterFab btnCart;
 
     @Override
@@ -81,8 +82,14 @@ public class ItemsActivity extends AppCompatActivity {
         cateRef = firebaseDatabase.getReference("Categories");
         cartRef = firebaseDatabase.getReference("Shopping Cart");
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        currentUserId = user.getUid();
+        guestFlag = getIntent().getStringExtra("guestFlag");
+        if (guestFlag==null){
+            guestFlag="user";
+        }
+        if (!guestFlag.equals("guest")){
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            currentUserId = user.getUid();
+        }
 
         rvAllItems = findViewById(R.id.rvShowAllItem);
         rvAllItems.setLayoutManager(new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.VERTICAL,false));
@@ -91,24 +98,40 @@ public class ItemsActivity extends AppCompatActivity {
 
         btnCart = findViewById(R.id.itemFabCart);
         btnCart.setVisibility(View.GONE);
-        getCartQuantity();
+        if (!guestFlag.equals("guest")){
+            getCartQuantity();
+            btnCart.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Bundle bundle = new Bundle();
+                    BottomSheetCartFragment bottomSheetFragment = new BottomSheetCartFragment();
+                    bottomSheetFragment.setArguments(bundle);
+                    bottomSheetFragment.show(getSupportFragmentManager(),bottomSheetFragment.getTag());
+                }
+            });
+        }
+        else {
+            btnCart.setVisibility(View.VISIBLE);
+            btnCart.setImageResource(R.drawable.avatar);
+            btnCart.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(ItemsActivity.this, LoginActivity.class);
+                    intent.putExtra("guestLogin","guestLogin");
+                    startActivity(intent);
+                }
+            });
+        }
 
-        btnCart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                BottomSheetCartFragment bottomSheetFragment = new BottomSheetCartFragment();
-                bottomSheetFragment.setArguments(bundle);
-                bottomSheetFragment.show(getSupportFragmentManager(),bottomSheetFragment.getTag());
-            }
-        });
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         getItemStatus();
-        getCartQuantity();
+        if (!guestFlag.equals("guest")){
+            getCartQuantity();
+        }
         if (idCategory != null) {
             loadCateItems();
         }else {
@@ -120,7 +143,9 @@ public class ItemsActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         getItemStatus();
-        getCartQuantity();
+        if (!guestFlag.equals("guest")){
+            getCartQuantity();
+        }
         if (idCategory != null) {
             loadCateItems();
         }else {
@@ -132,7 +157,9 @@ public class ItemsActivity extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
         getItemStatus();
-        getCartQuantity();
+        if (!guestFlag.equals("guest")){
+            getCartQuantity();
+        }
         if (idCategory != null) {
             loadCateItems();
         }else {
@@ -197,8 +224,6 @@ public class ItemsActivity extends AppCompatActivity {
             protected void onBindViewHolder(@NonNull ItemsViewHolder holder, int position, @NonNull Items model) {
                 String postKey = getRef(position).getKey();
                 getItemStatus();
-                Toast.makeText(ItemsActivity.this, arrayList2.toString(), Toast.LENGTH_SHORT).show();
-                Log.v("TAG", arrayList2.toString());
                 if (arrayList2.contains(postKey)){
                     holder.itemView.setVisibility(View.INVISIBLE);
                     holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
@@ -234,8 +259,8 @@ public class ItemsActivity extends AppCompatActivity {
                             public void onClick(View view, int position, boolean isLongClick) {
                                 Intent intent = new Intent(ItemsActivity.this, ItemDetailActivity.class);
                                 intent.putExtra("itemId", adapter.getRef(position).getKey());
+                                intent.putExtra("guestFlag","guest");
                                 startActivity(intent);
-
                                 overridePendingTransition(R.anim.slide_from_right,R.anim.slide_to_left);
                             }
                         });
@@ -306,6 +331,7 @@ public class ItemsActivity extends AppCompatActivity {
                             public void onClick(View view, int position, boolean isLongClick) {
                                 Intent intent = new Intent(ItemsActivity.this, ItemDetailActivity.class);
                                 intent.putExtra("itemId", adapter.getRef(position).getKey());
+                                intent.putExtra("guestFlag","guest");
                                 startActivity(intent);
                                 overridePendingTransition(R.anim.slide_from_right,R.anim.slide_to_left);
                             }

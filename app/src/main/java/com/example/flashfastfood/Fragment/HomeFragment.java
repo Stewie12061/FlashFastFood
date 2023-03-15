@@ -70,35 +70,11 @@ public class HomeFragment extends Fragment {
 
     Button btnSearch;
 
+    String guestFlag;
+
     FirebaseRecyclerAdapter<FoodCategories, CategoryTypeViewHolder> adapterCategories;
-
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-
-    private String mParam1;
-    private String mParam2;
-
     public HomeFragment() {
         // Required empty public constructor
-    }
-
-    public static HomeFragment newInstance(String param1, String param2) {
-        HomeFragment fragment = new HomeFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -148,6 +124,10 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        guestFlag = getActivity().getIntent().getStringExtra("guestFlag");
+        if (guestFlag==null){
+            guestFlag="user";
+        }
 
         firebaseDatabase = FirebaseDatabase.getInstance("https://flashfastfood-81fee-default-rtdb.asia-southeast1.firebasedatabase.app");
         sliderAdRef = firebaseDatabase.getReference("SliderAd");
@@ -165,18 +145,31 @@ public class HomeFragment extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), ItemsActivity.class);
                 getActivity().overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+                intent.putExtra("guestFlag","guest");
                 startActivity(intent);
             }
         });
 
         btnSearch = view.findViewById(R.id.searchBtn);
-        btnSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getContext(), SearchActivity.class);
-                startActivity(intent);
-            }
-        });
+        if (guestFlag.equals("user")){
+            btnSearch.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getContext(), SearchActivity.class);
+                    startActivity(intent);
+                }
+            });
+        }else {
+            btnSearch.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getContext(), SearchActivity.class);
+                    intent.putExtra("guestFlag","guest");
+                    startActivity(intent);
+                }
+            });
+        }
+
 
     }
 
@@ -246,6 +239,7 @@ public class HomeFragment extends Fragment {
                             public void onClick(View view, int position, boolean isLongClick) {
                                 Intent intent = new Intent(getContext(), ItemsActivity.class);
                                 intent.putExtra("IdCategory",adapterCategories.getRef(position).getKey());
+                                intent.putExtra("guestFlag","guest");
                                 startActivity(intent);
                                 getActivity().overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
                             }

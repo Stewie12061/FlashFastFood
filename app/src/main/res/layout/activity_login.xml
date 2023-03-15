@@ -210,25 +210,6 @@
                 android:textColor="@color/black" />
 
         </LinearLayout>
-
-
-
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/travelImg"
-            android:layout_width="match_parent"
-            android:layout_height="350dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="true"
-            app:lottie_rawRes="@raw/fastfood"
-            app:lottie_speed="2" />
-
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.core.widget.NestedScrollView>
