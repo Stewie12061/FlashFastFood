@@ -68,6 +68,11 @@ public class LoginActivity extends AppCompatActivity {
         inputPassword = findViewById(R.id.edtPasswordLogIn);
 
         btnGuest = findViewById(R.id.btnGuest);
+
+        String guestLogin = getIntent().getStringExtra("guestLogin");
+        if (guestLogin!=null){
+            btnGuest.setVisibility(View.GONE);
+        }
         btnGuest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

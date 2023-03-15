@@ -38,6 +38,20 @@
 
 
     </com.ismaeldivita.chipnavigation.ChipNavigationBar>
+    <com.ismaeldivita.chipnavigation.ChipNavigationBar
+        android:id="@+id/chipNavBarGuest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:cnb_iconSize="30dp"
+        android:paddingBottom="3dp"
+        app:cnb_unselectedColor="@android:color/darker_gray"
+        app:cnb_radius="28dp"
+        app:cnb_menuResource="@menu/bottom_nav_guest"
+        android:background="@android:color/transparent">
+
+
+    </com.ismaeldivita.chipnavigation.ChipNavigationBar>
 
     <com.andremion.counterfab.CounterFab
         android:id="@+id/fabCart"
