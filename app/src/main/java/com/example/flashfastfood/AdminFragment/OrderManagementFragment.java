@@ -89,7 +89,6 @@ public class OrderManagementFragment extends Fragment {
         rvCustomerList = view.findViewById(R.id.rvUserList);
         rvCustomerList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
 
-
     }
 
     @Override

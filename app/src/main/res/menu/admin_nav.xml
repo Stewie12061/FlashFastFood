@@ -2,6 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/mnuChart"
+        android:icon="@drawable/ic_chart"
+        android:title="Chart"
+        app:cnb_iconColor="@color/white"/>
+    <item
         android:id="@+id/mnuCategory"
         android:icon="@drawable/ic_category"
         android:title="Category"
