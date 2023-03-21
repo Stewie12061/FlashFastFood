@@ -16,12 +16,14 @@ import com.anychart.chart.common.dataentry.DataEntry;
 import com.anychart.chart.common.dataentry.ValueDataEntry;
 import com.anychart.charts.Cartesian;
 import com.anychart.core.cartesian.series.Bar;
+import com.anychart.core.cartesian.series.Column;
 import com.anychart.core.cartesian.series.JumpLine;
 import com.anychart.data.Mapping;
 import com.anychart.data.Set;
 import com.anychart.enums.HoverMode;
 import com.anychart.enums.TooltipDisplayMode;
 import com.anychart.enums.TooltipPositionMode;
+import com.anychart.palettes.RangeColors;
 import com.example.flashfastfood.Adapter.OrderViewHolder;
 import com.example.flashfastfood.Data.Order;
 import com.example.flashfastfood.R;
@@ -84,7 +86,7 @@ public class ChartAdminFragment extends Fragment{
         vertical = AnyChart.vertical();
 
         vertical.animation(true)
-                .title("Revenue statistics in 2022");
+                .title("Revenue statistics in 2022").title().fontColor("#E25822").fontSize(20).fontWeight(700);
 
         lstDec = new ArrayList<>();
         lstNov = new ArrayList<>();
@@ -105,21 +107,20 @@ public class ChartAdminFragment extends Fragment{
 
         vertical.labels(true);
 
-        vertical.tooltip()
-                .displayMode(TooltipDisplayMode.UNION)
+        vertical.tooltip().fontColor("#FFFFFF").fontSize(16).fontWeight(500)
+                .format("Total: ${%value}")
+                .displayMode(TooltipDisplayMode.SINGLE)
                 .positionMode(TooltipPositionMode.POINT)
-                .unionFormat(
-                        "function() {\n" +
-                                "      return 'Plain: $' + this.points[1].value + ' mln' +\n" +
-                                "        '\\n' + 'Fact: $' + this.points[0].value + ' mln';\n" +
-                                "    }");
+                .unionFormat();
 
         vertical.interactivity().hoverMode(HoverMode.BY_X);
-
         vertical.xAxis(true);
         vertical.yAxis(true);
-        vertical.yAxis(0).labels().format("${%Value}");
+        vertical.yAxis(0).labels().format("${%Value}").fontColor("#E25822").fontSize(14).fontWeight(500);
+        vertical.xAxis(0).labels().fontColor("#E25822").fontSize(14).fontWeight(500);
 
+        vertical.yGrid(0).fill("#E25822");
+        vertical.yGrid(0).stroke("#90E25822");
         anyChartView.setChart(vertical);
     }
 
@@ -133,48 +134,50 @@ public class ChartAdminFragment extends Fragment{
                     for (DataSnapshot dataSnapshot2 : dataSnapshot.getChildren()){
                         if (dataSnapshot2.child("orderStatus").getValue().toString().equals("Successful")){
                             month = dataSnapshot2.child("orderDate").getValue().toString();
-                            String getMonth = month.split("\\-")[0];
+                            String getMonth = month.split("-")[0];
+                            String getYear = month.split("-")[2];
                             String moneyString = dataSnapshot2.child("orderTotalPrice").getValue().toString();
                             Double moneyDouble = Double.parseDouble(moneyString);
-                            switch (getMonth){
-                                case "01":
-                                    lstJan.add(moneyDouble);
-                                    break;
-                                case "02":
-                                    lstFeb.add(moneyDouble);
-                                    break;
-                                case "03":
-                                    lstMar.add(moneyDouble);
-                                    break;
-                                case "04":
-                                    lstApr.add(moneyDouble);
-                                    break;
-                                case "05":
-                                    lstMay.add(moneyDouble);
-                                    break;
-                                case "06":
-                                    lstJun.add(moneyDouble);
-                                    break;
-                                case "07":
-                                    lstJul.add(moneyDouble);
-                                    break;
-                                case "08":
-                                    lstAug.add(moneyDouble);
-                                    break;
-                                case "09":
-                                    lstSep.add(moneyDouble);
-                                    break;
-                                case "10":
-                                    lstOct.add(moneyDouble);
-                                    break;
-                                case "11":
-                                    lstNov.add(moneyDouble);
-                                    break;
-                                case "12":
-                                    lstDec.add(moneyDouble);
-                                    break;
+                            if (getYear.equals("2022")){
+                                switch (getMonth){
+                                    case "01":
+                                        lstJan.add(moneyDouble);
+                                        break;
+                                    case "02":
+                                        lstFeb.add(moneyDouble);
+                                        break;
+                                    case "03":
+                                        lstMar.add(moneyDouble);
+                                        break;
+                                    case "04":
+                                        lstApr.add(moneyDouble);
+                                        break;
+                                    case "05":
+                                        lstMay.add(moneyDouble);
+                                        break;
+                                    case "06":
+                                        lstJun.add(moneyDouble);
+                                        break;
+                                    case "07":
+                                        lstJul.add(moneyDouble);
+                                        break;
+                                    case "08":
+                                        lstAug.add(moneyDouble);
+                                        break;
+                                    case "09":
+                                        lstSep.add(moneyDouble);
+                                        break;
+                                    case "10":
+                                        lstOct.add(moneyDouble);
+                                        break;
+                                    case "11":
+                                        lstNov.add(moneyDouble);
+                                        break;
+                                    case "12":
+                                        lstDec.add(moneyDouble);
+                                        break;
+                                }
                             }
-
                         }
                     }
                 }
@@ -233,7 +236,10 @@ public class ChartAdminFragment extends Fragment{
                 Mapping barData = set.mapAs("{ x: 'x', value: 'value' }");
 
                 Bar bar = vertical.bar(barData);
-                bar.labels().format("${%Value}");
+                bar.fill("#FFFFFF");
+                bar.stroke("#FFFFFF");
+
+                bar.labels().format("${%Value}").fontColor("#000000").fontSize(15).fontWeight(700);
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
