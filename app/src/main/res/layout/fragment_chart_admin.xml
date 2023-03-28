@@ -3,22 +3,58 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".AdminFragment.ChartAdminFragment">
-
-    <com.anychart.AnyChartView
-        android:id="@+id/any_chart_view"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        />
+        android:paddingBottom="20dp">
 
-    <ProgressBar
+<!--    <com.anychart.AnyChartView
+        android:id="@+id/any_chart_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>-->
+        <LinearLayout
+            android:id="@+id/linear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_alignParentTop="true"
+            android:layout_margin="10dp"
+            android:layout_centerInParent="true">
+            <TextView
+                android:id="@+id/text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Revenue statistics"
+                android:textColor="@color/orange"
+                android:textStyle="bold"
+                android:fontFamily="@font/airbnb_cereal"
+                android:textSize="22dp"/>
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/spinnerChart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:spinnerMode="dropdown"/>
+        </LinearLayout>
+
+
+
+    <com.github.mikephil.charting.charts.HorizontalBarChart
+        android:id="@+id/horizontalChart"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:clipToPadding="true"
+        android:padding="10dp"
+        android:layout_below="@+id/linear"/>
+    <!--<ProgressBar
         android:id="@+id/progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent"/>-->
+    </RelativeLayout>
 </FrameLayout>

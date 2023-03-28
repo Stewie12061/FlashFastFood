@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.flashfastfood.AdminFragment.CategoryAdminFragment;
+import com.example.flashfastfood.AdminFragment.Chart2AdminFragment;
 import com.example.flashfastfood.AdminFragment.ChartAdminFragment;
 import com.example.flashfastfood.AdminFragment.DiscountManagementFragment;
 import com.example.flashfastfood.AdminFragment.OrderManagementFragment;
@@ -96,7 +97,7 @@ public class MainAdminActivity extends AppCompatActivity {
             public void onItemSelected(int i) {
                 switch (i) {
                     case R.id.mnuChart:
-                        fragment = new ChartAdminFragment();
+                        fragment = new Chart2AdminFragment();
                         break;
                     case R.id.mnuCategory:
                         fragment = new CategoryAdminFragment();
