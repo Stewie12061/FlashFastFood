@@ -9,6 +9,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -78,8 +79,6 @@ public class Chart2AdminFragment extends Fragment implements AdapterView.OnItemS
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        /*getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);*/
 
         firebaseDatabase = FirebaseDatabase.getInstance("https://flashfastfood-81fee-default-rtdb.asia-southeast1.firebasedatabase.app");
         userRef = firebaseDatabase.getReference("Registered Users");
@@ -89,8 +88,6 @@ public class Chart2AdminFragment extends Fragment implements AdapterView.OnItemS
         adminId = user.getUid();
 
         chart = view.findViewById(R.id.horizontalChart);
-//        chart.setOnChartValueSelectedListener(this);
-        // chart.setHighlightEnabled(false);
         spinnerChart = view.findViewById(R.id.spinnerChart);
         spinnerChart.setOnItemSelectedListener(this);
         List<String> years = new ArrayList<String>();
@@ -105,11 +102,10 @@ public class Chart2AdminFragment extends Fragment implements AdapterView.OnItemS
 
         ResetDate();
         strYear = spinnerChart.getSelectedItem().toString();
-        getChartData();
     }
 
     private void getChartData(){
-        orderRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        orderRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 ResetDate();
@@ -202,6 +198,12 @@ public class Chart2AdminFragment extends Fragment implements AdapterView.OnItemS
                 for (int i=0; i<lstNov.size();i++){
                     nov = nov + lstNov.get(i);
                 }
+                if (jan==0.0 && feb==0.0 && mar==0.0 && apr == 0.0 && may ==0.0
+                && jun == 0.0 && jul == 0.0 && aug == 0.0 && sep == 0.0 && dec == 0.0
+                && nov == 0.0 && oct == 0.0){
+                    Toast.makeText(getContext(), "No Data Yet", Toast.LENGTH_SHORT).show();
+                }
+
                 BarDataSet barDataSet = new BarDataSet(dataChart(),"Profit");
                 barDataSet.setColor(Color.parseColor("#E25822"));
                 barDataSet.setValueTextColor(Color.BLACK);
@@ -242,6 +244,7 @@ public class Chart2AdminFragment extends Fragment implements AdapterView.OnItemS
 
                 chart.animateY(2500);
                 chart.setData(barData);
+                chart.notifyDataSetChanged();
                 chart.invalidate();
 
                 Legend l = chart.getLegend();
@@ -252,6 +255,7 @@ public class Chart2AdminFragment extends Fragment implements AdapterView.OnItemS
                 l.setFormSize(8f);
                 l.setXEntrySpace(2f);
                 l.setTextSize(16l);
+
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
