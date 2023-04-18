@@ -17,7 +17,10 @@
         android:theme="@style/Theme.FlashFastFoodMain"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".Admin.ChartActivity"
+            android:name=".Admin.ChartAfterYearActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Admin.ChartAfterDayOfMonthActivity"
             android:exported="true" />
         <activity
             android:name=".MessageActivity"

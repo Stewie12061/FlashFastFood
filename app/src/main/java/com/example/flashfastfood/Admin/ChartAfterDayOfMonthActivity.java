@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
-import com.example.flashfastfood.Data.Order;
 import com.example.flashfastfood.R;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.components.Legend;
@@ -18,26 +17,20 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
-import com.github.mikephil.charting.formatter.ValueFormatter;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
-public class ChartActivity extends AppCompatActivity {
+public class ChartAfterDayOfMonthActivity extends AppCompatActivity {
     private HorizontalBarChart chart;
     private TextView textView;
     @Override
@@ -86,12 +79,17 @@ public class ChartActivity extends AppCompatActivity {
                             Calendar cal = Calendar.getInstance();
                             cal.set(Calendar.MONTH, month-1);
                             String monthName = new SimpleDateFormat("MMMM").format(cal.getTime());
-                            textView.setText("Statistics from "+ day+" to "+lastDayOfMonth+" of "+monthName+","+year);
+                            textView.setText("Statistics from "+ day+" to "+lastDayOfMonth+" of "+monthName+","+" "+year);
 
+                            Calendar calendar2 = Calendar.getInstance();
+                            calendar2.set(year, month - 1, day); // Month is zero-based, so subtract 1
+
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("MM");
+                            String monthString = dateFormat.format(calendar2.getTime());
                             // Add orderPrice to dailyTotalOrders map
-                            if (dailyTotalOrders.containsKey(getDay) && getYear.equals(String.valueOf(year)) && getMonth.equals(String.valueOf(month))) {
+                            if (dailyTotalOrders.containsKey(getDay) && getYear.equals(String.valueOf(year)) && getMonth.equals(monthString)) {
                                 dailyTotalOrders.put(getDay, dailyTotalOrders.get(Float.parseFloat(getDay))+Float.parseFloat(moneyString));
-                            }else if (getYear.equals(String.valueOf(year)) && getMonth.equals(String.valueOf(month))){
+                            }else if (getYear.equals(String.valueOf(year)) && getMonth.equals(monthString)){
                                 dailyTotalOrders.put(getDay, Float.parseFloat(moneyString));
                             }
 

@@ -13,13 +13,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 
-import com.example.flashfastfood.Admin.ChartActivity;
+import com.example.flashfastfood.Admin.ChartAfterDayOfMonthActivity;
+import com.example.flashfastfood.Admin.ChartAfterYearActivity;
 import com.example.flashfastfood.R;
 
 public class ChartDayFragment extends Fragment {
 
     private DatePicker datePicker;
-    private Button showChartButton;
+    private Button showChartButton, showChartYearButton;
     public ChartDayFragment() {
         // Required empty public constructor
     }
@@ -40,16 +41,30 @@ public class ChartDayFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         datePicker = view.findViewById(R.id.datePicker);
         showChartButton = view.findViewById(R.id.showChartButton);
+
         showChartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int year = datePicker.getYear();
                 int month = datePicker.getMonth() + 1; // month is 0-indexed
                 int day = datePicker.getDayOfMonth();
-                Intent intent = new Intent(getActivity(), ChartActivity.class);
+                Intent intent = new Intent(getActivity(), ChartAfterDayOfMonthActivity.class);
                 intent.putExtra("year", String.valueOf(year));
                 intent.putExtra("month", String.valueOf(month));
                 intent.putExtra("day",String.valueOf(day));
+                startActivity(intent);
+            }
+        });
+
+        showChartYearButton = view.findViewById(R.id.showChartYearButton);
+        showChartYearButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int year = datePicker.getYear();
+                int month = datePicker.getMonth() + 1; // month is 0-indexed
+                int day = datePicker.getDayOfMonth();
+                Intent intent = new Intent(getActivity(), ChartAfterYearActivity.class);
+                intent.putExtra("year",String.valueOf(year));
                 startActivity(intent);
             }
         });
