@@ -17,6 +17,9 @@
         android:theme="@style/Theme.FlashFastFoodMain"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".Admin.ChartActivity"
+            android:exported="true" />
+        <activity
             android:name=".MessageActivity"
             android:exported="true" />
         <activity

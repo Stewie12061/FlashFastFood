@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        android:id="@+id/horizontalScrollView"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:context=".Admin.ChartActivity"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Revenue statistics"
+            android:textColor="@color/orange"
+            android:textStyle="bold"
+            android:layout_marginTop="8dp"
+            android:layout_centerHorizontal="true"
+            android:fontFamily="@font/airbnb_cereal"
+            android:textSize="18dp"/>
+
+        <com.github.mikephil.charting.charts.HorizontalBarChart
+            android:id="@+id/chart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/text"/>
+
+</RelativeLayout>
+

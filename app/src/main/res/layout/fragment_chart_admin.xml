@@ -5,25 +5,25 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".AdminFragment.ChartAdminFragment">
-<!--    <ProgressBar
-        android:id="@+id/progress_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:translationZ="10000dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>-->
+    <!--    <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:translationZ="10000dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>-->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingBottom="20dp">
 
-<!--    <com.anychart.AnyChartView
-        android:id="@+id/any_chart_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>-->
+        <!--    <com.anychart.AnyChartView
+                android:id="@+id/any_chart_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>-->
         <LinearLayout
             android:id="@+id/linear"
             android:layout_width="wrap_content"
@@ -50,14 +50,14 @@
 
 
 
-    <com.github.mikephil.charting.charts.HorizontalBarChart
-        android:id="@+id/horizontalChart"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/white"
-        android:clipToPadding="true"
-        android:padding="10dp"
-        android:layout_below="@+id/linear"/>
+        <com.github.mikephil.charting.charts.HorizontalBarChart
+            android:id="@+id/horizontalChart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/white"
+            android:clipToPadding="true"
+            android:padding="10dp"
+            android:layout_below="@+id/linear"/>
 
     </RelativeLayout>
 </FrameLayout>

@@ -1,24 +1,27 @@
 package com.example.flashfastfood.AdminFragment;
+
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import com.anychart.AnyChart;
-import com.anychart.AnyChartView;
-import com.anychart.chart.common.dataentry.DataEntry;
-import com.anychart.chart.common.dataentry.ValueDataEntry;
-import com.anychart.charts.Cartesian;
-import com.anychart.core.cartesian.series.Bar;
-import com.anychart.data.Mapping;
-import com.anychart.data.Set;
-import com.anychart.enums.HoverMode;
-import com.anychart.enums.TooltipDisplayMode;
-import com.anychart.enums.TooltipPositionMode;
+
 import com.example.flashfastfood.R;
+import com.github.mikephil.charting.charts.HorizontalBarChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -30,7 +33,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChartAdminFragment extends Fragment{
+public class ChartAdminFragment extends Fragment implements AdapterView.OnItemSelectedListener{
 
     FirebaseDatabase firebaseDatabase;
     DatabaseReference userRef, orderRef;
@@ -38,10 +41,11 @@ public class ChartAdminFragment extends Fragment{
     String userId, adminId;
     double jan,feb,mar,apr,may,jun,jul,aug,sep,oct,nov,dec=0;
     ArrayList<Double> lstJan,lstFeb,lstMar,lstApr,lstMay,lstJun,lstJul,lstAug,lstSep,lstOct,lstNov,lstDec;
-    List<DataEntry> data = new ArrayList<>();
-    Cartesian vertical;
-    Set set;
-    AnyChartView anyChartView;
+
+    Spinner spinnerChart;
+    String strYear;
+
+    private HorizontalBarChart chart;
 
     public ChartAdminFragment() {
         // Required empty public constructor
@@ -70,15 +74,26 @@ public class ChartAdminFragment extends Fragment{
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         adminId = user.getUid();
 
-        anyChartView = view.findViewById(R.id.horizontalChart);
-        anyChartView.setProgressBar(view.findViewById(R.id.progress_bar));
+        chart = view.findViewById(R.id.horizontalChart);
+        spinnerChart = view.findViewById(R.id.spinnerChart);
+        spinnerChart.setOnItemSelectedListener(this);
+        List<String> years = new ArrayList<String>();
+        years.add("2022");
+        years.add("2023");
+        years.add("2024");
+        years.add("2025");
 
-        vertical = AnyChart.vertical();
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getContext(), R.layout.items_custom_spinner_chart, years);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerChart.setAdapter(dataAdapter);
 
-        vertical.animation(true)
-                .title("Revenue statistics in 2022").title().fontColor("#E25822").fontSize(20).fontWeight(700);
         ResetDate();
-        orderRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        spinnerChart.setSelection(1);
+        strYear = spinnerChart.getSelectedItem().toString();
+    }
+
+    private void getChartData(){
+        orderRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 ResetDate();
@@ -92,7 +107,7 @@ public class ChartAdminFragment extends Fragment{
                             String moneyString = dataSnapshot2.child("orderTotalPrice").getValue().toString();
                             Double moneyDouble = Double.parseDouble(moneyString);
 
-                            if (getYear.equals("2022")){
+                            if (getYear.equals(strYear)){
                                 switch (getMonth){
                                     case "01":
                                         lstJan.add(moneyDouble);
@@ -171,66 +186,90 @@ public class ChartAdminFragment extends Fragment{
                 for (int i=0; i<lstNov.size();i++){
                     nov = nov + lstNov.get(i);
                 }
-                data.add(new CustomDataEntry("Jan", jan));
-                data.add(new CustomDataEntry("Feb", feb));
-                data.add(new CustomDataEntry("Mar", mar));
-                data.add(new CustomDataEntry("Apr", apr));
-                data.add(new CustomDataEntry("May", may));
-                data.add(new CustomDataEntry("Jun", jun));
-                data.add(new CustomDataEntry("Jul", jul));
-                data.add(new CustomDataEntry("Aug", aug));
-                data.add(new CustomDataEntry("Sep", sep));
-                data.add(new CustomDataEntry("Oct", oct));
-                data.add(new CustomDataEntry("Nov", nov));
-                data.add(new CustomDataEntry("Dec", dec));
+                if (jan==0.0 && feb==0.0 && mar==0.0 && apr == 0.0 && may ==0.0
+                && jun == 0.0 && jul == 0.0 && aug == 0.0 && sep == 0.0 && dec == 0.0
+                && nov == 0.0 && oct == 0.0){
+                    Toast.makeText(getContext(), "No Data Yet", Toast.LENGTH_SHORT).show();
+                }
 
-                set = Set.instantiate();
-                set.data(data);
-                Mapping barData = set.mapAs("{ x: 'x', value: 'value' }");
-                Bar bar = vertical.bar(barData);
-                bar.fill("#FFFFFF");
-                bar.stroke("#FFFFFF");
+                BarDataSet barDataSet = new BarDataSet(dataChart(),"Profit");
+                barDataSet.setColor(Color.parseColor("#E25822"));
+                barDataSet.setValueTextColor(Color.BLACK);
+                barDataSet.setValueTextSize(14f);
+                barDataSet.notifyDataSetChanged();
 
-                bar.labels().format("${%Value}").fontColor("#000000").fontSize(15).fontWeight(700);
+                BarData barData = new BarData();
+                barData.addDataSet(barDataSet);
+
+                chart.setDrawBarShadow(false);
+                chart.setDrawValueAboveBar(true);
+                chart.getDescription().setEnabled(false);
+                // if more than 60 entries are displayed in the chart, no values will be
+                // drawn
+                chart.setMaxVisibleValueCount(60);
+                // scaling can now only be done on x- and y-axis separately
+                chart.setPinchZoom(false);
+                // draw shadows for each bar that show the maximum value
+                // chart.setDrawBarShadow(true);
+                chart.setDrawGridBackground(false);
+                chart.setFitBars(true);
+
+                XAxis xl = chart.getXAxis();
+                xl.setPosition(XAxis.XAxisPosition.BOTTOM);
+                xl.setDrawAxisLine(true);
+                xl.setDrawGridLines(false);
+                xl.setGranularity(1f);
+
+                YAxis yl = chart.getAxisLeft();
+                yl.setDrawAxisLine(true);
+                yl.setDrawGridLines(true);
+                yl.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+
+                YAxis yr = chart.getAxisRight();
+                yr.setDrawAxisLine(true);
+                yr.setDrawGridLines(false);
+                yr.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+
+                chart.animateY(2500);
+                chart.setData(barData);
+                chart.notifyDataSetChanged();
+                chart.invalidate();
+
+                Legend l = chart.getLegend();
+                l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+                l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
+                l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+                l.setDrawInside(false);
+                l.setFormSize(8f);
+                l.setXEntrySpace(2f);
+                l.setTextSize(16l);
+
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
         });
-
-        vertical.yScale().minimum(0d);
-
-        vertical.labels(true);
-
-        vertical.tooltip().fontColor("#FFFFFF").fontSize(16).fontWeight(500)
-                .format("Total: ${%value}")
-                .displayMode(TooltipDisplayMode.SINGLE)
-                .positionMode(TooltipPositionMode.POINT)
-                .unionFormat();
-
-        vertical.interactivity().hoverMode(HoverMode.BY_X);
-        vertical.xAxis(true);
-        vertical.yAxis(true);
-        vertical.yAxis(0).labels().format("${%Value}").fontColor("#E25822").fontSize(14).fontWeight(500);
-        vertical.xAxis(0).labels().fontColor("#E25822").fontSize(14).fontWeight(500);
-
-        vertical.yGrid(0).fill("#E25822");
-        vertical.yGrid(0).stroke("#90E25822");
-        anyChartView.setChart(vertical);
-        anyChartView.invalidate();
-
     }
-    private class CustomDataEntry extends ValueDataEntry {
-        public CustomDataEntry(String x, Double value) {
-            super(x, value);
-        }
+
+    private ArrayList<BarEntry> dataChart(){
+        ArrayList<BarEntry> dataChartValue = new ArrayList<>();
+        dataChartValue.add(new BarEntry(1, (float) jan));
+        dataChartValue.add(new BarEntry(2, (float) feb));
+        dataChartValue.add(new BarEntry(3, (float) mar));
+        dataChartValue.add(new BarEntry(4, (float) apr));
+        dataChartValue.add(new BarEntry(5, (float) may));
+        dataChartValue.add(new BarEntry(6, (float) jun));
+        dataChartValue.add(new BarEntry(7, (float) jul));
+        dataChartValue.add(new BarEntry(8, (float) aug));
+        dataChartValue.add(new BarEntry(9, (float) sep));
+        dataChartValue.add(new BarEntry(10, (float) oct));
+        dataChartValue.add(new BarEntry(11, (float) nov));
+        dataChartValue.add(new BarEntry(12, (float) dec));
+
+        return  dataChartValue;
     }
     void ResetDate(){
-        data = new ArrayList<>();
-        data.add(new CustomDataEntry(null,null));
-        set = Set.instantiate();
-        set.data(data);
         lstDec = new ArrayList<>();
         lstNov = new ArrayList<>();
         lstOct = new ArrayList<>();
@@ -246,4 +285,14 @@ public class ChartAdminFragment extends Fragment{
         jan=0;feb=0;mar=0;apr=0;may=0;jun=0;jul=0;aug=0;sep=0;oct=0;nov=0;dec=0;
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        strYear = parent.getItemAtPosition(position).toString();
+        getChartData();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
 }
