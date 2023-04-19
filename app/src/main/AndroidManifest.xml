@@ -23,7 +23,7 @@
             android:name=".Admin.ChartAfterYearActivity"
             android:exported="false" />
         <activity
-            android:name=".Admin.ChartAfterDayToEndMonthActivity"
+            android:name=".Admin.ChartDayActivity"
             android:exported="true" />
         <activity
             android:name=".MessageActivity"

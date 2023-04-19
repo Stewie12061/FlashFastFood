@@ -30,7 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ChartAfterDayToEndMonthActivity extends AppCompatActivity {
+public class ChartDayActivity extends AppCompatActivity {
     private HorizontalBarChart chart;
     private TextView textView;
     @Override
@@ -61,15 +61,12 @@ public class ChartAfterDayToEndMonthActivity extends AppCompatActivity {
 
                 Map<String, Float> dailyTotalOrders = new HashMap<>(); // Stores total order price for each day
                 List<String> dayList = new ArrayList<>(); // Stores list of days
-
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(Calendar.DAY_OF_MONTH, day);
-                calendar.set(Calendar.MONTH, month); // Replace with your own month
-                int lastDayOfMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+                float totalOrdersPrice = 0f;
 
                 for (DataSnapshot orderSnapshot : snapshot.getChildren()) {
                     for (DataSnapshot dataSnapshotChild : orderSnapshot.getChildren()){
-                        if (dataSnapshotChild.child("orderStatus").getValue().toString().equals("Successful")){
+                        if (dataSnapshotChild.child("orderStatus").getValue().toString().equals("Successful") &&
+                                dataSnapshotChild.child("orderDate").getValue().toString().equals(month+"-"+day+"-"+year)){
                             String dateTime = dataSnapshotChild.child("orderDate").getValue().toString();
                             String getMonth = dateTime.split("-")[0];
                             String getYear = dateTime.split("-")[2];
@@ -79,7 +76,7 @@ public class ChartAfterDayToEndMonthActivity extends AppCompatActivity {
                             Calendar cal = Calendar.getInstance();
                             cal.set(Calendar.MONTH, month-1);
                             String monthName = new SimpleDateFormat("MMMM").format(cal.getTime());
-                            textView.setText("Statistics from "+ day+" to "+lastDayOfMonth+" of "+monthName+","+" "+year);
+                            textView.setText("Profits on "+ day + ", "+monthName+ " "+year);
 
                             Calendar calendar2 = Calendar.getInstance();
                             calendar2.set(year, month - 1, day); // Month is zero-based, so subtract 1
@@ -87,12 +84,10 @@ public class ChartAfterDayToEndMonthActivity extends AppCompatActivity {
                             SimpleDateFormat dateFormat = new SimpleDateFormat("MM");
                             String monthString = dateFormat.format(calendar2.getTime());
                             // Add orderPrice to dailyTotalOrders map
-                            if (dailyTotalOrders.containsKey(getDay) && getYear.equals(String.valueOf(year)) && getMonth.equals(monthString)) {
-                                dailyTotalOrders.put(getDay, dailyTotalOrders.get(Float.parseFloat(getDay))+Float.parseFloat(moneyString));
-                            }else if (getYear.equals(String.valueOf(year)) && getMonth.equals(monthString)){
+                            if (getYear.equals(String.valueOf(year)) && getMonth.equals(monthString)) {
                                 dailyTotalOrders.put(getDay, Float.parseFloat(moneyString));
+                                totalOrdersPrice += Float.parseFloat(moneyString);
                             }
-
                         }
 
                     }
@@ -100,9 +95,9 @@ public class ChartAfterDayToEndMonthActivity extends AppCompatActivity {
                 // Create chart data
                 List<BarEntry> entries = new ArrayList<>();
                 int i = 0;
-                for (int dayFor = day; dayFor <= lastDayOfMonth; dayFor++) {
+                for (int dayFor = day; dayFor <= day; dayFor++) {
                     String dayStr = String.format("%02d", dayFor);
-                    float totalOrders = dailyTotalOrders.getOrDefault(dayStr, 0f);
+                    float totalOrders = totalOrdersPrice;
                     entries.add(new BarEntry(i++, totalOrders));
                     dayList.add(dayStr);
                 }
@@ -110,14 +105,15 @@ public class ChartAfterDayToEndMonthActivity extends AppCompatActivity {
                 // Create chart
                 BarDataSet dataSet = new BarDataSet(entries, "Total Order Price per Day");
                 dataSet.setColor(Color.parseColor("#E25822"));
-                dataSet.setValueTextColor(Color.BLACK);
+                dataSet.setValueTextColor(Color.WHITE);
                 dataSet.setValueTextSize(14f);
                 dataSet.notifyDataSetChanged();
+                dataSet.setDrawValues(true);
                 BarData barData = new BarData(dataSet);
                 chart.setData(barData);
 
                 chart.setDrawBarShadow(false);
-                chart.setDrawValueAboveBar(true);
+                chart.setDrawValueAboveBar(false);
                 chart.getDescription().setEnabled(false);
                 // if more than 60 entries are displayed in the chart, no values will be
                 // drawn

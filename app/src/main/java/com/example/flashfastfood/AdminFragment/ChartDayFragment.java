@@ -13,10 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.Toast;
 
 import com.example.flashfastfood.Admin.ChartAfterDayToDayActivity;
-import com.example.flashfastfood.Admin.ChartAfterDayToEndMonthActivity;
+import com.example.flashfastfood.Admin.ChartDayActivity;
 import com.example.flashfastfood.Admin.ChartAfterYearActivity;
 import com.example.flashfastfood.R;
 import com.google.android.material.datepicker.MaterialDatePicker;
@@ -57,7 +56,7 @@ public class ChartDayFragment extends Fragment {
                 int year = datePicker.getYear();
                 int month = datePicker.getMonth() + 1; // month is 0-indexed
                 int day = datePicker.getDayOfMonth();
-                Intent intent = new Intent(getActivity(), ChartAfterDayToEndMonthActivity.class);
+                Intent intent = new Intent(getActivity(), ChartDayActivity.class);
                 intent.putExtra("year", String.valueOf(year));
                 intent.putExtra("month", String.valueOf(month));
                 intent.putExtra("day",String.valueOf(day));
@@ -93,9 +92,15 @@ public class ChartDayFragment extends Fragment {
                         String dateStart = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date(selection.first));
                         String dateEnd = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date(selection.second));
 
+                        String dateStartForQuery = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault()).format(new Date(selection.first));
+                        String dateEndForQuery  = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault()).format(new Date(selection.second));
+
                         Intent intent = new Intent(getActivity(), ChartAfterDayToDayActivity.class);
                         intent.putExtra("start",dateStart);
                         intent.putExtra("end",dateEnd);
+
+                        intent.putExtra("startQ",dateStartForQuery);
+                        intent.putExtra("endQ",dateEndForQuery);
                         startActivity(intent);
                     }
                 });

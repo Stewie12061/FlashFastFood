@@ -18,13 +18,16 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -38,7 +41,7 @@ public class ChartAfterDayToDayActivity extends AppCompatActivity {
 
     private HorizontalBarChart chart;
     private TextView textView;
-    String dateStart, dateEnd;
+    String dateStart, dateEnd, dateStartQuery, dateEndQuery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +57,8 @@ public class ChartAfterDayToDayActivity extends AppCompatActivity {
         String getStarYear = dateStart.split("-")[2];
         String getStarDay = dateStart.split("-")[0];
 
+        dateStartQuery = getIntent().getStringExtra("startQ");
+        dateEndQuery = getIntent().getStringExtra("endQ");
 
         fetchData(Integer.parseInt(getStarYear),Integer.parseInt(getStarMonth),Integer.parseInt(getStarDay));
 
@@ -61,84 +66,98 @@ public class ChartAfterDayToDayActivity extends AppCompatActivity {
     }
 
     private void fetchData(int year, int month, int day) {
-        DatabaseReference ordersRef = FirebaseDatabase.getInstance("https://flashfastfood-81fee-default-rtdb.asia-southeast1.firebasedatabase.app").getReference("Order");
-        ordersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        Date startDate;
+        Date endDate;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+        try {
+            startDate = dateFormat.parse(dateStartQuery);
+            endDate = dateFormat.parse(dateEndQuery);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        DatabaseReference ordersRef = FirebaseDatabase
+                .getInstance("https://flashfastfood-81fee-default-rtdb.asia-southeast1.firebasedatabase.app").getReference("Order");
+        Query query = ordersRef.orderByChild("orderDate");
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                HashMap<String, Double> dailyTotalPrizes = new HashMap<>();
+                final List<String> daysWithValues = new ArrayList<>();
+                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+                    for (DataSnapshot orderSnapshot : userSnapshot.getChildren()) {
+                        if (orderSnapshot.child("orderStatus").getValue().toString().equals("Successful")) {
+                            String orderDateStr = orderSnapshot.child("orderDate").getValue(String.class);
+                            String getMonth = orderDateStr.split("-")[0];
+                            String getYear = orderDateStr.split("-")[2];
+                            String getDay = orderDateStr.split("-")[1];
+                            String orderTotalPrice = orderSnapshot.child("orderTotalPrice").getValue().toString();
 
-                Map<String, Float> dailyTotalOrders = new HashMap<>(); // Stores total order price for each day
+                            // Parse the orderDate string into a Date object
+                            Date orderDate = null;
+                            try {
+                                orderDate = dateFormat.parse(orderDateStr);
+                            } catch (ParseException e) {
+                                throw new RuntimeException(e);
+                            }
 
-                for (DataSnapshot orderSnapshot : snapshot.getChildren()) {
-                    for (DataSnapshot dataSnapshotChild : orderSnapshot.getChildren()){
-                        if (dataSnapshotChild.child("orderStatus").getValue().toString().equals("Successful")){
-                            String dateTime = dataSnapshotChild.child("orderDate").getValue().toString();
-                            String getMonth = dateTime.split("-")[0];
-                            String getYear = dateTime.split("-")[2];
-                            String getDay = dateTime.split("-")[1];
-                            String moneyString = dataSnapshotChild.child("orderTotalPrice").getValue().toString();
+                            if (orderDate.compareTo(startDate) >= 0 && orderDate.compareTo(endDate) <= 0) {
+                                textView.setText("Statistics from " + dateStart + " to " + dateEnd);
 
-                            Calendar cal = Calendar.getInstance();
-                            cal.set(Calendar.MONTH, month-1);
-                            String monthName = new SimpleDateFormat("MMMM").format(cal.getTime());
-                            textView.setText("Statistics from "+ dateStart+" to "+dateEnd);
+                                Calendar cal = Calendar.getInstance();
+                                cal.setTime(orderDate);
+                                String dayKey = dateFormat.format(cal.getTime());
 
-                            Calendar calendar2 = Calendar.getInstance();
-                            calendar2.set(year, month - 1, day); // Month is zero-based, so subtract 1
-
-                            SimpleDateFormat dateFormat = new SimpleDateFormat("MM");
-                            String monthString = dateFormat.format(calendar2.getTime());
-                            // Add orderPrice to dailyTotalOrders map
-                            if (dailyTotalOrders.containsKey(getDay) && getYear.equals(String.valueOf(year)) && getMonth.equals(monthString)) {
-                                dailyTotalOrders.put(getDay, dailyTotalOrders.get(Float.parseFloat(getDay))+Float.parseFloat(moneyString));
-                            }else if (getYear.equals(String.valueOf(year)) && getMonth.equals(monthString)){
-                                dailyTotalOrders.put(getDay, Float.parseFloat(moneyString));
+                                // Add the orderTotalPrice to the dailyTotalPrizes HashMap
+                                if (dailyTotalPrizes.containsKey(dayKey)) {
+                                    double currentTotal = dailyTotalPrizes.get(dayKey);
+                                    dailyTotalPrizes.put(dayKey, currentTotal + Double.parseDouble(orderTotalPrice));
+                                } else {
+                                    dailyTotalPrizes.put(dayKey, Double.parseDouble(orderTotalPrice));
+                                    daysWithValues.add(dayKey);
+                                }
                             }
 
                         }
 
                     }
                 }
-                int differenceDates=0;
-                try {
-                    SimpleDateFormat dates = new SimpleDateFormat("dd-MM-yyyy");
-                    Date dateStartd = dates.parse(dateStart);
-                    Date dateEndd = dates.parse(dateEnd);
-                    long dateStartInMs = dateStartd.getTime();
-                    long dateEndInMs = dateEndd.getTime();
-                    long difference = dateEndInMs - dateStartInMs;
-                    differenceDates = (int) (difference / (24 * 60 * 60 * 1000));
-                }catch (Exception e) {
-                    e.printStackTrace();
-                }
-                // Create chart data
+
+                // Create a List of BarEntry objects to hold the chart data
                 List<BarEntry> entries = new ArrayList<>();
+                // Loop through the dailyTotalPrizes HashMap and add each entry to the List
                 int i = 0;
-                for (int dayFor = day; dayFor <= day+differenceDates; dayFor++) {
-                    String dayStr = String.format("%02d", dayFor);
-                    float totalOrders = dailyTotalOrders.getOrDefault(dayStr, 0f);
-                    entries.add(new BarEntry(i++, totalOrders));
+                for (Map.Entry<String, Double> entry : dailyTotalPrizes.entrySet()) {
+                    String dayKey = entry.getKey();
+                    double totalPrize = entry.getValue();
+
+                    // Create a BarEntry object with the day and total prize values
+                    entries.add(new BarEntry(i, new float[]{(float)totalPrize}));
+                    i++;
                 }
 
-                DateFormat dateFormat = new SimpleDateFormat("dd-MM", Locale.getDefault());
+                DateFormat dateMonthFormat = new SimpleDateFormat("dd-MM", Locale.getDefault());
+                DateFormat dateFormat = new SimpleDateFormat("dd", Locale.getDefault());
                 Calendar calendar = Calendar.getInstance();
                 Date startDate, endDate;
                 try {
-                    startDate = dateFormat.parse(dateStart);
-                    endDate = dateFormat.parse(dateEnd);
+                    startDate = dateMonthFormat.parse(dateStart);
+                    endDate = dateMonthFormat.parse(dateEnd);
                     calendar.setTime(startDate);
                 } catch (Exception e) {
                     e.printStackTrace();
                     return;
                 }
+
                 // Create List of Dates
                 ArrayList<String> dates = new ArrayList<>();
                 while (calendar.getTime().before(endDate) || calendar.getTime().equals(endDate)) {
-                    String dateString = dateFormat.format(calendar.getTime());
-                    dates.add(dateString);
+                    String dateMonthString = dateMonthFormat.format(calendar.getTime());
+                    dates.add(dateMonthString);
                     calendar.add(Calendar.DATE, 1);
                 }
 
-                // Create chart
                 BarDataSet dataSet = new BarDataSet(entries, "Total Order Price per Day");
                 dataSet.setColor(Color.parseColor("#E25822"));
                 dataSet.setValueTextColor(Color.BLACK);
@@ -162,12 +181,16 @@ public class ChartAfterDayToDayActivity extends AppCompatActivity {
 
                 // Set axis labels
                 XAxis xAxis = chart.getXAxis();
-                xAxis.setValueFormatter(new IndexAxisValueFormatter(dates));
+                xAxis.setValueFormatter(new IndexAxisValueFormatter(daysWithValues));
                 xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
                 xAxis.setDrawGridLines(false);
                 xAxis.setDrawAxisLine(false);
                 xAxis.setGranularity(1f);
-                xAxis.setLabelCount(dates.size());
+                xAxis.setLabelCount(daysWithValues.size());
+//                String[] xLabels = new String[daysWithValues.size()];
+//                for (int i2 = 0; i < daysWithValues.size(); i2++) {
+//                    xLabels[i2] = daysWithValues.get(i2);
+//                }
 
                 YAxis yl = chart.getAxisLeft();
                 yl.setDrawAxisLine(true);
@@ -183,6 +206,7 @@ public class ChartAfterDayToDayActivity extends AppCompatActivity {
                 chart.setData(barData);
                 chart.notifyDataSetChanged();
                 chart.invalidate();
+                chart.setFitBars(true);
 
                 Legend l = chart.getLegend();
                 l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
