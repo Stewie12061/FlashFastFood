@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.flashfastfood.R;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
@@ -23,34 +24,40 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
-public class ChartAfterDayOfMonthActivity extends AppCompatActivity {
+public class ChartAfterDayToDayActivity extends AppCompatActivity {
+
     private HorizontalBarChart chart;
     private TextView textView;
+    String dateStart, dateEnd;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chart);
+        setContentView(R.layout.activity_chart_after_day_to_day);
 
         chart = findViewById(R.id.chart);
 
-        int year = Integer.parseInt(getIntent().getStringExtra("year"));
-        int month = Integer.parseInt(getIntent().getStringExtra("month"));
-        int day = Integer.parseInt(getIntent().getStringExtra("day"));
-        fetchData(year,month,day);
+        dateStart = getIntent().getStringExtra("start");
+        dateEnd = getIntent().getStringExtra("end");
+
+        String getStarMonth = dateStart.split("-")[1];
+        String getStarYear = dateStart.split("-")[2];
+        String getStarDay = dateStart.split("-")[0];
+
+
+        fetchData(Integer.parseInt(getStarYear),Integer.parseInt(getStarMonth),Integer.parseInt(getStarDay));
 
         textView = findViewById(R.id.text);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
     }
 
     private void fetchData(int year, int month, int day) {
@@ -60,12 +67,6 @@ public class ChartAfterDayOfMonthActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
                 Map<String, Float> dailyTotalOrders = new HashMap<>(); // Stores total order price for each day
-                List<String> dayList = new ArrayList<>(); // Stores list of days
-
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(Calendar.DAY_OF_MONTH, day);
-                calendar.set(Calendar.MONTH, month); // Replace with your own month
-                int lastDayOfMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 
                 for (DataSnapshot orderSnapshot : snapshot.getChildren()) {
                     for (DataSnapshot dataSnapshotChild : orderSnapshot.getChildren()){
@@ -79,7 +80,7 @@ public class ChartAfterDayOfMonthActivity extends AppCompatActivity {
                             Calendar cal = Calendar.getInstance();
                             cal.set(Calendar.MONTH, month-1);
                             String monthName = new SimpleDateFormat("MMMM").format(cal.getTime());
-                            textView.setText("Statistics from "+ day+" to "+lastDayOfMonth+" of "+monthName+","+" "+year);
+                            textView.setText("Statistics from "+ dateStart+" to "+dateEnd);
 
                             Calendar calendar2 = Calendar.getInstance();
                             calendar2.set(year, month - 1, day); // Month is zero-based, so subtract 1
@@ -97,14 +98,44 @@ public class ChartAfterDayOfMonthActivity extends AppCompatActivity {
 
                     }
                 }
+                int differenceDates=0;
+                try {
+                    SimpleDateFormat dates = new SimpleDateFormat("dd-MM-yyyy");
+                    Date dateStartd = dates.parse(dateStart);
+                    Date dateEndd = dates.parse(dateEnd);
+                    long dateStartInMs = dateStartd.getTime();
+                    long dateEndInMs = dateEndd.getTime();
+                    long difference = dateEndInMs - dateStartInMs;
+                    differenceDates = (int) (difference / (24 * 60 * 60 * 1000));
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
                 // Create chart data
                 List<BarEntry> entries = new ArrayList<>();
                 int i = 0;
-                for (int dayFor = day; dayFor <= lastDayOfMonth; dayFor++) {
+                for (int dayFor = day; dayFor <= day+differenceDates; dayFor++) {
                     String dayStr = String.format("%02d", dayFor);
                     float totalOrders = dailyTotalOrders.getOrDefault(dayStr, 0f);
                     entries.add(new BarEntry(i++, totalOrders));
-                    dayList.add(dayStr);
+                }
+
+                DateFormat dateFormat = new SimpleDateFormat("dd-MM", Locale.getDefault());
+                Calendar calendar = Calendar.getInstance();
+                Date startDate, endDate;
+                try {
+                    startDate = dateFormat.parse(dateStart);
+                    endDate = dateFormat.parse(dateEnd);
+                    calendar.setTime(startDate);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return;
+                }
+                // Create List of Dates
+                ArrayList<String> dates = new ArrayList<>();
+                while (calendar.getTime().before(endDate) || calendar.getTime().equals(endDate)) {
+                    String dateString = dateFormat.format(calendar.getTime());
+                    dates.add(dateString);
+                    calendar.add(Calendar.DATE, 1);
                 }
 
                 // Create chart
@@ -131,12 +162,12 @@ public class ChartAfterDayOfMonthActivity extends AppCompatActivity {
 
                 // Set axis labels
                 XAxis xAxis = chart.getXAxis();
-                xAxis.setValueFormatter(new IndexAxisValueFormatter(dayList));
+                xAxis.setValueFormatter(new IndexAxisValueFormatter(dates));
                 xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
                 xAxis.setDrawGridLines(false);
                 xAxis.setDrawAxisLine(false);
                 xAxis.setGranularity(1f);
-                xAxis.setLabelCount(dayList.size());
+                xAxis.setLabelCount(dates.size());
 
                 YAxis yl = chart.getAxisLeft();
                 yl.setDrawAxisLine(true);
@@ -169,5 +200,4 @@ public class ChartAfterDayOfMonthActivity extends AppCompatActivity {
             }
         });
     }
-
 }

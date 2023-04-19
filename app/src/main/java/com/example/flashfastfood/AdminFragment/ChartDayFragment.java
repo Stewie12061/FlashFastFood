@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -12,10 +13,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.Toast;
 
-import com.example.flashfastfood.Admin.ChartAfterDayOfMonthActivity;
+import com.example.flashfastfood.Admin.ChartAfterDayToDayActivity;
+import com.example.flashfastfood.Admin.ChartAfterDayToEndMonthActivity;
 import com.example.flashfastfood.Admin.ChartAfterYearActivity;
 import com.example.flashfastfood.R;
+import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class ChartDayFragment extends Fragment {
 
@@ -48,7 +57,7 @@ public class ChartDayFragment extends Fragment {
                 int year = datePicker.getYear();
                 int month = datePicker.getMonth() + 1; // month is 0-indexed
                 int day = datePicker.getDayOfMonth();
-                Intent intent = new Intent(getActivity(), ChartAfterDayOfMonthActivity.class);
+                Intent intent = new Intent(getActivity(), ChartAfterDayToEndMonthActivity.class);
                 intent.putExtra("year", String.valueOf(year));
                 intent.putExtra("month", String.valueOf(month));
                 intent.putExtra("day",String.valueOf(day));
@@ -66,6 +75,32 @@ public class ChartDayFragment extends Fragment {
                 Intent intent = new Intent(getActivity(), ChartAfterYearActivity.class);
                 intent.putExtra("year",String.valueOf(year));
                 startActivity(intent);
+            }
+        });
+
+
+        Button btnDateRangePicker = view.findViewById(R.id.btn_date_range_picker);
+        btnDateRangePicker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MaterialDatePicker<androidx.core.util.Pair<Long, Long>> materialDatePicker = MaterialDatePicker.Builder.dateRangePicker().setSelection(new androidx.core.util.Pair<>(
+                        MaterialDatePicker.thisMonthInUtcMilliseconds(),
+                        MaterialDatePicker.todayInUtcMilliseconds()
+                )).build();
+                materialDatePicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener<Pair<Long, Long>>() {
+                    @Override
+                    public void onPositiveButtonClick(Pair<Long, Long> selection) {
+                        String dateStart = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date(selection.first));
+                        String dateEnd = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date(selection.second));
+
+                        Intent intent = new Intent(getActivity(), ChartAfterDayToDayActivity.class);
+                        intent.putExtra("start",dateStart);
+                        intent.putExtra("end",dateEnd);
+                        startActivity(intent);
+                    }
+                });
+
+                materialDatePicker.show(getActivity().getSupportFragmentManager(),"tag");
             }
         });
     }
