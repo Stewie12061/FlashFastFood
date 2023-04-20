@@ -23,16 +23,18 @@
         <Button
             android:id="@+id/showChartButton"
             android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="250dp"
+            android:layout_height="55dp"
+            android:textStyle="bold"
             android:text="Show Profit of each day" />
 
         <Button
             android:id="@+id/showChartYearButton"
             android:layout_gravity="center"
             android:layout_marginTop="50dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="250dp"
+            android:layout_height="55dp"
+            android:textStyle="bold"
             android:text="Show Chart year" />
 
 
@@ -41,8 +43,9 @@
             android:text="Select Date Range"
             android:layout_gravity="center"
             android:layout_marginTop="50dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:textStyle="bold"
+            android:layout_width="250dp"
+            android:layout_height="55dp"/>
 
 
     </LinearLayout>

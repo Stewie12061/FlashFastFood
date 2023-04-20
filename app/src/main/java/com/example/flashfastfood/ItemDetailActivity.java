@@ -29,6 +29,7 @@ import com.example.flashfastfood.Data.Cart;
 import com.example.flashfastfood.Data.Favorite;
 import com.example.flashfastfood.Data.Items;
 import com.example.flashfastfood.Fragment.BottomSheetCartFragment;
+import com.example.flashfastfood.Helper.CartGuestHelper;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -146,9 +147,14 @@ public class ItemDetailActivity extends AppCompatActivity {
             btnAddToCart.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(ItemDetailActivity.this, LoginActivity.class);
+                    /*Intent intent = new Intent(ItemDetailActivity.this, LoginActivity.class);
                     intent.putExtra("guestLogin","guestLogin");
-                    startActivity(intent);
+                    startActivity(intent);*/
+                    cart = new Cart(Image,detailItemName.getText().toString(),detailItemPrice.getText().toString(),quantity.getText().toString(),totalPrice.getText().toString());
+                    CartGuestHelper.addItem(ItemDetailActivity.this, cart);
+
+                    // show a Toast message to confirm that the item was added
+                    Toast.makeText(ItemDetailActivity.this, "Item added to cart!", Toast.LENGTH_SHORT).show();
                 }
             });
         }

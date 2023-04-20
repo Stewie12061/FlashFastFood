@@ -114,7 +114,6 @@ public class ItemsActivity extends AppCompatActivity {
         }
         else {
             btnCart.setVisibility(View.VISIBLE);
-            btnCart.setImageResource(R.drawable.avatar);
             btnCart.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

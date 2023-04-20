@@ -152,7 +152,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }else {
-            btnCart.setImageResource(R.drawable.avatar);
             btnCart.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

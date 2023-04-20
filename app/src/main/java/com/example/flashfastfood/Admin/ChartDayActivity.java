@@ -33,6 +33,7 @@ import java.util.Map;
 public class ChartDayActivity extends AppCompatActivity {
     private HorizontalBarChart chart;
     private TextView textView;
+    float totalOrdersPrice = 0f;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,12 +62,10 @@ public class ChartDayActivity extends AppCompatActivity {
 
                 Map<String, Float> dailyTotalOrders = new HashMap<>(); // Stores total order price for each day
                 List<String> dayList = new ArrayList<>(); // Stores list of days
-                float totalOrdersPrice = 0f;
 
                 for (DataSnapshot orderSnapshot : snapshot.getChildren()) {
                     for (DataSnapshot dataSnapshotChild : orderSnapshot.getChildren()){
-                        if (dataSnapshotChild.child("orderStatus").getValue().toString().equals("Successful") &&
-                                dataSnapshotChild.child("orderDate").getValue().toString().equals(month+"-"+day+"-"+year)){
+                        if (dataSnapshotChild.child("orderStatus").getValue().toString().equals("Successful")){
                             String dateTime = dataSnapshotChild.child("orderDate").getValue().toString();
                             String getMonth = dateTime.split("-")[0];
                             String getYear = dateTime.split("-")[2];
@@ -84,7 +83,7 @@ public class ChartDayActivity extends AppCompatActivity {
                             SimpleDateFormat dateFormat = new SimpleDateFormat("MM");
                             String monthString = dateFormat.format(calendar2.getTime());
                             // Add orderPrice to dailyTotalOrders map
-                            if (getYear.equals(String.valueOf(year)) && getMonth.equals(monthString)) {
+                            if (getYear.equals(String.valueOf(year)) && getMonth.equals(monthString) && getDay.equals(String.valueOf(day))) {
                                 dailyTotalOrders.put(getDay, Float.parseFloat(moneyString));
                                 totalOrdersPrice += Float.parseFloat(moneyString);
                             }
