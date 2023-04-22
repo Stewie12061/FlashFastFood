@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.ActivityOptions;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Pair;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.flashfastfood.Admin.MainAdminActivity;
+import com.example.flashfastfood.Guest.MainGuestActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
@@ -28,6 +30,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.Random;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -73,14 +77,24 @@ public class LoginActivity extends AppCompatActivity {
         if (guestLogin!=null){
             btnGuest.setVisibility(View.GONE);
         }
+
+        SharedPreferences preferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
         btnGuest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                String userId = preferences.getString("userId", "");
+                if (userId.equals("")) {
+                    userId = generateUserId(); // Implement this method to generate a unique user ID
+                    preferences.edit().putString("userId", userId).apply();
+                }
+
+                Intent intent = new Intent(LoginActivity.this, MainGuestActivity.class);
                 intent.putExtra("guestFlag","guest");
                 startActivity(intent);
+                finishAffinity();
             }
         });
+
         signupBtn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -186,5 +200,10 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+    }
+    public String generateUserId() {
+        long timestamp = System.currentTimeMillis();
+        int random = new Random().nextInt(1000000);
+        return "guest_" + timestamp + "_" + random;
     }
 }

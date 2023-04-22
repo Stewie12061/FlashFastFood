@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Layout;
 import android.text.Spannable;
@@ -26,10 +27,11 @@ import com.airbnb.lottie.L;
 import com.andremion.counterfab.CounterFab;
 import com.example.flashfastfood.Adapter.ItemsViewHolder;
 import com.example.flashfastfood.Data.Cart;
+import com.example.flashfastfood.Data.CartItemGuest;
 import com.example.flashfastfood.Data.Favorite;
 import com.example.flashfastfood.Data.Items;
 import com.example.flashfastfood.Fragment.BottomSheetCartFragment;
-import com.example.flashfastfood.Helper.CartGuestHelper;
+import com.example.flashfastfood.Guest.BottomSheetCartGuestFragment;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -42,9 +44,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
 import com.varunest.sparkbutton.SparkButton;
 
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -125,7 +130,6 @@ public class ItemDetailActivity extends AppCompatActivity {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             currentUserId = user.getUid();
         }
-
         rvRecommendedItems = findViewById(R.id.rvShowAllItem);
         rvRecommendedItems.setLayoutManager(new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.HORIZONTAL,false));
 
@@ -135,31 +139,20 @@ public class ItemDetailActivity extends AppCompatActivity {
         getDetailItem(itemId);
         getItemQuantity();
 
-        if (!guestFlag.equals("guest")){
-            btnAddToCart.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    addToCart();
-                }
-            });
-        }
-        else {
-            btnAddToCart.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    /*Intent intent = new Intent(ItemDetailActivity.this, LoginActivity.class);
-                    intent.putExtra("guestLogin","guestLogin");
-                    startActivity(intent);*/
-                    cart = new Cart(Image,detailItemName.getText().toString(),detailItemPrice.getText().toString(),quantity.getText().toString(),totalPrice.getText().toString());
-                    CartGuestHelper.addItem(ItemDetailActivity.this, cart);
 
-                    // show a Toast message to confirm that the item was added
+        btnAddToCart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!guestFlag.equals("guest")) {
+                    addToCart();
+                }else {
+                    CartItemGuest cartItemGuest = new CartItemGuest(
+                            itemId,Image,detailItemName.getText().toString(),detailItemPrice.getText().toString(),quantity.getText().toString(),totalPrice.getText().toString());
+                    addToCartGuest(cartItemGuest);
                     Toast.makeText(ItemDetailActivity.this, "Item added to cart!", Toast.LENGTH_SHORT).show();
                 }
-            });
-        }
-
-
+            }
+        });
         btnCart = findViewById(R.id.detailFabCart);
         if (!guestFlag.equals("guest")){
             getCartQuantity();
@@ -176,13 +169,14 @@ public class ItemDetailActivity extends AppCompatActivity {
             });
         }else {
             btnCart.setVisibility(View.VISIBLE);
-            btnCart.setImageResource(R.drawable.avatar);
             btnCart.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(ItemDetailActivity.this, LoginActivity.class);
-                    intent.putExtra("guestLogin","guestLogin");
-                    startActivity(intent);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("guestFlag","guest");
+                    BottomSheetCartGuestFragment bottomSheetFragment2 = new BottomSheetCartGuestFragment();
+                    bottomSheetFragment2.setArguments(bundle);
+                    bottomSheetFragment2.show(getSupportFragmentManager(),bottomSheetFragment2.getTag());
                 }
             });
         }
@@ -230,6 +224,33 @@ public class ItemDetailActivity extends AppCompatActivity {
             getCartQuantity();
         }
 
+    }
+
+    public void addToCartGuest(CartItemGuest item) {
+        SharedPreferences sharedPreferences = getSharedPreferences("Cart", MODE_PRIVATE);
+        String cartJson = sharedPreferences.getString("CartItems", "{}");
+        Gson gson = new Gson();
+        Type type = new TypeToken<Map<String, CartItemGuest>>(){}.getType();
+        Map<String, CartItemGuest> cartItems = gson.fromJson(cartJson, type);
+
+        // If the item already exists in the cart, update its quantity and total price
+        if (cartItems.containsKey(item.getItemId())) {
+            CartItemGuest existingItem = cartItems.get(item.getItemId());
+            Integer newPrice = Integer.parseInt(existingItem.getItemCartTotalPrice()) + Integer.parseInt(item.getItemCartTotalPrice());
+            Integer newQuantity = Integer.parseInt(existingItem.getItemCartQuantity()) + Integer.parseInt(item.getItemCartQuantity());
+
+            existingItem.setItemCartQuantity(String.valueOf(newQuantity));
+            existingItem.setItemCartTotalPrice(String.valueOf(newPrice));
+            cartItems.put(item.getItemId(), existingItem);
+        } else {
+            // Otherwise, add the new item to the cart
+            cartItems.put(item.getItemId(), item);
+        }
+
+        // Save the updated cart to the SharedPreferences
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("CartItems", gson.toJson(cartItems));
+        editor.apply();
     }
 
     public void getCartQuantity() {

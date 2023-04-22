@@ -234,13 +234,62 @@ public class PreparedFragment extends Fragment {
                             }
                         });
 
-//                        holder.btnCancelOrder.setOnClickListener(new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View v) {
-//
-//
-//                            }
-//                        });
+                        holder.btnCancelOrder.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                AlertDialog.Builder builder =
+                                        new AlertDialog.Builder
+                                                (getContext());
+                                View view = LayoutInflater.from(getContext()).inflate(
+                                        R.layout.dialog_alert,
+                                        (ConstraintLayout) getActivity().findViewById(R.id.layoutDialogContainer)
+                                );
+                                builder.setView(view);
+                                ((TextView) view.findViewById(R.id.textTitle))
+                                        .setText("Cancel this order");
+                                ((TextView) view.findViewById(R.id.textMessage))
+                                        .setText("Do you really want to cancel this order?");
+                                ((Button) view.findViewById(R.id.buttonYes))
+                                        .setText("Yes");
+                                ((Button) view.findViewById(R.id.buttonNo))
+                                        .setText("No");
+                                final AlertDialog alertDialog = builder.create();
+                                alertDialog.show();
+                                view.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        order = new Order();
+                                        order.setOrderTotalPrice(orderPrice);
+                                        order.setOrderStatus("Canceled");
+                                        order.setOrderPayment(orderPayment);
+                                        order.setOrderTime(orderTime);
+                                        order.setOrderLocation(orderLocation);
+                                        order.setOrderItemQuantity(orderItemQuantity);
+                                        order.setOrderDate(orderDate);
+                                        alertDialog.dismiss();
+                                        Dialog dialog = new Dialog(getContext(),R.style.CustomDialog);
+                                        dialog.setContentView(R.layout.dialog_order_loading);
+                                        dialog.show();
+                                        new Handler().postDelayed(new Runnable() {
+                                                                      @Override
+                                                                      public void run() {
+                                                                          orderRef.child(currentUserId).child(postKey).setValue(order);
+                                                                          dialog.dismiss();
+                                                                      }
+                                                                  }, 5000
+                                        );
+
+                                    }
+                                });
+                                view.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        alertDialog.dismiss();
+                                    }
+                                });
+
+                            }
+                        });
 
                     }
                     @Override

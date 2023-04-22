@@ -1,30 +1,21 @@
 package com.example.flashfastfood;
 
+
+import android.os.Bundle;
+import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.app.ActivityOptions;
-import android.content.Intent;
-import android.graphics.Color;
-import android.os.Bundle;
-import android.util.Pair;
-import android.view.View;
-import android.widget.Toast;
-
-import com.airbnb.lottie.L;
 import com.andremion.counterfab.CounterFab;
-import com.etebarian.meowbottomnavigation.MeowBottomNavigation;
 import com.example.flashfastfood.Fragment.BottomSheetCartFragment;
 import com.example.flashfastfood.Fragment.FavoriteFragment;
 import com.example.flashfastfood.Fragment.HomeFragment;
-import com.example.flashfastfood.Fragment.NotificationFragment;
-import com.example.flashfastfood.Fragment.ProfileFragment;
 import com.example.flashfastfood.Fragment.OrderFragment;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.example.flashfastfood.Fragment.ProfileFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -38,14 +29,14 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    String idIntent = null, currentUserId,countItemInCart, guestFlag = null;
+    private String idIntent = null, currentUserId,countItemInCart;
 
-    ChipNavigationBar chipNavigationBar, chipNavigationBarGuest;
-    Fragment fragment = null;
-    FragmentTransaction fragmentTransaction;
-    FragmentManager fragmentManager;
+    private ChipNavigationBar chipNavigationBar;
+    private Fragment fragment = null;
+    private FragmentTransaction fragmentTransaction;
+    private FragmentManager fragmentManager;
 
-    CounterFab btnCart;
+    private CounterFab btnCart;
 
     FirebaseDatabase firebaseDatabase;
     DatabaseReference cartRef;
@@ -61,126 +52,98 @@ public class MainActivity extends AppCompatActivity {
         cartRef = firebaseDatabase.getReference("Shopping Cart");
 
         idIntent = getIntent().getStringExtra("Fragment");
-        guestFlag = getIntent().getStringExtra("guestFlag");
-        if (guestFlag==null){
-            guestFlag="user";
-        }
 
-        chipNavigationBar = findViewById(R.id.chipNavBar);
-        chipNavigationBarGuest = findViewById(R.id.chipNavBarGuest);
+        chipNavigationBar = findViewById(R.id.chipNavBarUser);
 
-        if (!guestFlag.equals("guest")){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        currentUserId = user.getUid();
 
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            currentUserId = user.getUid();
-
-            if (idIntent==null){
+        if (idIntent==null){
+            chipNavigationBar.setItemSelected(R.id.mnuHome,true);
+        }else {
+            int ID = Integer.parseInt(idIntent);
+            if (ID==2){
+                chipNavigationBar.setItemSelected(R.id.mnuOrder,true);
+                fragment = new OrderFragment();
+                fragmentManager = getSupportFragmentManager();
+                fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.content, fragment);
+                fragmentTransaction.commit();
+                idIntent = null;
+            }else if (ID==1){
                 chipNavigationBar.setItemSelected(R.id.mnuHome,true);
-            }else {
-                int ID = Integer.parseInt(idIntent);
-                if (ID==2){
-                    chipNavigationBar.setItemSelected(R.id.mnuOrder,true);
-                    fragment = new OrderFragment();
-                    fragmentManager = getSupportFragmentManager();
-                    fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.replace(R.id.content, fragment);
-                    fragmentTransaction.commit();
-                    idIntent = null;
-                }else if (ID==1){
-                    chipNavigationBar.setItemSelected(R.id.mnuHome,true);
-                    fragment = new HomeFragment();
-                    fragmentManager = getSupportFragmentManager();
-                    fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.replace(R.id.content, fragment);
-                    fragmentTransaction.commit();
-                    idIntent = null;
-                }
-
+                fragment = new HomeFragment();
+                fragmentManager = getSupportFragmentManager();
+                fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.content, fragment);
+                fragmentTransaction.commit();
+                idIntent = null;
             }
+
         }
+
 
         if (fragment == null){
+            fragment = new HomeFragment();
             fragmentManager = getSupportFragmentManager();
             fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.content, new HomeFragment());
+            fragmentTransaction.replace(R.id.content, fragment);
             fragmentTransaction.commit();
         }
-
-        if (guestFlag.equals("guest")){
-            chipNavigationBar.setVisibility(View.GONE);
-            chipNavigationBarGuest.setItemSelected(R.id.mnuHomeGuest,true);
-        }
-        else {
-            chipNavigationBarGuest.setVisibility(View.GONE);
-            chipNavigationBar.setOnItemSelectedListener(new ChipNavigationBar.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(int i) {
-                    switch (i) {
-                        case R.id.mnuHome:
-                            fragment = new HomeFragment();
-                            break;
-                        case R.id.mnuOrder:
-                            fragment = new OrderFragment();
-                            break;
-                        case R.id.mnuFavorite:
-                            fragment = new FavoriteFragment();
-                            break;
-                        case R.id.mnuProfile:
-                            fragment = new ProfileFragment();
-                            break;
-                    }
-                    fragmentManager = getSupportFragmentManager();
-                    fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.replace(R.id.content, fragment);
-                    fragmentTransaction.commit();
+        chipNavigationBar.setOnItemSelectedListener(new ChipNavigationBar.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(int i) {
+                switch (i) {
+                    case R.id.mnuHome:
+                        fragment = new HomeFragment();
+                        break;
+                    case R.id.mnuOrder:
+                        fragment = new OrderFragment();
+                        break;
+                    case R.id.mnuFavorite:
+                        fragment = new FavoriteFragment();
+                        break;
+                    case R.id.mnuProfile:
+                        fragment = new ProfileFragment();
+                        break;
                 }
+                fragmentManager = getSupportFragmentManager();
+                fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.content, fragment);
+                fragmentTransaction.commit();
+            }
 
-            });
-        }
-
+        });
 
         btnCart = findViewById(R.id.fabCart);
-        if (!guestFlag.equals("guest")){
-            getCartQuantity();
-            btnCart.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Bundle bundle = new Bundle();
-                    BottomSheetCartFragment bottomSheetFragment = new BottomSheetCartFragment();
-                    bottomSheetFragment.setArguments(bundle);
-                    bottomSheetFragment.show(getSupportFragmentManager(),bottomSheetFragment.getTag());
-                }
-            });
-        }else {
-            btnCart.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                    intent.putExtra("guestLogin","guestLogin");
-                    startActivity(intent);
-                }
-            });
-        }
+
+        getCartQuantity();
+        btnCart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putString("guestFlag","user");
+                BottomSheetCartFragment bottomSheetFragment = new BottomSheetCartFragment();
+                bottomSheetFragment.setArguments(bundle);
+                bottomSheetFragment.show(getSupportFragmentManager(),bottomSheetFragment.getTag());
+            }
+        });
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        if (!guestFlag.equals("guest")){
-            getCartQuantity();
-        }
-
+        getCartQuantity();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (!guestFlag.equals("guest")){
-            getCartQuantity();
-        }
+        getCartQuantity();
     }
 
-    public void getCartQuantity(){
+    private void getCartQuantity(){
         cartRef.child(currentUserId).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -193,11 +156,10 @@ public class MainActivity extends AppCompatActivity {
                     btnCart.setCount(itemInCart);
                 }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-                }
-            });
+            }
+        });
     }
-
 }

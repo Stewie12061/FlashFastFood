@@ -71,7 +71,6 @@ public class BottomSheetCartFragment extends BottomSheetDialogFragment {
 
     RelativeLayout btnCheckout;
 
-
     public BottomSheetCartFragment() {
         // Required empty public constructor
     }
@@ -181,12 +180,13 @@ public class BottomSheetCartFragment extends BottomSheetDialogFragment {
     @Override
     public void onResume() {
         super.onResume();
+
         getCartQuantity();
         if (txtNoCart.getText().toString().equals("Your cart is empty")){
             dismiss();
         }else {
-            getCartTotalPrice();
             loadCartView();
+            getCartTotalPrice();
         }
     }
 

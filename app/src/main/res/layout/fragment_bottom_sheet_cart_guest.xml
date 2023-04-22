@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".Guest.BottomSheetCartGuestFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/sheetContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Toolbar
+            android:id="@+id/toolbarCart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/rounded_top_black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+            <RelativeLayout
+                android:id="@+id/linearTop"
+                android:layout_width="match_parent"
+                android:layout_height="85dp"
+                android:gravity="bottom"
+                android:layout_marginEnd="16dp"
+                android:paddingBottom="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/deleteAllCart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:drawableEnd="@drawable/delete"
+                    android:drawableTint="@color/white"
+                    android:clickable="true"
+                    android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                    android:theme="@android:style/ThemeOverlay.Material.Light"
+                    android:fontFamily="@font/airbnb_cereal"
+                    android:gravity="center_vertical"
+                    android:text="Delete All"
+                    android:textColor="@color/white"
+                    android:textSize="16dp"
+                    android:textStyle="bold"
+                    app:tint="@color/white" />
+
+
+                <TextView
+                    android:id="@+id/txt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/bg_rounded_white"
+                    android:fontFamily="@font/airbnb_cereal"
+                    android:paddingStart="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="16dp"
+                    android:paddingBottom="8dp"
+                    android:text="Your Cart"
+                    android:textColor="@color/black"
+                    android:textSize="20dp"
+                    android:textStyle="bold"
+                    android:transitionName="rating" />
+
+                <TextView
+                    android:id="@+id/btnCancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:clickable="true"
+                    android:drawableStart="@drawable/cancel"
+                    android:drawableTint="@color/white"
+                    android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                    android:theme="@android:style/ThemeOverlay.Material.Light" />
+
+
+            </RelativeLayout>
+
+        </Toolbar>
+
+        <View
+            android:id="@+id/lnlntop"
+            android:layout_width="70dp"
+            android:layout_height="8dp"
+            android:layout_marginTop="14dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@drawable/rounded_squared_white" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvCartView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="85dp"
+            android:layout_marginBottom="87dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbarCart" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/whenNoCart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="85dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbarCart"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/bgorange" />
+
+        <RelativeLayout
+            android:id="@+id/btnCheckOut"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="bottom"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/orange"
+                app:cardElevation="8dp"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                android:theme="@android:style/ThemeOverlay.Material.Light"
+                app:cardCornerRadius="16dp"
+                android:layout_margin="16dp">
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="16dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/cartQuantity"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/airbnb_cereal"
+                            android:text="0"
+                            android:textColor="@color/white"
+                            android:textSize="18dp"
+                            android:textStyle="bold"
+                            android:layout_marginEnd="5dp"
+                            app:tint="@color/white" />
+                        <TextView
+                            android:id="@+id/txtQuantity"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:drawableTint="@color/white"
+                            android:fontFamily="@font/airbnb_cereal"
+                            android:text="Item"
+                            android:textColor="@color/white"
+                            android:textSize="18dp"
+                            android:textStyle="bold"
+                            app:tint="@color/white" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/txt2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:fontFamily="@font/airbnb_cereal"
+                        android:text="Checkout"
+                        android:textColor="@color/white"
+                        android:textSize="20dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/cartTotalPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="16dp"
+                        android:drawableEnd="@drawable/dollar"
+                        android:drawableTint="@color/white"
+                        android:fontFamily="@font/airbnb_cereal"
+                        android:text="0"
+                        android:textColor="@color/white"
+                        android:textSize="20dp"
+                        android:textStyle="bold" />
+
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+        </RelativeLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

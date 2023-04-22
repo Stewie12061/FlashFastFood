@@ -7,4 +7,14 @@
         android:icon="@drawable/ic_foodhome"
         app:cnb_iconColor="@color/white"
         android:title="Home"/>
+    <item
+        android:id="@+id/mnuOrderGuest"
+        android:icon="@drawable/ic_order"
+        app:cnb_iconColor="@color/white"
+        android:title="Order"/>
+    <item
+        android:id="@+id/mnuProfileGuest"
+        android:icon="@drawable/ic_account"
+        app:cnb_iconColor="@color/white"
+        android:title="Profile" />
 </menu>

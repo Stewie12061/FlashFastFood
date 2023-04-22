@@ -175,40 +175,40 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
-<!--            <RelativeLayout-->
-<!--                android:layout_marginTop="10dp"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content">-->
+            <RelativeLayout
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-<!--                <androidx.cardview.widget.CardView-->
-<!--                    android:id="@+id/btnCancelOrder"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_centerInParent="true"-->
-<!--                    android:layout_margin="16dp"-->
-<!--                    app:cardCornerRadius="10dp"-->
-<!--                    app:cardElevation="8dp"-->
-<!--                    android:foreground="?android:attr/selectableItemBackgroundBorderless"-->
-<!--                    android:theme="@android:style/ThemeOverlay.Material.Light">-->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/btnCancelOrder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_margin="16dp"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="8dp"
+                    android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                    android:theme="@android:style/ThemeOverlay.Material.Light">
 
-<!--&lt;!&ndash;                    <TextView&ndash;&gt;-->
-<!--&lt;!&ndash;                        android:id="@+id/cancelOrder"&ndash;&gt;-->
-<!--&lt;!&ndash;                        android:layout_width="wrap_content"&ndash;&gt;-->
-<!--&lt;!&ndash;                        android:layout_height="wrap_content"&ndash;&gt;-->
-<!--&lt;!&ndash;                        android:layout_gravity="center"&ndash;&gt;-->
-<!--&lt;!&ndash;                        android:drawableTint="@color/orange"&ndash;&gt;-->
-<!--&lt;!&ndash;                        android:fontFamily="@font/airbnb_cereal"&ndash;&gt;-->
-<!--&lt;!&ndash;                        android:gravity="center_vertical"&ndash;&gt;-->
-<!--&lt;!&ndash;                        android:padding="12dp"&ndash;&gt;-->
-<!--&lt;!&ndash;                        android:paddingStart="30dp"&ndash;&gt;-->
-<!--&lt;!&ndash;                        android:paddingEnd="30dp"&ndash;&gt;-->
-<!--&lt;!&ndash;                        android:text="Cancel Order"&ndash;&gt;-->
-<!--&lt;!&ndash;                        android:textColor="@color/red"&ndash;&gt;-->
-<!--&lt;!&ndash;                        android:textSize="18dp"&ndash;&gt;-->
-<!--&lt;!&ndash;                        android:textStyle="bold" />&ndash;&gt;-->
+                    <TextView
+                        android:id="@+id/cancelOrder"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:drawableTint="@color/orange"
+                        android:fontFamily="@font/airbnb_cereal"
+                        android:gravity="center_vertical"
+                        android:padding="12dp"
+                        android:paddingStart="30dp"
+                        android:paddingEnd="30dp"
+                        android:text="Cancel Order"
+                        android:textColor="@color/red"
+                        android:textSize="18dp"
+                        android:textStyle="bold" />
 
-<!--                </androidx.cardview.widget.CardView>-->
-<!--            </RelativeLayout>-->
+                </androidx.cardview.widget.CardView>
+            </RelativeLayout>
 
 
         </LinearLayout>

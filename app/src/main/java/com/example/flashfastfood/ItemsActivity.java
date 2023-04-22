@@ -25,6 +25,7 @@ import com.andremion.counterfab.CounterFab;
 import com.example.flashfastfood.Adapter.ItemsViewHolder;
 import com.example.flashfastfood.Data.Items;
 import com.example.flashfastfood.Fragment.BottomSheetCartFragment;
+import com.example.flashfastfood.Guest.BottomSheetCartGuestFragment;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -117,9 +118,11 @@ public class ItemsActivity extends AppCompatActivity {
             btnCart.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(ItemsActivity.this, LoginActivity.class);
-                    intent.putExtra("guestLogin","guestLogin");
-                    startActivity(intent);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("guestFlag","guest");
+                    BottomSheetCartGuestFragment bottomSheetFragment = new BottomSheetCartGuestFragment();
+                    bottomSheetFragment.setArguments(bundle);
+                    bottomSheetFragment.show(getSupportFragmentManager(),bottomSheetFragment.getTag());
                 }
             });
         }

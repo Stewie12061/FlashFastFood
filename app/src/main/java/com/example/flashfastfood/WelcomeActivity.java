@@ -42,7 +42,8 @@ public class WelcomeActivity extends AppCompatActivity {
             Intent intent = new Intent(WelcomeActivity.this, LoginActivity.class);
             startActivity(intent);
 
-        }else{
+        }
+        else{
             //login
             if (user.getUid().equals("z5YxFgx5nHYe9sQCJU9Tb3h9N7J2")){
                 Intent intent = new Intent(WelcomeActivity.this, MainAdminActivity.class);
@@ -54,7 +55,19 @@ public class WelcomeActivity extends AppCompatActivity {
                 startActivity(intent);
             }
 
-
         }
     }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        new Handler().postDelayed(new Runnable() {
+                                      @Override
+                                      public void run() {
+                                          nextActivity();
+                                      }
+                                  }, 2000
+        );
+    }
+
 }

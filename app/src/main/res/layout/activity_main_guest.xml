@@ -3,12 +3,12 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".MainActivity"
+    tools:context=".Guest.MainGuestActivity"
     android:background="@android:color/transparent"
     android:layout_height="match_parent"
     android:layout_width="match_parent">
     <FrameLayout
-        android:id="@+id/content"
+        android:id="@+id/contentGuest"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="35dp"/>
@@ -23,24 +23,24 @@
         app:fabCradleRoundedCornerRadius="30dp"
         app:fabCradleVerticalOffset="15dp"
         app:fabAlignmentMode="end"/>
-
     <com.ismaeldivita.chipnavigation.ChipNavigationBar
-        android:id="@+id/chipNavBarUser"
+        android:id="@+id/chipNavBarGuest"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         app:cnb_iconSize="30dp"
+        android:paddingEnd="60dp"
         android:paddingBottom="3dp"
         app:cnb_unselectedColor="@android:color/darker_gray"
         app:cnb_radius="28dp"
-        app:cnb_menuResource="@menu/bottom_nav"
+        app:cnb_menuResource="@menu/bottom_nav_guest"
         android:background="@android:color/transparent">
 
 
     </com.ismaeldivita.chipnavigation.ChipNavigationBar>
 
     <com.andremion.counterfab.CounterFab
-        android:id="@+id/fabCart"
+        android:id="@+id/fabCartGuest"
         android:transitionName="cart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -50,6 +50,5 @@
         android:src="@drawable/ic_cart"
         app:backgroundTint="@color/orange"
         app:layout_anchor="@id/bottom_app_bar" />
-
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
