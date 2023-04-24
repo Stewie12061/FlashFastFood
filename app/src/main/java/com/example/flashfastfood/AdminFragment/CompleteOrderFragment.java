@@ -43,7 +43,7 @@ public class CompleteOrderFragment extends Fragment {
     private RecyclerView rvDelivery;
 
     private FirebaseDatabase firebaseDatabase;
-    private DatabaseReference orderRef;
+    private DatabaseReference orderRef, userRef;
 
     private FirebaseRecyclerOptions<Order> options;
     private FirebaseRecyclerAdapter<Order, OrderViewHolder> adapter;
@@ -75,6 +75,7 @@ public class CompleteOrderFragment extends Fragment {
 
         firebaseDatabase = FirebaseDatabase.getInstance("https://flashfastfood-81fee-default-rtdb.asia-southeast1.firebasedatabase.app");
         orderRef = firebaseDatabase.getReference("Order");
+        userRef = firebaseDatabase.getReference("Registered Users");
 
         userId = getActivity().getIntent().getStringExtra("userId");
 
@@ -155,6 +156,22 @@ public class CompleteOrderFragment extends Fragment {
                         holder.orderDate.setText(orderDate);
                         holder.orderTime.setText(orderTime);
                         holder.orderPayment.setText(orderPayment);
+
+                        userRef.child(userId).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                String userName = snapshot.child("FullName").getValue().toString();
+                                String userPhoneNUmber = snapshot.child("PhoneNumber").getValue().toString();
+
+                                holder.orderCustomer.setText(userName);
+                                holder.orderPhoneNumber.setText(userPhoneNUmber);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
 
                         if (orderPayment.equals("Cash on delivery")){
                             holder.orderPayment.setTextColor(Color.parseColor("#CB1B11"));

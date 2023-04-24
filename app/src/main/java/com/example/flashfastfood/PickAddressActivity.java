@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.flashfastfood.Guest.GuestCheckOutActivity;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -34,7 +35,7 @@ public class PickAddressActivity extends AppCompatActivity {
     Geocoder geocoder;
     CardView btnSubmitAddress, btnConfirmAddress;
     EditText edtAddress;
-    String ItemAddress = null, orderItemQuantity, orderPrice;
+    String ItemAddress = null, orderItemQuantity, orderPrice, guestFlag;
 
     Boolean fag=false;
 
@@ -63,6 +64,10 @@ public class PickAddressActivity extends AppCompatActivity {
 
         orderItemQuantity = getIntent().getStringExtra("orderItemQuantity");
         orderPrice = getIntent().getStringExtra("orderPrice");
+        guestFlag = getIntent().getStringExtra("guestFlag");
+        if (guestFlag==null){
+            guestFlag="user";
+        }
 
         btnSubmitAddress.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,7 +115,7 @@ public class PickAddressActivity extends AppCompatActivity {
                     edtAddress.setError("Fill in your address!");
                     edtAddress.requestFocus();
                 }else {
-                    if (fag==true){
+                    if (fag==true&&guestFlag.equals("user")){
                         Intent intent = new Intent(PickAddressActivity.this,CheckOutActivity.class);
                         intent.putExtra("orderItemQuantity",orderItemQuantity);
                         intent.putExtra("orderPrice",orderPrice);
@@ -118,9 +123,16 @@ public class PickAddressActivity extends AppCompatActivity {
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                         finish();
-
-
-                    }else {
+                    }else if (fag==true&&guestFlag.equals("guest")){
+                        Intent intent = new Intent(PickAddressActivity.this, GuestCheckOutActivity.class);
+                        intent.putExtra("orderItemQuantity",orderItemQuantity);
+                        intent.putExtra("orderPrice",orderPrice);
+                        intent.putExtra("orderAddress",edtAddress.getText().toString());
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        finish();
+                    }
+                    else {
                         edtAddress.setError("Please choose a different address");
                         edtAddress.requestFocus();
                     }

@@ -9,7 +9,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ActivityOptions;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
@@ -23,9 +25,12 @@ import android.widget.Toast;
 
 import com.andremion.counterfab.CounterFab;
 import com.example.flashfastfood.Adapter.ItemsViewHolder;
+import com.example.flashfastfood.Data.CartItemGuest;
 import com.example.flashfastfood.Data.Items;
 import com.example.flashfastfood.Fragment.BottomSheetCartFragment;
 import com.example.flashfastfood.Guest.BottomSheetCartGuestFragment;
+import com.example.flashfastfood.Guest.BottomSheetListener;
+import com.example.flashfastfood.Guest.MainGuestActivity;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,11 +41,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Map;
 
-public class ItemsActivity extends AppCompatActivity {
+public class ItemsActivity extends AppCompatActivity implements BottomSheetListener {
 
     Toolbar toolbar;
     TextView goback;
@@ -121,6 +130,7 @@ public class ItemsActivity extends AppCompatActivity {
                     Bundle bundle = new Bundle();
                     bundle.putString("guestFlag","guest");
                     BottomSheetCartGuestFragment bottomSheetFragment = new BottomSheetCartGuestFragment();
+                    bottomSheetFragment.setBottomSheetListener(ItemsActivity.this);
                     bottomSheetFragment.setArguments(bundle);
                     bottomSheetFragment.show(getSupportFragmentManager(),bottomSheetFragment.getTag());
                 }
@@ -136,6 +146,9 @@ public class ItemsActivity extends AppCompatActivity {
         if (!guestFlag.equals("guest")){
             getCartQuantity();
         }
+        else {
+            getCartGuestQuantity();
+        }
         if (idCategory != null) {
             loadCateItems();
         }else {
@@ -150,6 +163,9 @@ public class ItemsActivity extends AppCompatActivity {
         if (!guestFlag.equals("guest")){
             getCartQuantity();
         }
+        else {
+            getCartGuestQuantity();
+        }
         if (idCategory != null) {
             loadCateItems();
         }else {
@@ -163,6 +179,9 @@ public class ItemsActivity extends AppCompatActivity {
         getItemStatus();
         if (!guestFlag.equals("guest")){
             getCartQuantity();
+        }
+        else {
+            getCartGuestQuantity();
         }
         if (idCategory != null) {
             loadCateItems();
@@ -197,6 +216,19 @@ public class ItemsActivity extends AppCompatActivity {
 
             }
         });
+    }
+    public void getCartGuestQuantity() {
+        SharedPreferences sharedPreferences = getSharedPreferences("Cart", MODE_PRIVATE);
+        String cartJson = sharedPreferences.getString("CartItems", "{}");
+        Gson gson = new Gson();
+        Type type = new TypeToken<Map<String, CartItemGuest>>() {
+        }.getType();
+        Map<String, CartItemGuest> cartItems = gson.fromJson(cartJson, type);
+        int totalItem= 0;
+        for (String key : cartItems.keySet()) {
+            totalItem++;
+        }
+        btnCart.setCount(totalItem);
     }
 
     public void getItemStatus(){
@@ -365,5 +397,16 @@ public class ItemsActivity extends AppCompatActivity {
         rvAllItems.setAdapter(adapter);
         adapter.startListening();
 
+    }
+
+    @Override
+    public void onDismiss(Context context) {
+        if (context instanceof ItemDetailActivity) {
+            ((ItemDetailActivity) context).getCartGuestQuantity();
+        } else if (context instanceof MainGuestActivity) {
+            ((MainGuestActivity) context).getCartQuantity();
+        }else if (context instanceof ItemsActivity) {
+            ((ItemsActivity) context).getCartGuestQuantity();
+        }
     }
 }

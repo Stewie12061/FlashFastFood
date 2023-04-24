@@ -1,9 +1,38 @@
 package com.example.flashfastfood.Data;
 
 public class Order {
-    String orderItemQuantity, orderTotalPrice, orderDate, orderTime, orderLocation, orderStatus, orderPayment;
+    String orderItemQuantity, orderTotalPrice, orderDate, orderTime, orderLocation, orderStatus, orderPayment,
+    orderCustomer, orderPhoneNumber;
 
     public Order(){}
+
+    public Order(String orderItemQuantity, String orderTotalPrice, String orderDate, String orderTime, String orderLocation, String orderStatus, String orderPayment, String orderCustomer, String orderPhoneNumber) {
+        this.orderItemQuantity = orderItemQuantity;
+        this.orderTotalPrice = orderTotalPrice;
+        this.orderDate = orderDate;
+        this.orderTime = orderTime;
+        this.orderLocation = orderLocation;
+        this.orderStatus = orderStatus;
+        this.orderPayment = orderPayment;
+        this.orderCustomer = orderCustomer;
+        this.orderPhoneNumber = orderPhoneNumber;
+    }
+
+    public String getOrderCustomer() {
+        return orderCustomer;
+    }
+
+    public void setOrderCustomer(String orderCustomer) {
+        this.orderCustomer = orderCustomer;
+    }
+
+    public String getOrderPhoneNumber() {
+        return orderPhoneNumber;
+    }
+
+    public void setOrderPhoneNumber(String orderPhoneNumber) {
+        this.orderPhoneNumber = orderPhoneNumber;
+    }
 
     public Order(String orderItemQuantity, String orderTotalPrice, String orderDate, String orderTime, String orderLocation, String orderStatus, String orderPayment) {
         this.orderItemQuantity = orderItemQuantity;

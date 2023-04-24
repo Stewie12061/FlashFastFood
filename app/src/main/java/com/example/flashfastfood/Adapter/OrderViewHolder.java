@@ -10,7 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.flashfastfood.R;
 
 public class OrderViewHolder extends RecyclerView.ViewHolder {
-    public TextView orderPrice, orderPayment, orderDate, orderTime, orderLocation, orderStatus, orderItemQuantity;
+    public TextView orderPrice, orderPayment, orderDate, orderTime, orderLocation, orderStatus, orderItemQuantity,
+            orderCustomer, orderPhoneNumber;
     public CardView btnCancelOrder, btnConfirmOrder;
 
     public OrderViewHolder(@NonNull View itemView) {
@@ -24,9 +25,9 @@ public class OrderViewHolder extends RecyclerView.ViewHolder {
         orderStatus = itemView.findViewById(R.id.orderStatus);
         orderItemQuantity = itemView.findViewById(R.id.orderQuantity);
         btnCancelOrder = itemView.findViewById(R.id.btnCancelOrder);
-
         btnConfirmOrder = itemView.findViewById(R.id.btnConfirmOrder);
-
+        orderCustomer = itemView.findViewById(R.id.orderCustomer);
+        orderPhoneNumber = itemView.findViewById(R.id.orderPhoneNumber);
 
     }
 

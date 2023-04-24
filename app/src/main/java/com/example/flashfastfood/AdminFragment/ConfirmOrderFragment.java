@@ -45,7 +45,7 @@ public class ConfirmOrderFragment extends Fragment {
     private RecyclerView rvConfirmOrder;
 
     private FirebaseDatabase firebaseDatabase;
-    private DatabaseReference cartRef, orderRef;
+    private DatabaseReference orderRef, userRef;
 
     private FirebaseRecyclerOptions<Order> options;
     private FirebaseRecyclerAdapter<Order, OrderViewHolder> adapter;
@@ -78,7 +78,7 @@ public class ConfirmOrderFragment extends Fragment {
 
         firebaseDatabase = FirebaseDatabase.getInstance("https://flashfastfood-81fee-default-rtdb.asia-southeast1.firebasedatabase.app");
         orderRef = firebaseDatabase.getReference("Order");
-        cartRef = firebaseDatabase.getReference("Shopping Cart");
+        userRef = firebaseDatabase.getReference("Registered Users");
 
         rvConfirmOrder = view.findViewById(R.id.rvConfirmOrder);
         rvConfirmOrder.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
@@ -155,6 +155,22 @@ public class ConfirmOrderFragment extends Fragment {
                         holder.orderDate.setText(orderDate);
                         holder.orderTime.setText(orderTime);
                         holder.orderPayment.setText(orderPayment);
+
+                        userRef.child(userId).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                String userName = snapshot.child("FullName").getValue().toString();
+                                String userPhoneNUmber = snapshot.child("PhoneNumber").getValue().toString();
+
+                                holder.orderCustomer.setText(userName);
+                                holder.orderPhoneNumber.setText(userPhoneNUmber);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
 
                         if (orderPayment.equals("Cash on delivery")){
                             holder.orderPayment.setTextColor(Color.parseColor("#CB1B11"));

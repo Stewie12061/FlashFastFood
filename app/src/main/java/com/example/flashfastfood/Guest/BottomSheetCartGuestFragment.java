@@ -2,6 +2,8 @@ package com.example.flashfastfood.Guest;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -39,7 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class BottomSheetCartGuestFragment extends BottomSheetDialogFragment {
+public class BottomSheetCartGuestFragment extends BottomSheetDialogFragment{
 
     TextView btnCancel, deleteAllCart;
 
@@ -60,6 +62,8 @@ public class BottomSheetCartGuestFragment extends BottomSheetDialogFragment {
     TextView txtNoCart, cartQuantity, cartTotalPrice, txtQuantity;
 
     RelativeLayout btnCheckout;
+
+    private BottomSheetListener mListener;
 
     public BottomSheetCartGuestFragment() {
         // Required empty public constructor
@@ -144,6 +148,28 @@ public class BottomSheetCartGuestFragment extends BottomSheetDialogFragment {
         super.onStart();
         getCart();
         getCartTotal();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        CartGuest cartGuest = getCart();
+        List<CartItemGuest> cartItemGuestList = new ArrayList<>(cartGuest.getItems().values());
+        CartAdapter cartAdapter = new CartAdapter(cartItemGuestList,getContext(),this);
+        rvCartView.setAdapter(cartAdapter);
+        getCart();
+        getCartTotal();
+    }
+
+    public void setBottomSheetListener(BottomSheetListener listener) {
+        mListener = listener;
+    }
+    @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        super.onDismiss(dialog);
+        if (mListener != null) {
+            mListener.onDismiss(getContext());
+        }
     }
 
     private CartGuest getCart() {

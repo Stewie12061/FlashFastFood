@@ -6,6 +6,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -32,6 +33,8 @@ import com.example.flashfastfood.Data.Favorite;
 import com.example.flashfastfood.Data.Items;
 import com.example.flashfastfood.Fragment.BottomSheetCartFragment;
 import com.example.flashfastfood.Guest.BottomSheetCartGuestFragment;
+import com.example.flashfastfood.Guest.BottomSheetListener;
+import com.example.flashfastfood.Guest.MainGuestActivity;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -56,7 +59,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ItemDetailActivity extends AppCompatActivity {
+public class ItemDetailActivity extends AppCompatActivity implements BottomSheetListener {
 
     TextView detailItemRating, detailItemName, detailItemPrice, detailItemDes,
             quantity, totalPrice, goback,
@@ -168,6 +171,7 @@ public class ItemDetailActivity extends AppCompatActivity {
                 }
             });
         }else {
+            getCartGuestQuantity();
             btnCart.setVisibility(View.VISIBLE);
             btnCart.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -175,6 +179,7 @@ public class ItemDetailActivity extends AppCompatActivity {
                     Bundle bundle = new Bundle();
                     bundle.putString("guestFlag","guest");
                     BottomSheetCartGuestFragment bottomSheetFragment2 = new BottomSheetCartGuestFragment();
+                    bottomSheetFragment2.setBottomSheetListener(ItemDetailActivity.this);
                     bottomSheetFragment2.setArguments(bundle);
                     bottomSheetFragment2.show(getSupportFragmentManager(),bottomSheetFragment2.getTag());
                 }
@@ -222,6 +227,8 @@ public class ItemDetailActivity extends AppCompatActivity {
         super.onResume();
         if (!guestFlag.equals("guest")){
             getCartQuantity();
+        }else {
+            getCartGuestQuantity();
         }
 
     }
@@ -251,6 +258,20 @@ public class ItemDetailActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("CartItems", gson.toJson(cartItems));
         editor.apply();
+        getCartGuestQuantity();
+    }
+    public void getCartGuestQuantity() {
+        SharedPreferences sharedPreferences = getSharedPreferences("Cart", MODE_PRIVATE);
+        String cartJson = sharedPreferences.getString("CartItems", "{}");
+        Gson gson = new Gson();
+        Type type = new TypeToken<Map<String, CartItemGuest>>() {
+        }.getType();
+        Map<String, CartItemGuest> cartItems = gson.fromJson(cartJson, type);
+        int totalItem= 0;
+        for (String key : cartItems.keySet()) {
+            totalItem++;
+        }
+        btnCart.setCount(totalItem);
     }
 
     public void getCartQuantity() {
@@ -306,7 +327,7 @@ public class ItemDetailActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.slide_from_left,R.anim.slide_to_right);
     }
 
-    private void getItemQuantity() {
+    public void getItemQuantity() {
         btnPlus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -484,6 +505,9 @@ public class ItemDetailActivity extends AppCompatActivity {
                             public void onClick(View view, int position, boolean isLongClick) {
                                 Intent intent = new Intent(ItemDetailActivity.this, ItemDetailActivity.class);
                                 intent.putExtra("itemId", adapter.getRef(position).getKey());
+                                if (guestFlag.equals("guest")){
+                                    intent.putExtra("guestFlag","guest");
+                                }
                                 startActivity(intent);
                                 overridePendingTransition(R.anim.slide_from_right,R.anim.slide_to_left);
                             }
@@ -509,5 +533,16 @@ public class ItemDetailActivity extends AppCompatActivity {
         rvRecommendedItems.setAdapter(adapter);
         adapter.startListening();
 
+    }
+
+    @Override
+    public void onDismiss(Context context) {
+        if (context instanceof ItemDetailActivity) {
+            ((ItemDetailActivity) context).getCartGuestQuantity();
+        } else if (context instanceof MainGuestActivity) {
+            ((MainGuestActivity) context).getCartQuantity();
+        }else if (context instanceof ItemsActivity) {
+            ((ItemsActivity) context).getCartGuestQuantity();
+        }
     }
 }

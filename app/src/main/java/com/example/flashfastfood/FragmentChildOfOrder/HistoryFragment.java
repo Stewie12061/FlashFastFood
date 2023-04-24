@@ -1,8 +1,11 @@
 package com.example.flashfastfood.FragmentChildOfOrder;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -46,13 +49,14 @@ public class HistoryFragment extends Fragment {
     private RecyclerView rvHistory, rvHistoryCancel;
 
     private FirebaseDatabase firebaseDatabase;
-    private DatabaseReference orderRef;
+    private DatabaseReference orderRef, userRef;
 
     private FirebaseRecyclerOptions<Order> options;
     private FirebaseRecyclerAdapter<Order, OrderViewHolder> adapter;
     private ArrayList<String> arrayList3 = null;
 
     private LottieAnimationView historyWating, historyWating2;
+    String guestFlag;
 
     public HistoryFragment() {
         // Required empty public constructor
@@ -77,9 +81,19 @@ public class HistoryFragment extends Fragment {
 
         firebaseDatabase = FirebaseDatabase.getInstance("https://flashfastfood-81fee-default-rtdb.asia-southeast1.firebasedatabase.app");
         orderRef = firebaseDatabase.getReference("Order");
+        userRef = firebaseDatabase.getReference("Registered Users");
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        currentUserId = user.getUid();
+        guestFlag = getActivity().getIntent().getStringExtra("guestFlag");
+        if (guestFlag==null){
+            guestFlag="user";
+        }
+        if (guestFlag.equals("user")){
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            currentUserId = user.getUid();
+        }else {
+            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefs", MODE_PRIVATE);
+            currentUserId = sharedPreferences.getString("userId", "");
+        }
 
         rvHistory = view.findViewById(R.id.rvHistory);
         rvHistory.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
@@ -183,6 +197,22 @@ public class HistoryFragment extends Fragment {
                         holder.orderTime.setText(orderTime);
                         holder.orderPayment.setText(orderPayment);
 
+                        userRef.child(currentUserId).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                String userName = snapshot.child("FullName").getValue().toString();
+                                String userPhoneNUmber = snapshot.child("PhoneNumber").getValue().toString();
+
+                                holder.orderCustomer.setText(userName);
+                                holder.orderPhoneNumber.setText(userPhoneNUmber);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+
                         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                             @Override
                             public boolean onLongClick(View v) {
@@ -285,6 +315,22 @@ public class HistoryFragment extends Fragment {
                         holder.orderDate.setText(orderDate);
                         holder.orderTime.setText(orderTime);
                         holder.orderPayment.setText(orderPayment);
+
+                        userRef.child(currentUserId).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                String userName = snapshot.child("FullName").getValue().toString();
+                                String userPhoneNUmber = snapshot.child("PhoneNumber").getValue().toString();
+
+                                holder.orderCustomer.setText(userName);
+                                holder.orderPhoneNumber.setText(userPhoneNUmber);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
 
                         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                             @Override
