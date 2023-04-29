@@ -271,7 +271,7 @@ public class GuestCheckOutActivity extends AppCompatActivity {
                           int idOrder = 2;
                           String IDorder = Integer.toString(idOrder);
                           intent.putExtra("Fragment",IDorder);
-
+                            intent.putExtra("guestFlag","guest");
                           dialog.dismiss();
                           startActivity(intent);
                       }
