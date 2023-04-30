@@ -1,6 +1,13 @@
 package com.example.flashfastfood.Data;
 
-public class Order {
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
+
+public class Order{
     String orderItemQuantity, orderTotalPrice, orderDate, orderTime, orderLocation, orderStatus, orderPayment,
     orderCustomer, orderPhoneNumber;
 
@@ -99,4 +106,5 @@ public class Order {
     public void setOrderPayment(String orderPayment) {
         this.orderPayment = orderPayment;
     }
+
 }

@@ -13,6 +13,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.transition.ChangeBounds;
 import android.transition.TransitionManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -26,8 +27,11 @@ import com.example.flashfastfood.AdminFragment.ChartDayFragment;
 import com.example.flashfastfood.AdminFragment.DiscountManagementFragment;
 import com.example.flashfastfood.AdminFragment.OrderManagementFragment;
 import com.example.flashfastfood.AdminFragment.SearchAdminFragment;
+import com.example.flashfastfood.Fragment.OrderFragment;
 import com.example.flashfastfood.LoginActivity;
 import com.example.flashfastfood.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -35,6 +39,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 
 public class MainAdminActivity extends AppCompatActivity {
@@ -52,7 +57,7 @@ public class MainAdminActivity extends AppCompatActivity {
     FirebaseDatabase firebaseDatabase;
     DatabaseReference userRef;
     FirebaseAuth firebaseAuth;
-
+    String idIntent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,8 +88,20 @@ public class MainAdminActivity extends AppCompatActivity {
             }
         });
 
+        idIntent = getIntent().getStringExtra("order");
 
-        chipNavigationBar.setItemSelected(R.id.mnuCategory,true);
+        if (idIntent==null){
+            chipNavigationBar.setItemSelected(R.id.mnuCategory,true);
+        }{
+            chipNavigationBar.setItemSelected(R.id.mnuOrderManagement,true);
+            fragment = new OrderManagementFragment();
+            fragmentManager = getSupportFragmentManager();
+            fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.contentAdmin, fragment);
+            fragmentTransaction.commit();
+            idIntent = null;
+        }
+
         if (fragment == null){
             fragmentManager = getSupportFragmentManager();
             fragmentTransaction = fragmentManager.beginTransaction();
@@ -189,5 +206,18 @@ public class MainAdminActivity extends AppCompatActivity {
             alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         }
         alertDialog.show();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+            @Override
+            public void onComplete(@NonNull Task<String> task) {
+                if (task.isSuccessful()){
+                    Log.d("FCMToken",task.getResult());
+                }
+            }
+        });
     }
 }

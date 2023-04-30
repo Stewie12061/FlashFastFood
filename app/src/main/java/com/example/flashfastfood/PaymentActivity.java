@@ -17,6 +17,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.flashfastfood.Data.Order;
+import com.example.flashfastfood.Guest.GuestCheckOutActivity;
+import com.example.flashfastfood.Service.FCMSend;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -80,7 +82,7 @@ public class PaymentActivity extends AppCompatActivity {
     FirebaseDatabase firebaseDatabase;
     DatabaseReference orderRef, cartRef;
     Order order;
-    String orderTime, orderDate, orderAddress, orderPrice, orderPayment, orderItemQuantity, orderStatus, currentUserId, itemIdForCreate;
+    String orderTime, orderDate, orderAddress, orderPrice, orderPayment, orderItemQuantity, orderStatus, currentUserId, itemIdForCreate, fullname;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,6 +102,7 @@ public class PaymentActivity extends AppCompatActivity {
         orderPayment = getIntent().getStringExtra("orderPayment");
         orderItemQuantity = getIntent().getStringExtra("orderItemQuantity");
         orderStatus = getIntent().getStringExtra("orderStatus");
+        fullname = getIntent().getStringExtra("username");
 
         order = new Order();
 
@@ -153,6 +156,13 @@ public class PaymentActivity extends AppCompatActivity {
                 new Handler().postDelayed(new Runnable() {
                                               @Override
                                               public void run() {
+
+                                                  FCMSend.pushNotificationI(
+                                                          PaymentActivity.this,
+                                                          "fwXwEW9OSe6C2fffThg6Ku:APA91bEyrHT-Vd4q1wUomBDWNsU33pZm1tsWvPl_HbMhFHjzKMDPv75XaMiZ-oXlZ9QMnNppq5kltYCRIWHz2dLP_xxECiQZKhtLIIafKFMmrdw6yy8jz_vREdwuPkq-EEjviBRIK6Y1",
+                                                          "New Order",
+                                                          "New order from "+fullname
+                                                  );
                                                   Intent intent = new Intent(PaymentActivity.this,MainActivity.class);
                                                   intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                                   int idOrder = 2;

@@ -42,6 +42,8 @@ import com.example.flashfastfood.Data.Cart;
 import com.example.flashfastfood.Data.Discount;
 import com.example.flashfastfood.Data.Order;
 import com.example.flashfastfood.Fragment.BottomSheetCartFragment;
+import com.example.flashfastfood.Guest.GuestCheckOutActivity;
+import com.example.flashfastfood.Service.FCMSend;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -96,6 +98,7 @@ public class CheckOutActivity extends AppCompatActivity implements AdapterView.O
     String paymentMethodstr;
 
     String itemIdForCreate;
+    String fullName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -193,13 +196,12 @@ public class CheckOutActivity extends AppCompatActivity implements AdapterView.O
         spinnerDrawable.setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
         spinner.setBackground(spinnerDrawable);
 
-
         btnOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 paymentMethodstr = payMentMethod[spinner.getSelectedItemPosition()];
                 getNewItemKeyForCreate();
-                placeOrder();
+                placeOrder(fullName);
             }
         });
     }
@@ -215,15 +217,15 @@ public class CheckOutActivity extends AppCompatActivity implements AdapterView.O
         // TODO Auto-generated method stub
     }
 
-    private void placeOrder(){
+    private void placeOrder(String name){
         if (orderAddress.getText().toString().equals("Pick your deliver address")){
             Toast.makeText(CheckOutActivity.this, "You have to pick deliver address!", Toast.LENGTH_SHORT).show();
             orderAddress.setError("You have to pick deliver address!");
             orderAddress.requestFocus();
         }else if (paymentMethodstr.equals("Pay with card")){
-            payWithCard();
+            payWithCard(name);
         }else if (paymentMethodstr.equals("Cash on delivery")){
-            payOnCash();
+            payOnCash(name);
         }
         else {
             String text = "Your chosen payment method is not available at the moment";
@@ -239,7 +241,7 @@ public class CheckOutActivity extends AppCompatActivity implements AdapterView.O
         }
     }
 
-    private void payOnCash(){
+    private void payOnCash(String name){
         order.setOrderDate(saveCurrentDate);
         order.setOrderTime(saveCurrentTime);
         order.setOrderLocation(orderAddress.getText().toString());
@@ -257,6 +259,14 @@ public class CheckOutActivity extends AppCompatActivity implements AdapterView.O
                 new Handler().postDelayed(new Runnable() {
                                               @Override
                                               public void run() {
+                                                    //push notification
+                                                  FCMSend.pushNotificationI(
+                                                          CheckOutActivity.this,
+                                                          "fwXwEW9OSe6C2fffThg6Ku:APA91bEyrHT-Vd4q1wUomBDWNsU33pZm1tsWvPl_HbMhFHjzKMDPv75XaMiZ-oXlZ9QMnNppq5kltYCRIWHz2dLP_xxECiQZKhtLIIafKFMmrdw6yy8jz_vREdwuPkq-EEjviBRIK6Y1",
+                                                          "New Order",
+                                                          "New order from "+name
+                                                  );
+
                                                   Intent intent = new Intent(CheckOutActivity.this,MainActivity.class);
                                                   intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                                   int idOrder = 2;
@@ -280,7 +290,7 @@ public class CheckOutActivity extends AppCompatActivity implements AdapterView.O
         });
     }
 
-    private void payWithCard(){
+    private void payWithCard(String name){
         Intent intent =new Intent(CheckOutActivity.this, PaymentActivity.class);
 
         intent.putExtra("orderTime",saveCurrentTime);
@@ -291,6 +301,7 @@ public class CheckOutActivity extends AppCompatActivity implements AdapterView.O
         intent.putExtra("orderItemQuantity",txtOrderItemQuantity.getText().toString());
         intent.putExtra("orderStatus","Processing");
         intent.putExtra("orderItem",itemIdForCreate);
+        intent.putExtra("username",name);
         startActivity(intent);
     }
 
@@ -671,6 +682,17 @@ public class CheckOutActivity extends AppCompatActivity implements AdapterView.O
         getCartQuantity();
         getDiscountView();
         getNewItemKeyForCreate();
+        firebaseDatabase.getReference("Registered Users").child(currentUserId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                fullName = snapshot.child("FullName").getValue().toString();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     @Override

@@ -45,6 +45,7 @@ import com.example.flashfastfood.MainActivity;
 import com.example.flashfastfood.PaymentActivity;
 import com.example.flashfastfood.PickAddressActivity;
 import com.example.flashfastfood.R;
+import com.example.flashfastfood.Service.FCMSend;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -57,6 +58,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
@@ -68,6 +71,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -252,6 +256,7 @@ public class GuestCheckOutActivity extends AppCompatActivity {
         orderRef.child(currentUserId).child(itemIdForCreate).setValue(order).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
+
                 DatabaseReference userRef = firebaseDatabase.getReference("Registered Users");
                 Map<String,String> guestInfo = new HashMap<>();
                 guestInfo.put("FullName", edtfullname.getText().toString());
@@ -266,6 +271,14 @@ public class GuestCheckOutActivity extends AppCompatActivity {
                 new Handler().postDelayed(new Runnable() {
                       @Override
                       public void run() {
+                          //push notification
+                          FCMSend.pushNotificationI(
+                                  GuestCheckOutActivity.this,
+                                  "fwXwEW9OSe6C2fffThg6Ku:APA91bEyrHT-Vd4q1wUomBDWNsU33pZm1tsWvPl_HbMhFHjzKMDPv75XaMiZ-oXlZ9QMnNppq5kltYCRIWHz2dLP_xxECiQZKhtLIIafKFMmrdw6yy8jz_vREdwuPkq-EEjviBRIK6Y1",
+                                  "New Order",
+                                  "New order from "+edtfullname.getText().toString()
+                          );
+
                           Intent intent = new Intent(GuestCheckOutActivity.this, MainGuestActivity.class);
                           intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                           int idOrder = 2;

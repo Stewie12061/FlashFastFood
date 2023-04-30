@@ -2,16 +2,28 @@ package com.example.flashfastfood.Guest;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.andremion.counterfab.CounterFab;
+import com.example.flashfastfood.Admin.MainAdminActivity;
 import com.example.flashfastfood.Data.CartItemGuest;
 import com.example.flashfastfood.Fragment.BottomSheetCartFragment;
 import com.example.flashfastfood.Fragment.FavoriteFragment;
@@ -21,9 +33,14 @@ import com.example.flashfastfood.Fragment.ProfileFragment;
 import com.example.flashfastfood.ItemDetailActivity;
 import com.example.flashfastfood.ItemsActivity;
 import com.example.flashfastfood.R;
+import com.example.flashfastfood.Service.FCMSend;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.ismaeldivita.chipnavigation.ChipNavigationBar;
@@ -31,6 +48,7 @@ import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Random;
 
 public class MainGuestActivity extends AppCompatActivity implements BottomSheetListener {
     private ChipNavigationBar chipNavigationBarGuest;

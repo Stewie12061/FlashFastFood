@@ -5,11 +5,4 @@ public class UserProfile {
 
     public UserProfile(){}
 
-    public UserProfile(String fullName, String email, String gender, String phoneNumber) {
-        FullName = fullName;
-        Email = email;
-        Gender = gender;
-        PhoneNumber = phoneNumber;
-    }
-
 }
