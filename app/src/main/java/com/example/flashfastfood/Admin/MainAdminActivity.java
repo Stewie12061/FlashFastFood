@@ -95,7 +95,7 @@ public class MainAdminActivity extends AppCompatActivity {
 
         if (idIntent==null){
             chipNavigationBar.setItemSelected(R.id.mnuCategory,true);
-        }{
+        }else {
             chipNavigationBar.setItemSelected(R.id.mnuOrderManagement,true);
             fragment = new OrderManagementFragment();
             fragmentManager = getSupportFragmentManager();
