@@ -150,32 +150,43 @@ public class PaymentActivity extends AppCompatActivity {
         orderRef.child(currentUserId).child(itemIdForCreate).setValue(order).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                Dialog dialog = new Dialog(PaymentActivity.this,R.style.CustomDialog);
-                dialog.setContentView(R.layout.dialog_order_loading);
-                dialog.show();
-                new Handler().postDelayed(new Runnable() {
-                                              @Override
-                                              public void run() {
+                firebaseDatabase.getReference("Admin device token").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        String deviceToken = snapshot.child("token").getValue().toString();
+                        Dialog dialog = new Dialog(PaymentActivity.this,R.style.CustomDialog);
+                        dialog.setContentView(R.layout.dialog_order_loading);
+                        dialog.show();
+                        new Handler().postDelayed(new Runnable() {
+                                                      @Override
+                                                      public void run() {
 
-                                                  FCMSend.pushNotificationI(
-                                                          PaymentActivity.this,
-                                                          "fwXwEW9OSe6C2fffThg6Ku:APA91bEyrHT-Vd4q1wUomBDWNsU33pZm1tsWvPl_HbMhFHjzKMDPv75XaMiZ-oXlZ9QMnNppq5kltYCRIWHz2dLP_xxECiQZKhtLIIafKFMmrdw6yy8jz_vREdwuPkq-EEjviBRIK6Y1",
-                                                          "New Order",
-                                                          "New order from "+fullname
-                                                  );
-                                                  Intent intent = new Intent(PaymentActivity.this,MainActivity.class);
-                                                  intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                                  int idOrder = 2;
-                                                  String IDorder = Integer.toString(idOrder);
-                                                  intent.putExtra("Fragment",IDorder);
+                                                          FCMSend.pushNotificationI(
+                                                                  PaymentActivity.this,
+                                                                  deviceToken,
+                                                                  "New Order",
+                                                                  "New order from "+fullname
+                                                          );
+                                                          Intent intent = new Intent(PaymentActivity.this,MainActivity.class);
+                                                          intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                          int idOrder = 2;
+                                                          String IDorder = Integer.toString(idOrder);
+                                                          intent.putExtra("Fragment",IDorder);
 
-                                                  //delete cart when create order
-                                                  cartRef.child(currentUserId).removeValue();
-                                                  dialog.dismiss();
-                                                  startActivity(intent);
-                                              }
-                                          }, 5000
-                );
+                                                          //delete cart when create order
+                                                          cartRef.child(currentUserId).removeValue();
+                                                          dialog.dismiss();
+                                                          startActivity(intent);
+                                                      }
+                                                  }, 5000
+                        );
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
             }
 
         }).addOnFailureListener(new OnFailureListener() {

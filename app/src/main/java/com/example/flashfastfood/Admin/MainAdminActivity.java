@@ -42,6 +42,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class MainAdminActivity extends AppCompatActivity {
 
     Fragment fragment = null;
@@ -216,6 +219,9 @@ public class MainAdminActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<String> task) {
                 if (task.isSuccessful()){
                     Log.d("FCMToken",task.getResult());
+                    Map<String,String> adminToken = new HashMap<>();
+                    adminToken.put("token",task.getResult());
+                    firebaseDatabase.getReference("Admin device token").setValue(adminToken);
                 }
             }
         });

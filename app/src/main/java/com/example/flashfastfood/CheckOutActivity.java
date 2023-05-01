@@ -253,33 +253,46 @@ public class CheckOutActivity extends AppCompatActivity implements AdapterView.O
         orderRef.child(currentUserId).child(itemIdForCreate).setValue(order).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                Dialog dialog = new Dialog(CheckOutActivity.this,R.style.CustomDialog);
-                dialog.setContentView(R.layout.dialog_order_loading);
-                dialog.show();
-                new Handler().postDelayed(new Runnable() {
-                                              @Override
-                                              public void run() {
-                                                    //push notification
-                                                  FCMSend.pushNotificationI(
-                                                          CheckOutActivity.this,
-                                                          "fwXwEW9OSe6C2fffThg6Ku:APA91bEyrHT-Vd4q1wUomBDWNsU33pZm1tsWvPl_HbMhFHjzKMDPv75XaMiZ-oXlZ9QMnNppq5kltYCRIWHz2dLP_xxECiQZKhtLIIafKFMmrdw6yy8jz_vREdwuPkq-EEjviBRIK6Y1",
-                                                          "New Order",
-                                                          "New order from "+name
-                                                  );
+                firebaseDatabase.getReference("Admin device token").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        String deviceToken = snapshot.child("token").getValue().toString();
+                        Dialog dialog = new Dialog(CheckOutActivity.this,R.style.CustomDialog);
+                        dialog.setContentView(R.layout.dialog_order_loading);
+                        dialog.show();
+                        new Handler().postDelayed(new Runnable() {
+                                                      @Override
+                                                      public void run() {
 
-                                                  Intent intent = new Intent(CheckOutActivity.this,MainActivity.class);
-                                                  intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                                  int idOrder = 2;
-                                                  String IDorder = Integer.toString(idOrder);
-                                                  intent.putExtra("Fragment",IDorder);
+                                                          //push notification
+                                                          FCMSend.pushNotificationI(
+                                                                  CheckOutActivity.this,
+                                                                  deviceToken,
+                                                                  "New Order",
+                                                                  "New order from "+name
+                                                          );
 
-                                                  //delete cart when create order
-                                                  cartRef.child(currentUserId).removeValue();
-                                                  dialog.dismiss();
-                                                  startActivity(intent);
-                                              }
-                                          }, 5000
-                );
+                                                          Intent intent = new Intent(CheckOutActivity.this,MainActivity.class);
+                                                          intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                          int idOrder = 2;
+                                                          String IDorder = Integer.toString(idOrder);
+                                                          intent.putExtra("Fragment",IDorder);
+
+                                                          //delete cart when create order
+                                                          cartRef.child(currentUserId).removeValue();
+                                                          dialog.dismiss();
+                                                          startActivity(intent);
+                                                      }
+                                                  }, 5000
+                        );
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
             }
 
         }).addOnFailureListener(new OnFailureListener() {

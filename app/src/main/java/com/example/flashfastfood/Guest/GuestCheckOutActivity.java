@@ -265,31 +265,43 @@ public class GuestCheckOutActivity extends AppCompatActivity {
                 guestInfo.put("Role","User");
                 userRef.child(currentUserId).setValue(guestInfo);
 
-                Dialog dialog = new Dialog(GuestCheckOutActivity.this,R.style.CustomDialog);
-                dialog.setContentView(R.layout.dialog_order_loading);
-                dialog.show();
-                new Handler().postDelayed(new Runnable() {
-                      @Override
-                      public void run() {
-                          //push notification
-                          FCMSend.pushNotificationI(
-                                  GuestCheckOutActivity.this,
-                                  "fwXwEW9OSe6C2fffThg6Ku:APA91bEyrHT-Vd4q1wUomBDWNsU33pZm1tsWvPl_HbMhFHjzKMDPv75XaMiZ-oXlZ9QMnNppq5kltYCRIWHz2dLP_xxECiQZKhtLIIafKFMmrdw6yy8jz_vREdwuPkq-EEjviBRIK6Y1",
-                                  "New Order",
-                                  "New order from "+edtfullname.getText().toString()
-                          );
+                firebaseDatabase.getReference("Admin device token").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        String deviceToken = snapshot.child("token").getValue().toString();
+                        Dialog dialog = new Dialog(GuestCheckOutActivity.this,R.style.CustomDialog);
+                        dialog.setContentView(R.layout.dialog_order_loading);
+                        dialog.show();
+                        new Handler().postDelayed(new Runnable() {
+                                                      @Override
+                                                      public void run() {
+                                                          //push notification
+                                                          FCMSend.pushNotificationI(
+                                                                  GuestCheckOutActivity.this,
+                                                                  deviceToken,
+                                                                  "New Order",
+                                                                  "New order from "+edtfullname.getText().toString()
+                                                          );
 
-                          Intent intent = new Intent(GuestCheckOutActivity.this, MainGuestActivity.class);
-                          intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                          int idOrder = 2;
-                          String IDorder = Integer.toString(idOrder);
-                          intent.putExtra("Fragment",IDorder);
-                            intent.putExtra("guestFlag","guest");
-                          dialog.dismiss();
-                          startActivity(intent);
-                      }
-                  }, 5000
-                );
+                                                          Intent intent = new Intent(GuestCheckOutActivity.this, MainGuestActivity.class);
+                                                          intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                          int idOrder = 2;
+                                                          String IDorder = Integer.toString(idOrder);
+                                                          intent.putExtra("Fragment",IDorder);
+                                                          intent.putExtra("guestFlag","guest");
+                                                          dialog.dismiss();
+                                                          startActivity(intent);
+                                                      }
+                                                  }, 5000
+                        );
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
             }
 
         }).addOnFailureListener(new OnFailureListener() {
